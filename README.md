@@ -24,8 +24,12 @@ codex mcp login yeez
 
 | Command | What it does | Status |
 |---|---|---|
-| `/yeez:setup` | The setup interview, and connecting your WordPress sites | Available |
+| `/yeez:setup` | The setup interview, connecting WordPress, and turning on the daily run | Available |
+| `/yeez:run` | Today's headlines and articles for every site, end to end | Available |
+| `/yeez:headlines` | Finds today's stories and ranks the headlines | Available |
+| `/yeez:articles` | Writes, checks and schedules today's articles | Available |
+| `/yeez:scheduled` | What's queued to publish, with edit links | Available |
 | `/yeez:help` | What Yeez can do and where your setup stands | Available |
-| `/yeez:headlines`, `/yeez:articles`, `/yeez:social`, `/yeez:dm`, `/yeez:newsletter`, `/yeez:offers`, `/yeez:review` | The daily and weekly runs | Arriving in updates |
+| `/yeez:social`, `/yeez:dm`, `/yeez:newsletter`, `/yeez:offers`, `/yeez:review` | Social, comment-to-DM, newsletter, offers, weekly review | Arriving in updates |
 
 Support: alex@clarkbrosmedia.com

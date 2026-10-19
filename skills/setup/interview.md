@@ -14,8 +14,12 @@ Ask these for each site, then ask whether there's another site.
 - What's it about, in a sentence?
 - Who reads it? (Age, where they live, what they care about.)
 - What are its main categories?
-- Roughly how many articles a day does it publish now, and how many would you like?
-- Which author names should Yeez publish under?
+- Roughly how many articles a day does it publish now, and how many would you like Yeez to publish?
+- What time should the first article of the day go out?
+- Which author names should Yeez publish under? (They must already exist as users in WordPress.)
+- Which category should articles go in when nothing more specific fits?
+- What are the big shared subjects your whole audience depends on? (For example, the agencies, programs or institutions everyone in your niche follows.)
+- Which household-name brands or organizations does your audience recognize on sight?
 
 ## Your voice `voice`
 - Share links to 3 to 5 of your best articles, ones that sound exactly like you.

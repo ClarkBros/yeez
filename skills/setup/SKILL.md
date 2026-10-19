@@ -50,10 +50,31 @@ For every site from the `sites` section:
 
 **Never ask for passwords in the chat.** If the user pastes a password, don't repeat it. Tell them to delete that application password in WordPress and use the link instead.
 
-## 5. Finish
+## 5. Save each site's publishing settings
+
+For every connected site, call `save_site_settings` with what they told you in the `sites` section:
+- `per_day`: articles a day
+- `timezone`: from the `business` section
+- `start`: first publish time, HH:MM
+- `default_category` and `authors`
+- `universal_entities`: the big shared subjects
+- `major_brands`: the household names
+
+Read back the publish times it returns in one line, so they see the day's schedule.
+
+## 6. Turn on the daily run
+
+Tell them Yeez runs once a day as a scheduled task, then help them create it:
+- **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
+- **Claude Code or ChatGPT / Codex:** walk them through adding a daily scheduled task or automation with the prompt `/yeez:run`.
+
+Mention they can run it any time by typing `/yeez:run`, and see what's queued with `/yeez:scheduled`.
+
+## 7. Finish
 
 Summarize what's saved and which sites are connected, in a short list. Then tell them:
 
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
-- Their daily runs (headlines, articles, social, newsletter) switch on as those parts of Yeez arrive in updates. They don't need to reinstall anything.
+- Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
+- Social, newsletter and the weekly review switch on as those parts of Yeez arrive in updates. They don't need to reinstall anything.
