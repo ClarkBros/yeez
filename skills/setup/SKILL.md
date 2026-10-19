@@ -81,7 +81,11 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
   On beehiiv, suggest adding the beehiiv connector in their AI app so Yeez can create drafts directly.
 - **Offers:** for each offer from the `offers` section, call `save_offer` (see the **offers** skill for what to ask). Remind them to log earnings now and then with `/yeez:offers`.
 
-## 8. Turn on the daily run
+## 8. Earn-back baseline
+
+Explain in one line that the 90-day guarantee compares what their sites earn in the 90 days after they start with the 90 days before. Ask what each income source paid in the 90 days before today, from their own dashboards (a number per source, or a screenshot). Call `save_baseline`. If they don't have the numbers handy, tell them they can add them later with `/yeez:review baseline`; the tracker needs them to measure anything.
+
+## 9. Turn on the daily run
 
 Tell them Yeez runs once a day as a scheduled task, then help them create it:
 - **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
@@ -89,13 +93,13 @@ Tell them Yeez runs once a day as a scheduled task, then help them create it:
 
 Mention they can run it any time by typing `/yeez:run`, and see what's queued with `/yeez:scheduled`.
 
-## 9. Finish
+## 10. Finish
 
 Summarize what's saved and which sites are connected, in a short list. Then tell them:
 
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
-- Facebook and Instagram posts schedule themselves in the daily run; comment-to-DM starts in test mode until they turn it on.
+- Facebook posts are scheduled and Instagram posts go out during the daily run; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
-- The weekly review switches on in an update. They don't need to reinstall anything.
+- Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.

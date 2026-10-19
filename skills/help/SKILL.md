@@ -18,6 +18,7 @@ description: Explains what Yeez does, which commands are available, and where th
      - `/yeez:dm`: comment-to-DM keywords
      - `/yeez:newsletter`: the next issue
      - `/yeez:offers`: offers, tracked links and the earnings report
-   - **What's coming in updates:** `/yeez:review`, the weekly review. Updates arrive on their own.
+     - `/yeez:review`: the weekly review, learned rules, and the 90-day earn-back tracker
+   - **Their dashboard:** https://yeez.ai/dashboard shows this week, the latest review, scheduled articles and the earn-back tracker.
    - **Where their setup stands:** the sections saved and the sites connected, from `setup_status`.
-3. Account and install steps: https://yeez.ai/account. Support: alex@clarkbrosmedia.com.
+3. Updates arrive on their own. Account and install steps: https://yeez.ai/account. Support: alex@clarkbrosmedia.com.

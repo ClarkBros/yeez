@@ -34,6 +34,8 @@ codex mcp login yeez
 | `/yeez:dm` | Comment-to-DM: a keyword comment gets a private message with your link | Available |
 | `/yeez:newsletter` | Builds the issue from the day's best story; creates the beehiiv draft or a copy-ready page | Available |
 | `/yeez:offers` | Offers, tracked links and the earnings report | Available |
-| `/yeez:review` | The weekly review | Arriving in an update |
+| `/yeez:review` | The weekly review: winners, losers, next week's headline rules, and the 90-day earn-back tracker | Available |
+
+Your dashboard: https://yeez.ai/dashboard
 
 Support: alex@clarkbrosmedia.com

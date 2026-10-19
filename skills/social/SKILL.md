@@ -24,8 +24,8 @@ Call `list_social_accounts`. If nothing is connected, call `connect_meta` and gi
    - **Facebook:** for an article post, pass the article URL as `link` and don't paste it into the text.
    - **Instagram:** use the article's image (`image_url`, a JPEG works best) and end with a short line telling readers where to find the full story. Links in Instagram captions aren't clickable. Add three to five relevant hashtags at the end.
    - At most one post a day per account may ask readers to comment a keyword (see `/yeez:dm`). Phrase it as an offer ("Comment GUIDE and we'll message you the checklist"), only for a keyword that exists in `list_dm_flows`.
-4. **Schedule.** Call `schedule_social_post` for each post. Yeez spreads them through the account's posting window. If it refuses, follow its reason and try again once.
+4. **Post.** Call `schedule_social_post` for each post. Facebook posts are scheduled through the account's posting window; Instagram posts go out right away. If it refuses, follow its reason and try again once.
 
 ## Report
 
-For each account, list the posts with their local times. Mention anything that failed, and that the buyer can review queued posts with `list_social_queue`, on their Page, or in Meta Business Suite.
+For each account, list the posts with their local times (Instagram: the live link). Mention anything that failed, and that the buyer can review queued posts with `list_social_queue`, on their Page, or in Meta Business Suite.
