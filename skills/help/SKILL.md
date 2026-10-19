@@ -14,6 +14,8 @@ description: Explains what Yeez does, which commands are available, and where th
      - `/yeez:headlines`: find and rank today's stories
      - `/yeez:articles`: write, check and schedule
      - `/yeez:scheduled`: review what's queued
-   - **What's coming in updates:** `/yeez:social`, `/yeez:dm`, `/yeez:newsletter`, `/yeez:offers` and `/yeez:review`. Updates arrive on their own.
+     - `/yeez:social`: Facebook and Instagram posts
+     - `/yeez:dm`: comment-to-DM keywords
+   - **What's coming in updates:** `/yeez:newsletter`, `/yeez:offers` and `/yeez:review`. Updates arrive on their own.
    - **Where their setup stands:** the sections saved and the sites connected, from `setup_status`.
 3. Account and install steps: https://yeez.ai/account. Support: alex@clarkbrosmedia.com.

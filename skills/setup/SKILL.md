@@ -62,7 +62,15 @@ For every connected site, call `save_site_settings` with what they told you in t
 
 Read back the publish times it returns in one line, so they see the day's schedule.
 
-## 6. Turn on the daily run
+## 6. Connect Facebook and Instagram (if they use them)
+
+If the `channels` section lists Facebook Pages or Instagram accounts:
+1. Call `connect_meta` and give them the link. The page walks them through creating their own Meta app (about 15 minutes, no Facebook review), then connecting their Pages and Instagram.
+2. When they're done, call `list_social_accounts` to confirm.
+3. Ask how many posts a day each account should get, and call `save_social_settings` for each.
+4. If they want comment-to-DM, follow the **dm** skill.
+
+## 7. Turn on the daily run
 
 Tell them Yeez runs once a day as a scheduled task, then help them create it:
 - **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
@@ -70,11 +78,12 @@ Tell them Yeez runs once a day as a scheduled task, then help them create it:
 
 Mention they can run it any time by typing `/yeez:run`, and see what's queued with `/yeez:scheduled`.
 
-## 7. Finish
+## 8. Finish
 
 Summarize what's saved and which sites are connected, in a short list. Then tell them:
 
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
-- Social, newsletter and the weekly review switch on as those parts of Yeez arrive in updates. They don't need to reinstall anything.
+- Facebook and Instagram posts schedule themselves in the daily run; comment-to-DM starts in test mode until they turn it on.
+- The newsletter and the weekly review switch on as those parts of Yeez arrive in updates. They don't need to reinstall anything.
