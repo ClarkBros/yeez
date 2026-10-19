@@ -1,0 +1,12 @@
+{
+  "name": "clarkbros",
+  "interface": { "displayName": "Clark Bros Media" },
+  "plugins": [
+    {
+      "name": "yeez",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}

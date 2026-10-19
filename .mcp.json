@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "yeez": { "type": "http", "url": "https://yeez.ai/api/mcp" }
+  }
+}

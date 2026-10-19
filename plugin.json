@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "yeez",
+  "version": "0.1.0",
+  "description": "Yeez by Clark Bros Media. The system behind a 40M-view-a-month publishing network, as a plugin. Requires a Yeez license from yeez.ai.",
+  "author": { "name": "Clark Bros Media", "url": "https://clarkbrosmedia.com/yeez/" },
+  "homepage": "https://clarkbrosmedia.com/yeez/",
+  "repository": "https://github.com/ClarkBros/yeez",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": ["publishing", "wordpress", "content", "newsletter", "social", "syndication"],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup",
+      "interface": {
+        "displayName": "Yeez",
+        "shortDescription": "Run your publishing business from your AI app.",
+        "developerName": "Clark Bros Media",
+        "category": "Productivity",
+        "websiteURL": "https://clarkbrosmedia.com/yeez/",
+        "privacyPolicyURL": "https://clarkbrosmedia.com/privacy-statement/",
+        "termsOfServiceURL": "https://clarkbrosmedia.com/terms-and-conditions/",
+        "defaultPrompt": "Set up Yeez for my sites",
+        "brandColor": "#D4181F"
+      }
+    }
+  }
+}

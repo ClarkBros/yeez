@@ -1,0 +1,14 @@
+{
+  "name": "clarkbros",
+  "owner": { "name": "Clark Bros Media", "email": "alex@clarkbrosmedia.com" },
+  "metadata": { "description": "Clark Bros Media plugins for publishers." },
+  "plugins": [
+    {
+      "name": "yeez",
+      "source": "./",
+      "description": "Yeez by Clark Bros Media: ranked headlines, sourced articles, scheduled publishing, social, newsletter and a weekly review. Requires a Yeez license.",
+      "homepage": "https://clarkbrosmedia.com/yeez/",
+      "category": "productivity"
+    }
+  ]
+}
