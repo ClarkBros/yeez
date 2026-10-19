@@ -16,6 +16,8 @@ description: Explains what Yeez does, which commands are available, and where th
      - `/yeez:scheduled`: review what's queued
      - `/yeez:social`: Facebook and Instagram posts
      - `/yeez:dm`: comment-to-DM keywords
-   - **What's coming in updates:** `/yeez:newsletter`, `/yeez:offers` and `/yeez:review`. Updates arrive on their own.
+     - `/yeez:newsletter`: the next issue
+     - `/yeez:offers`: offers, tracked links and the earnings report
+   - **What's coming in updates:** `/yeez:review`, the weekly review. Updates arrive on their own.
    - **Where their setup stands:** the sections saved and the sites connected, from `setup_status`.
 3. Account and install steps: https://yeez.ai/account. Support: alex@clarkbrosmedia.com.

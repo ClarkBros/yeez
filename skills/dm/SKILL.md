@@ -14,7 +14,7 @@ The buyer picks a keyword per offer, for example GUIDE. When someone comments ju
 1. Call `list_social_accounts`. If Meta isn't connected, call `connect_meta`, give them the link, and wait.
 2. Call `list_dm_flows` to show the current keywords and mode.
 3. **Add or change a keyword:** ask for these, then call `save_dm_flow`:
-   - the offer (what they're sending and the link)
+   - the offer (what they're sending and the link). If it's one of their saved offers (`list_offers`), use `make_tracked_link` with channel `dm` so clicks are counted.
    - the keyword: one short, memorable word
    - the message: friendly, one or two sentences; `{name}` becomes the commenter's first name
    - the button text: two or three words

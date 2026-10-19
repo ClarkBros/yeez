@@ -32,6 +32,8 @@ codex mcp login yeez
 | `/yeez:help` | What Yeez can do and where your setup stands | Available |
 | `/yeez:social` | Writes and schedules Facebook and Instagram posts, learning from each account's winners | Available |
 | `/yeez:dm` | Comment-to-DM: a keyword comment gets a private message with your link | Available |
-| `/yeez:newsletter`, `/yeez:offers`, `/yeez:review` | Newsletter, offers and tracked links, weekly review | Arriving in updates |
+| `/yeez:newsletter` | Builds the issue from the day's best story; creates the beehiiv draft or a copy-ready page | Available |
+| `/yeez:offers` | Offers, tracked links and the earnings report | Available |
+| `/yeez:review` | The weekly review | Arriving in an update |
 
 Support: alex@clarkbrosmedia.com

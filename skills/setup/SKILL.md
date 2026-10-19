@@ -70,7 +70,18 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
 3. Ask how many posts a day each account should get, and call `save_social_settings` for each.
 4. If they want comment-to-DM, follow the **dm** skill.
 
-## 7. Turn on the daily run
+## 7. Newsletter and offers
+
+- **Newsletter:** if the `channels` section names a newsletter, call `save_newsletter_settings` with:
+  - its name and platform
+  - its signup page (Yeez adds a signup line to articles)
+  - send days and send time
+  - timezone
+
+  On beehiiv, suggest adding the beehiiv connector in their AI app so Yeez can create drafts directly.
+- **Offers:** for each offer from the `offers` section, call `save_offer` (see the **offers** skill for what to ask). Remind them to log earnings now and then with `/yeez:offers`.
+
+## 8. Turn on the daily run
 
 Tell them Yeez runs once a day as a scheduled task, then help them create it:
 - **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
@@ -78,7 +89,7 @@ Tell them Yeez runs once a day as a scheduled task, then help them create it:
 
 Mention they can run it any time by typing `/yeez:run`, and see what's queued with `/yeez:scheduled`.
 
-## 8. Finish
+## 9. Finish
 
 Summarize what's saved and which sites are connected, in a short list. Then tell them:
 
@@ -86,4 +97,5 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
 - Facebook and Instagram posts schedule themselves in the daily run; comment-to-DM starts in test mode until they turn it on.
-- The newsletter and the weekly review switch on as those parts of Yeez arrive in updates. They don't need to reinstall anything.
+- The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
+- The weekly review switches on in an update. They don't need to reinstall anything.

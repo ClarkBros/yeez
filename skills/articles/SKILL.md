@@ -34,13 +34,14 @@ For each connected site, call `get_headlines` and write one article per picked h
    - **pass:** continue.
 
    If the headline overstates its own sources, make the smallest sourced correction to the title instead of holding a true story.
-5. **Pick an image.** Call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea. Choose one that is recognizable at thumbnail size.
-6. **Schedule it.** Call `schedule_article` with:
+5. **Place an offer, only if one fits.** Call `match_offers` with the article text, `place: "article"`, and the headline as `ref`. If there's a match, add one short sentence near the end that links its tracked `link` with its `cta`. Follow its allowed and banned claims, and never promise money. If nothing matches, add nothing.
+6. **Pick an image.** Call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea. Choose one that is recognizable at thumbnail size.
+7. **Schedule it.** Call `schedule_article` with:
    - the `headline_id`, title, HTML and sources
    - a one-sentence `excerpt`
    - the chosen `image_url`, `image_credit` and `image_alt`
 
-   Yeez re-checks the article, places it in the site's next publish slot, adds the image credit and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.
+   Yeez re-checks the article, places it in the site's next publish slot, adds the image credit, the newsletter signup line (if set up) and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.
 
 ## Report
 
