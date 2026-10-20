@@ -34,11 +34,13 @@ For each connected site, call `get_headlines` and write one article per picked h
    - **pass:** continue.
 
    If the headline overstates its own sources, make the smallest sourced correction to the title instead of holding a true story.
-5. **Place an offer, only if one fits.** Call `match_offers` with the article text, `place: "article"`, and the headline as `ref`. If there's a match, add one short sentence near the end that links its tracked `link` with its `cta`. Follow its allowed and banned claims, and never promise money. If nothing matches, add nothing.
-6. **Pick an image.** Call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea. Choose one that is recognizable at thumbnail size.
-7. **Schedule it.** Call `schedule_article` with:
+5. **Link the site's own articles.** Call `get_related_posts` with the story's main subject. Link 2–4 that genuinely fit, with natural anchor text ("the 2027 premium change"), never in the first two paragraphs. Skip it when nothing fits. These don't count as sources.
+6. **Place an offer, only if one fits.** Call `match_offers` with the article text, `place: "article"`, and the headline as `ref`. If there's a match, add one short sentence near the end that links its tracked `link` with its `cta`. Follow its allowed and banned claims, and never promise money. If nothing matches, add nothing.
+7. **Pick an image.** Call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea. It must be at least 1200px wide (Google Discover); pick one that is recognizable at thumbnail size, and never a logo or a picture full of text. Write `image_alt` as a plain description of what the photo shows.
+8. **Write the search fields** (see [seo.md](seo.md)): `seo_title`, `meta_description`, `slug`, `focus_keyword`, and up to 3 `tags` from the site's own tag list.
+9. **Schedule it.** Call `schedule_article` with:
    - the `headline_id`, title, HTML and sources
-   - a one-sentence `excerpt`
+   - the search fields from step 8
    - the chosen `image_url`, `image_credit` and `image_alt`
 
    Yeez re-checks the article, places it in the site's next publish slot, adds the image credit, the newsletter signup line (if set up) and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.

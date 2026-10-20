@@ -33,6 +33,7 @@ Call `get_weekly_review_data`. For each site, sort articles by views (then offer
 - **Social:** the posts with the most reactions, comments and shares per account, and what they had in common.
 - **DMs:** which keywords got comments and messages sent.
 - **Money:** earnings this period vs the previous one, and offer clicks by channel.
+- **Search:** from `search` (Search Console, per site): clicks and impressions by Web, Discover and Google News vs last week; the pages that grew; refresh candidates (ranking 8–20 with many impressions: expand or update those pages); high-impression, low-click results (rewrite their search title and description). Run `check_indexing` once per site; if fewer than about half of last week's articles are indexed, say so and recommend fewer, deeper articles.
 
 Base every claim on a number from the data. With fewer than five articles that have views, say it's too early to change rules and skip step 3.
 

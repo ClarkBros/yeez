@@ -78,6 +78,15 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
    Save the link to every account with `save_social_settings` (`footage_folder`). Check it with `python3 <the social skill's folder>/scripts/yeez_footage.py --folder "<link>" --list`, and read back the moods and track count. No folder yet: reels are skipped until they add one, and the rest runs as normal.
 7. If they want comment-to-DM, follow the **dm** skill.
 
+## 6b. Search setup (for each site)
+
+1. **Install the Yeez WordPress plugin.** It lets Yeez set each article's search title and description in their SEO plugin, marks articles as news articles for Google, keeps a Google News sitemap and tells Bing about new posts. Give them the download link `https://yeez.ai/downloads/yeez-wp.zip` and the steps: WordPress → Plugins → Add New → Upload Plugin → choose the file → Install Now → Activate.
+2. Call `site_seo_status` and go through its `fixes` one at a time:
+   - **Trust pages** Google News looks for (about, contact, editorial policy, corrections): write each from what the buyer tells you (who runs the site, how to reach them, how articles are sourced, checked and published with AI assistance and their review, how corrections are handled) and publish with `publish_site_page`. Never invent people, credentials or addresses.
+   - **Author bios**: each real writer adds 2–3 sentences in WordPress → Users → Profile → Biographical Info. Never invent writers.
+   - **Search Console**: they open their site in search.google.com/search-console (add it as a Domain property if it isn't there), then Settings → Users and permissions → Add user → the email `site_seo_status` gives → Restricted. Check with `search_console_status`.
+3. **Search lane:** tell them Yeez writes up to 5 articles a week built for Google, and they approve each before it goes live (dashboard, WordPress or chat). Save a different weekly number with `save_site_settings` (`search_per_week`) if they want one; 0 turns it off.
+
 ## 7. Newsletter and offers
 
 - **Newsletter:** if the `channels` section names a newsletter, call `save_newsletter_settings` with:
