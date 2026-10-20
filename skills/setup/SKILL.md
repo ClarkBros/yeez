@@ -54,6 +54,7 @@ For every site from the `sites` section:
 
 For every connected site, call `save_site_settings` with what they told you in the `sites` section:
 - `per_day`: articles a day
+- `galleries_per_day`: how many of those are galleries (numbered sourced slideshows, e.g. "12 Cars That …"); ask if they want any, 0 is fine
 - `timezone`: from the `business` section
 - `start`: first publish time, HH:MM
 - `default_category` and `authors`

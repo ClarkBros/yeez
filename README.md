@@ -27,7 +27,7 @@ codex mcp login yeez
 | `/yeez:setup` | The setup interview, connecting WordPress, and turning on the daily run | Available |
 | `/yeez:run` | Today's headlines and articles for every site, end to end | Available |
 | `/yeez:headlines` | Finds today's stories and ranks the headlines | Available |
-| `/yeez:articles` | Writes, checks and schedules today's articles | Available |
+| `/yeez:articles` | Writes, checks and schedules today's articles and galleries (sourced slideshows) | Available |
 | `/yeez:scheduled` | What's queued to publish, with edit links | Available |
 | `/yeez:help` | What Yeez can do and where your setup stands | Available |
 | `/yeez:social` | Writes, renders and posts news image cards, text image cards, gradient posts and stories for Facebook and Instagram, learning from each account's winners | Available |

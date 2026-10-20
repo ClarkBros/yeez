@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "yeez",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Yeez by Clark Bros Media. The system behind a 40M-view-a-month publishing network, as a plugin. Requires a Yeez license from yeez.ai.",
   "author": { "name": "Clark Bros Media", "url": "https://clarkbrosmedia.com/yeez/" },
   "homepage": "https://clarkbrosmedia.com/yeez/",
