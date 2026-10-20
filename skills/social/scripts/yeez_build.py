@@ -6,15 +6,14 @@ Ported from the Clark Bros Media network's own Build step (fb_build.py + textima
 the same news-image card, text-image card, story and photo search, with every network-specific
 path, library and badge taken out.
 
-    python3 yeez_build.py --date 2026-10-21 [--page CODE] [--work yeez-work] [--upload URL] [--rebuild]
+    python3 yeez_build.py --date 2026-10-21 [--page CODE] [--work yeez-work] [--rebuild]
 
 Inputs (the social skill writes them):
   yeez-work/brands.json                      [{code, name, c1, c2, c3, icon, logo_url}] one per Page / account
   yeez-work/queue/<date>/<CODE>.json         {page, timezone, audience, items:[...]}  (QUEUE-SPEC shape)
 Outputs:
   yeez-work/queue/<date>/media/<id>.png|jpg  and each item gets status "built", media, photo credit.
-  With --upload URL (from the get_media_upload_url tool) every built image is uploaded and the item
-  gets "media_url" — pass that to schedule_social_post as image_url.
+  Then yeez_post.py posts them straight to Facebook and Instagram with the buyer's own keys file.
 
 Types
   news_image  1080x1350 post card: logo + Page name + handle, the headline in heavy black type, the
@@ -27,8 +26,8 @@ Types
   link        article link card: nothing to render.
   reel, image_reel  arrive in the next update; left untouched.
 
-Pillow only. Fonts are bundled in ./fonts (Inter + Merriweather, SIL OFL). RENDER (and upload) ONLY:
-never posts anything. Posting is schedule_social_post on yeez.ai.
+Pillow only. Fonts are bundled in ./fonts (Inter + Merriweather, SIL OFL). RENDER ONLY:
+never posts anything. Posting is yeez_post.py.
 """
 
 import argparse
@@ -1264,6 +1263,237 @@ def render_story(item, brand, mode, photo, out):
 
 
 
+# ------------------------------------------------------------------ reels (ffmpeg) — the network's reel engine, buyer's own footage
+
+import shutil
+import subprocess
+import tempfile
+
+REEL_FPS = 30
+FOOTAGE_FOLDER = [None]      # the buyer's shared Google Drive folder (page file "footage_folder")
+
+
+def _ffmpeg():
+    exe = shutil.which("ffmpeg")
+    if not exe:
+        raise RuntimeError("ffmpeg isn't installed in this AI app (install it: apt-get install -y ffmpeg, or pip install imageio-ffmpeg)")
+    return exe
+
+
+def _run_ff(args):
+    r = subprocess.run([_ffmpeg(), "-y", "-loglevel", "error"] + args, capture_output=True, text=True)
+    if r.returncode != 0:
+        raise RuntimeError("ffmpeg failed: " + (r.stderr or "")[-400:])
+
+
+def _compose_vertical(card_png, out_png):
+    """1080x1920 frame: blurred, darkened cover of the card + the card centred."""
+    card = Image.open(card_png).convert("RGB")
+    bg = ImageOps.fit(card, (W_STORY, H_STORY), centering=(0.5, 0.5)).filter(ImageFilter.GaussianBlur(40))
+    bg = Image.blend(bg, Image.new("RGB", bg.size, (0, 0, 0)), 0.35)
+    cw = W_STORY
+    ch = int(card.height * cw / card.width)
+    if ch > H_STORY - 160:
+        ch = H_STORY - 160
+        cw = int(card.width * ch / card.height)
+    card = card.resize((cw, ch), Image.LANCZOS)
+    bg.paste(card, ((W_STORY - cw) // 2, (H_STORY - ch) // 2))
+    bg.save(out_png)
+
+
+def _static_with_music(png, out_mp4, seconds, track):
+    """Image->Reel: the exact image held STATIC (no motion) as a vertical video over calm music."""
+    audio = ["-i", track] if track else ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
+    af = ["-af", f"afade=t=in:d=0.6,afade=t=out:st={max(0, seconds - 1.2)}:d=1.2,volume=0.8"] if track else []
+    _run_ff(["-loop", "1", "-i", png] + audio +
+            ["-vf", f"scale={W_STORY}:{H_STORY},fps={REEL_FPS},format=yuv420p"] + af +
+            ["-t", str(seconds), "-shortest", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+             "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", out_mp4])
+
+
+_RR = None
+
+
+def reel_render_module():
+    global _RR
+    if _RR is None:
+        sys.path.insert(0, HERE)
+        os.environ.setdefault("REEL_X264_PRESET", "faster")
+        import reel_render as rr   # noqa: E402
+        _RR = rr
+    return _RR
+
+
+def footage_dir():
+    return os.path.join(WORK, "footage")
+
+
+def _need_folder():
+    if not FOOTAGE_FOLDER[0]:
+        raise RuntimeError("no footage folder: reels use the buyer's own clips and music from a shared Google Drive "
+                           "folder (save it with save_social_settings footage_folder)")
+    sys.path.insert(0, HERE)
+    import yeez_footage as yf   # noqa: E402
+    return yf
+
+
+def music_tracks():
+    yf = _need_folder()
+    tracks = yf.ensure_music(FOOTAGE_FOLDER[0], WORK)
+    if not tracks:
+        raise RuntimeError("the footage folder has no 'music' folder with tracks; reels need the buyer's own music")
+    return tracks
+
+
+def _music_track(key):
+    import hashlib
+    tracks = sorted(music_tracks())
+    return tracks[int(hashlib.md5(key.encode()).hexdigest(), 16) % len(tracks)]
+
+
+def build_image_reel(item, page_code, brand, media_dir, date_dir):
+    """The exact image of one of today's built cards (source_item), held static over the buyer's music for 10s."""
+    iid = item["id"]
+    tmp = tempfile.mkdtemp(prefix="reel-")
+    extra = {}
+    try:
+        src = None
+        if item.get("source_item"):
+            cand = os.path.join(media_dir, f"{item['source_item']}.png")
+            src = cand if os.path.exists(cand) else None
+            if not src:
+                raise RuntimeError(f"source_item {item['source_item']} has no built image yet (build it first)")
+        if not src:
+            brief = item.get("image_brief") or {}
+            q = brief_query(brief)
+            photo, notes = (find_photo(q, iid, W_NEWS / 600) if q else (None, []))
+            src = os.path.join(tmp, "card.png")
+            size, fits = render_news_t(item, page_code, brand, photo, src)
+            if not fits:
+                raise RuntimeError("image_reel overlay too long to fit")
+            if photo:
+                ledger_add(photo, iid, page_code, q)
+                extra["photo_credit"] = credit_of(photo)
+        frame = os.path.join(tmp, "frame.png")
+        _compose_vertical(src, frame)
+        out = os.path.join(media_dir, f"{iid}.mp4")
+        track = _music_track(iid)
+        _static_with_music(frame, out, 10, track)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return f"media/{iid}.mp4", f"image_reel rendered 1080x1920 10s static from {item.get('source_item') or 'a new card'} + music {os.path.basename(track)}", extra
+
+
+def build_text_reel(item, page_code, brand, media_dir, idx):
+    """Format R ("read it on screen"): every line on screen from the first frame, white type on dark
+    boxes, over ONE of the buyer's footage folders (picked by reel_mood) with their own music, 12s."""
+    iid = item["id"]
+    fmt = (item.get("reel_format") or "R").upper()[:1]
+    if fmt == "P":
+        return build_person_reel(item, page_code, brand, media_dir)
+    rr = reel_render_module()
+    import reel_parse as rp
+    raw = (item.get("text") or "").strip()
+    lines = [re.sub(r"^\s*(?:[-*]|\d+[.)])\s*", "", l.strip()) for l in raw.split("\n") if l.strip()]
+    if not lines:
+        raise RuntimeError("reel has no on-screen text")
+    cards, styles = rp.split_style_tags(lines)
+    styles = ["black"] * len(cards)
+    duration = float(item.get("duration_s") or 12.0)
+    yf = _need_folder()
+    mood, clips = yf.ensure_clips(FOOTAGE_FOLDER[0], WORK, item.get("reel_mood"), k=4)
+    if not clips:
+        raise RuntimeError(f"no clips in the '{mood}' footage folder")
+    music_tracks()
+    assets = footage_dir()
+    wdate = now_local().strftime("%Y-%m-%d")
+    picker = rr.BrollPicker(clips, seed=abs(hash(iid)) % 10000, target_seconds=duration, assets_dir=assets, working_date=wdate)
+    reel = {"page_code": page_code, "working_date": wdate, "reel_number": idx + 1, "slug": iid, "format": "R",
+            "tier1": False, "primary_model_id": "", "model_ids": [""], "caption": item.get("caption") or "",
+            "onscreen_mode": "sequence" if len(cards) > 1 else "single", "onscreen_cards": cards,
+            "onscreen_styles": styles, "assets": {}, "layout": "full"}
+    tmp = tempfile.mkdtemp(prefix="reel-")
+    try:
+        qa = rr.render_reel(reel, 0, tmp, assets, duration, picker)
+        picker.save_ledger()
+        if qa["status"] != "rendered" or not qa.get("output"):
+            raise RuntimeError("reel render failed: " + "; ".join(qa.get("flags") or []))
+        bad = [f for f in qa["flags"] if "DO NOT POST" in f or "NO B-ROLL" in f or "without an audio" in f]
+        if bad:
+            raise RuntimeError("; ".join(bad))
+        out = os.path.join(media_dir, f"{iid}.mp4")
+        shutil.move(qa["output"], out)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    note = f"reel rendered Format R {qa.get('duration_s')}s over '{mood}' footage [{qa.get('broll')}] + music {qa.get('music')} ({len(cards)} lines)"
+    if qa["flags"]:
+        note += " | flags: " + "; ".join(qa["flags"])
+    return f"media/{iid}.mp4", note, {}
+
+
+def build_person_reel(item, page_code, brand, media_dir):
+    """Format P ("named person"): the post card on top (logo, name, handle, the story in heavy black
+    type) and the person's photo below with a slow push-in, 9 seconds, the buyer's music. No badge."""
+    iid = item["id"]
+    ti = textimage_module()
+    brief = item.get("image_brief") or {}
+    q = brief_query(brief)
+    photo, notes = find_photo(q, iid, 1080 / 1060) if q else (None, ["no image_brief"])
+    if photo is None:
+        raise RuntimeError("person reel needs a photo: " + "; ".join(notes[-3:]))
+    ledger_add(photo, iid, page_code, q)
+    text = re.sub(r"^\s*(?:[-*]|\d+[.)])\s*", "", (item.get("text") or item.get("overlay") or "").strip(), flags=re.M)
+    W, H, PH = 1080, 1920, 1060
+    top_h = H - PH
+    panel = Image.new("RGBA", (W, top_h), (255, 255, 255, 255))
+    d = ImageDraw.Draw(panel)
+    name = (brand or {}).get("name") or page_code
+    logo = logo_path(page_code, brand)
+    y0 = 240
+    if logo and os.path.exists(logo):
+        panel.alpha_composite(ti.circle_logo(logo, ti.LOGO_D), (ti.LOGO_X + 8, y0))
+    else:
+        d.ellipse([ti.LOGO_X + 8, y0, ti.LOGO_X + 8 + ti.LOGO_D, y0 + ti.LOGO_D], fill=(220, 224, 228))
+    nf, hf = font(F_HEAD, 44), font(F_MED, 36)
+    tx = ti.LOGO_X + 8 + ti.LOGO_D + 22
+    d.text((tx, y0 + 4), name, font=nf, fill=(15, 20, 25))
+    d.text((tx, y0 + 56), ti.handle_for(name), font=hf, fill=(110, 118, 125))
+    body_top = y0 + ti.LOGO_D + 34
+    size, lines, lh, total, fits = fit_text(text, F_HEAD, W - 96, top_h - body_top - 40, 64, 38, line_ratio=1.17)
+    draw_lines(panel, lines, F_HEAD, size, 48, body_top + max(0, (top_h - body_top - 40 - total) // 2), lh, (15, 20, 25))
+    music = _music_track(iid)
+    tmp = tempfile.mkdtemp(prefix="preel-")
+    try:
+        ppng = os.path.join(tmp, "panel.png"); panel.convert("RGB").save(ppng)
+        ph = cover(photo["image"], int(W * 1.15), int(PH * 1.15), (0.5, 0.3))
+        cr = photo_credit(photo)
+        if cr:
+            dd = ImageDraw.Draw(ph); cf = font(F_MED, 22)
+            dd.rectangle([0, ph.height - 46, int(dd.textlength(cr, font=cf) + 40), ph.height], fill=(0, 0, 0))
+            dd.text((20, ph.height - 38), cr, font=cf, fill=(235, 235, 235))
+        pjpg = os.path.join(tmp, "photo.jpg"); ph.convert("RGB").save(pjpg, quality=92)
+        dur = float(item.get("duration_s") or 9.0)
+        fps = 30
+        out = os.path.join(media_dir, f"{iid}.mp4")
+        frames = int(dur * fps)
+        fc = (f"color=c=white:s={W}x{H}:d={dur}:r={fps}[bg];"
+              f"[1:v]zoompan=z='min(zoom+0.0009,1.13)':x='iw/2-(iw/zoom/2)':y='ih/3-(ih/zoom/3)':"
+              f"d={frames}:s={W}x{PH}:fps={fps}[ph];"
+              f"[bg][ph]overlay=0:{top_h}[v1];[v1][2:v]overlay=0:0,format=yuv420p[vout]")
+        cmd = [_ffmpeg(), "-y", "-loglevel", "error", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+               "-loop", "1", "-i", pjpg, "-loop", "1", "-i", ppng, "-stream_loop", "-1", "-i", music,
+               "-filter_complex", fc, "-map", "[vout]", "-map", "3:a:0",
+               "-af", f"afade=t=out:st={max(0, dur - 1.5):.2f}:d=1.5,volume=0.65",
+               "-c:v", "libx264", "-preset", os.environ.get("REEL_X264_PRESET", "faster"), "-crf", "20",
+               "-pix_fmt", "yuv420p", "-r", str(fps), "-c:a", "aac", "-b:a", "128k",
+               "-movflags", "+faststart", "-t", f"{dur:.2f}", out]
+        subprocess.run(cmd, check=True)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    return (f"media/{iid}.mp4", f"reel rendered Format P (person card + push-in) {dur:.0f}s; photo [{photo.get('source')}]; music {os.path.basename(music)}",
+            {"photo_credit": credit_of(photo)})
+
+
 # ------------------------------------------------------------------ Yeez: logos, text image, queue
 
 def logo_path(page_code, brand):
@@ -1328,8 +1558,13 @@ def build_item(item, idx_story, page_code, brand, media_dir):
     if t in ("gradient", "link"):
         return "built", None, f"{t}: nothing to render", {}
 
-    if t in ("reel", "image_reel"):
-        return None, None, "reels arrive in the next Yeez update; left for later", {}
+    if t == "image_reel":
+        rel_, note, extra = build_image_reel(item, page_code, brand, media_dir, os.path.dirname(media_dir))
+        return "built", rel_, note, extra
+
+    if t == "reel":
+        rel_, note, extra = build_text_reel(item, page_code, brand, media_dir, idx_story)
+        return "built", rel_, note, extra
 
     if t == "text_image":
         h, size, flags = render_text_image(item, page_code, brand, out)
@@ -1413,31 +1648,7 @@ def build_item(item, idx_story, page_code, brand, media_dir):
     raise ValueError(f"unknown item type '{t}'")
 
 
-def upload(path, url):
-    """JPEG (quality 92) keeps every card well under yeez.ai's 4MB limit; Facebook recompresses anyway."""
-    im = Image.open(path).convert("RGB")
-    buf = io.BytesIO()
-    im.save(buf, "JPEG", quality=92, optimize=True)
-    req = urllib.request.Request(url, data=buf.getvalue(), method="POST",
-                                 headers={"Content-Type": "image/jpeg", "User-Agent": UA})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            j = json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        try:
-            j = json.loads(e.read().decode("utf-8"))
-        except Exception:
-            j = {"error": f"HTTP {e.code}"}
-        raise RuntimeError(f"upload failed: {j.get('error')}")
-    except urllib.error.URLError as e:
-        raise RuntimeError(f"upload blocked: {e.reason}. Your AI app needs internet access turned on for yeez.ai "
-                           "(Claude: Settings > Capabilities > allow network access; see the setup video).")
-    if not j.get("ok"):
-        raise RuntimeError(f"upload failed: {j.get('error')}")
-    return j["url"]
-
-
-def process_page_file(path, rebuild=False, only_types=None, upload_url=None):
+def process_page_file(path, rebuild=False, only_types=None):
     data = json.load(open(path, encoding="utf-8"))
     page_code = (data.get("page") or os.path.splitext(os.path.basename(path))[0]).upper()
     brands = load_brands() if os.path.exists(BRANDS_JSON) else {}
@@ -1446,9 +1657,12 @@ def process_page_file(path, rebuild=False, only_types=None, upload_url=None):
     media_dir = os.path.join(date_dir, "media")
     os.makedirs(media_dir, exist_ok=True)
     todo_status = {"written"} | ({"built", "failed"} if rebuild else set())
-    counts = {"built": 0, "failed": 0, "skipped": 0, "left": 0, "uploaded": 0}
+    counts = {"built": 0, "failed": 0, "skipped": 0, "left": 0}
     story_idx = 0
-    for item in data.get("items", []):
+    FOOTAGE_FOLDER[0] = data.get("footage_folder")
+    items = data.get("items", [])
+    order = [i for i in items if (i.get("type") or "").lower() != "image_reel"] + [i for i in items if (i.get("type") or "").lower() == "image_reel"]
+    for item in order:
         t = (item.get("type") or "").lower()
         this_story_idx = story_idx
         if t == "story":
@@ -1456,13 +1670,12 @@ def process_page_file(path, rebuild=False, only_types=None, upload_url=None):
         if only_types and t not in only_types:
             counts["skipped"] += 1
             continue
-        needs_upload = upload_url and item.get("status") == "built" and item.get("media") and not item.get("media_url")
-        if item.get("status") not in todo_status and not needs_upload:
+        if item.get("status") not in todo_status:
             counts["skipped"] += 1
             continue
         item.setdefault("log", [])
         try:
-            if not needs_upload:
+            if True:
                 if brand is None and t in ("news_image", "story", "text_image"):
                     raise ValueError(f"page code {page_code} is not in yeez-work/brands.json")
                 status, media, note, extra = build_item(item, this_story_idx, page_code, brand, media_dir)
@@ -1475,11 +1688,6 @@ def process_page_file(path, rebuild=False, only_types=None, upload_url=None):
                 item["log"].append(log_line(note))
                 counts["built"] += 1
                 print(f"  ok  {item['id']:16} {t:11} {note}")
-            if upload_url and item.get("media"):
-                item["media_url"] = upload(os.path.join(date_dir, item["media"]), upload_url)
-                item["log"].append(log_line(f"uploaded {item['media_url']}"))
-                counts["uploaded"] += 1
-                print(f"  up  {item['id']:16} {t:11} {item['media_url']}")
         except Exception as e:
             item["status"] = "failed"
             item["error"] = f"{type(e).__name__}: {e}"
@@ -1494,13 +1702,14 @@ def process_page_file(path, rebuild=False, only_types=None, upload_url=None):
 def main():
     global TZ, TODAY
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--date", required=True)
+    ap.add_argument("--date", default=None)
     ap.add_argument("--page", default=None, help="one page code from brands.json")
     ap.add_argument("--work", default=None, help="work folder (default ./yeez-work or $YEEZ_WORK)")
     ap.add_argument("--rebuild", action="store_true", help="also re-render built/failed items")
     ap.add_argument("--type", default=None, help="only these item types, comma-separated")
-    ap.add_argument("--upload", default=None, help="upload URL from the get_media_upload_url tool")
     args = ap.parse_args()
+    if not args.date:
+        ap.error("--date is required")
     if args.work:
         set_work(args.work)
     date_dir = os.path.join(QUEUE_ROOT, args.date)
@@ -1511,7 +1720,7 @@ def main():
         files = [f for f in files if os.path.splitext(f)[0].upper() == args.page.upper()]
     if not files:
         raise SystemExit("no page files to build")
-    total = {"built": 0, "failed": 0, "skipped": 0, "left": 0, "uploaded": 0}
+    total = {"built": 0, "failed": 0, "skipped": 0, "left": 0}
     for f in files:
         meta = json.load(open(os.path.join(date_dir, f), encoding="utf-8"))
         if meta.get("timezone"):
@@ -1523,10 +1732,10 @@ def main():
         set_audience(meta.get("audience"))
         print(f"{f}:")
         code, c = process_page_file(os.path.join(date_dir, f), args.rebuild,
-                                    {t.strip().lower() for t in args.type.split(",")} if args.type else None, args.upload)
+                                    {t.strip().lower() for t in args.type.split(",")} if args.type else None)
         for k in total:
             total[k] += c[k]
-    print(f"\nbuilt {total['built']} · uploaded {total['uploaded']} · failed {total['failed']} · left for later {total['left']} · untouched {total['skipped']}")
+    print(f"\nbuilt {total['built']} · failed {total['failed']} · left for later {total['left']} · untouched {total['skipped']}")
     sys.exit(1 if total["failed"] else 0)
 
 

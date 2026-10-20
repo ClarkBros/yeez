@@ -60,3 +60,15 @@ Never end on a sourced fact, a date, an instruction or "Learn more". The ending 
 - About half of a Page's feed posts carry one, and only when one of the buyer's offers (`list_offers`) or a comment-to-DM keyword (`list_dm_flows`) fits the post's own topic. Never force one.
 - **Keyword:** only a keyword that exists in `list_dm_flows`, typed exactly.
 - **Link:** put it in `first_comment`, never in the caption: one short sentence, then the tracked link from `make_tracked_link` (channel `social`, ref = the item id). Nothing after the link.
+
+## reel — on-screen text over the buyer's own footage (Facebook and Instagram)
+Set `reel_format` on every reel.
+- **R, "read it on screen" (about 70% of reels).** `text` is the whole message, one line per row: 6–10 lines, 35–80 words in all, each line 3–8 words (about 30 characters at most). Sentence case, plain words, no hashtags or emoji. The renderer shows every line at once, white type on dark boxes, over the footage for 12 seconds (`duration_s` 10–15 if needed). Two voices that work:
+  - **First person**, someone like the reader talking: "I paid into Social Security for 44 years. / Every paycheck. No choice. / … / Has this happened to you?"
+  - **A number list:** "What a drug plan can take before it pays: / 2026: $615 / 2027: $700 / Is that fair?"
+  The LAST line is the ending (a question or a verdict). Set `reel_mood` to one of the buyer's footage folder names (from the footage list). Never use a luxury-looking folder on a cut, a scam, a bill or any hardship story.
+- **P, "named person" (about 30%, when a person acted).** `text` is 20–45 words in one paragraph, the same rules as a news image card, ending on the side-taking question. `image_brief.subject` is `"person: <Full Name> official portrait"`. The card sits on top and the person's photo below with a slow push-in, 9 seconds.
+- **Caption:** one or two plain sentences with the source or date, then the question again. A call to action only when an offer fits.
+
+## image_reel — a card held still over music
+`source_item` is the id of one of today's built news image or text image cards, usually the strongest one. The card is held still (no motion, no new text) over the buyer's music for 10 seconds. Caption like a news image's.

@@ -14,7 +14,7 @@ description: Explains what Yeez does, which commands are available, and where th
      - `/yeez:headlines`: find and rank today's stories
      - `/yeez:articles`: write, check and schedule
      - `/yeez:scheduled`: review what's queued
-     - `/yeez:social`: Facebook and Instagram news image cards, text image cards, gradient posts and stories
+     - `/yeez:social`: Facebook and Instagram news image cards, text image cards, gradient posts, stories and reels
      - `/yeez:dm`: comment-to-DM keywords
      - `/yeez:newsletter`: the next issue
      - `/yeez:offers`: offers, tracked links and the earnings report

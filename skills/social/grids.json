@@ -1,9 +1,193 @@
 {
-  "_about": "Posting grids per Page, from the Clark Bros Media network's own tested schedule: at most one feed post an hour, 06:00–21:00, stories on the half hours. Times are the Page's local time. Each item is [time, type]. Reels and image reels arrive in an update; until then those slots are skipped.",
-  "full": [["06:00","gradient"],["09:30","story"],["10:00","gradient"],["11:00","text_image"],["12:00","news_image"],["14:30","story"],["15:00","news_image"],["16:00","text_image"],["17:00","news_image"],["18:00","news_image"],["19:00","gradient"],["19:30","story"],["20:00","news_image"],["21:00","text_image"]],
-  "core": [["06:00","gradient"],["09:30","story"],["10:00","gradient"],["12:00","news_image"],["16:00","text_image"],["17:30","story"],["18:00","news_image"],["19:00","gradient"],["20:00","news_image"],["21:00","text_image"]],
-  "starter": [["08:00","gradient"],["12:00","news_image"],["18:00","news_image"],["20:00","text_image"]],
-  "instagram": [["09:30","story"],["12:00","news_image"],["18:00","news_image"],["20:00","text_image"]],
-  "best_slots": {"news_image": ["20:00","21:00","18:00"], "text_image": ["21:00","20:00","16:00"], "gradient": ["10:00","06:00","08:00"]},
-  "offset_rule": "Give each Page its own offset of 0–25 minutes (Page 1 +0, Page 2 +5, …) so a network's Pages don't all post at the same minute."
+ "_about": "Posting grids per Page, from the Clark Bros Media network's own tested schedule: at most one feed post an hour, 06:00\u201321:00, stories on the half hours. Times are the Page's local time. Each item is [time, type]. Reel and image_reel slots need the account's footage_folder; without one, write those slots as news_image instead.",
+ "full": [
+  [
+   "06:00",
+   "gradient"
+  ],
+  [
+   "07:00",
+   "image_reel"
+  ],
+  [
+   "08:00",
+   "gradient"
+  ],
+  [
+   "09:00",
+   "image_reel"
+  ],
+  [
+   "09:30",
+   "story"
+  ],
+  [
+   "10:00",
+   "gradient"
+  ],
+  [
+   "11:00",
+   "text_image"
+  ],
+  [
+   "12:00",
+   "news_image"
+  ],
+  [
+   "13:00",
+   "image_reel"
+  ],
+  [
+   "14:00",
+   "reel"
+  ],
+  [
+   "14:30",
+   "story"
+  ],
+  [
+   "15:00",
+   "news_image"
+  ],
+  [
+   "16:00",
+   "text_image"
+  ],
+  [
+   "17:00",
+   "news_image"
+  ],
+  [
+   "18:00",
+   "news_image"
+  ],
+  [
+   "19:00",
+   "gradient"
+  ],
+  [
+   "19:30",
+   "story"
+  ],
+  [
+   "20:00",
+   "news_image"
+  ],
+  [
+   "21:00",
+   "text_image"
+  ]
+ ],
+ "core": [
+  [
+   "06:00",
+   "gradient"
+  ],
+  [
+   "08:00",
+   "image_reel"
+  ],
+  [
+   "09:30",
+   "story"
+  ],
+  [
+   "10:00",
+   "gradient"
+  ],
+  [
+   "12:00",
+   "news_image"
+  ],
+  [
+   "14:00",
+   "reel"
+  ],
+  [
+   "16:00",
+   "text_image"
+  ],
+  [
+   "17:30",
+   "story"
+  ],
+  [
+   "18:00",
+   "news_image"
+  ],
+  [
+   "19:00",
+   "gradient"
+  ],
+  [
+   "20:00",
+   "news_image"
+  ],
+  [
+   "21:00",
+   "text_image"
+  ]
+ ],
+ "starter": [
+  [
+   "08:00",
+   "gradient"
+  ],
+  [
+   "12:00",
+   "news_image"
+  ],
+  [
+   "18:00",
+   "reel"
+  ],
+  [
+   "20:00",
+   "text_image"
+  ]
+ ],
+ "instagram": [
+  [
+   "09:30",
+   "story"
+  ],
+  [
+   "12:00",
+   "news_image"
+  ],
+  [
+   "14:00",
+   "reel"
+  ],
+  [
+   "18:00",
+   "news_image"
+  ],
+  [
+   "20:00",
+   "text_image"
+  ]
+ ],
+ "best_slots": {
+  "news_image": [
+   "20:00",
+   "21:00",
+   "18:00"
+  ],
+  "text_image": [
+   "21:00",
+   "20:00",
+   "16:00"
+  ],
+  "gradient": [
+   "10:00",
+   "06:00",
+   "08:00"
+  ],
+  "reel": [
+   "14:00",
+   "18:00"
+  ]
+ },
+ "offset_rule": "Give each Page its own offset of 0\u201325 minutes (Page 1 +0, Page 2 +5, \u2026) so a network's Pages don't all post at the same minute."
 }

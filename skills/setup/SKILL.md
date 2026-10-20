@@ -69,9 +69,14 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
 1. Call `connect_meta` and give them the link. The page walks them through creating their own Meta app (about 15 minutes, no Facebook review), then connecting their Pages and Instagram.
 2. When they're done, call `list_social_accounts` to confirm.
 3. Ask how many posts a day each account should get, and call `save_social_settings` for each. Pages posting 8 or more a day get the full mix (news image cards, text image cards, gradient posts and stories); fewer get the starter mix.
-4. **Check that their AI app can reach yeez.ai.** The image cards are made by a small script inside their AI app and then uploaded, which needs network access. Run `python3 -c "import urllib.request; print(urllib.request.urlopen('https://yeez.ai/').status)"`. If it prints 200, say so in one line. If it fails, tell them: "Turn on network access for your AI app (Claude: Settings → Capabilities → allow network access, or add yeez.ai to the allowed domains). The setup video shows where." Re-check when they say it's done.
+4. **Save their keys file and check their AI app can post.** Their AI app posts straight to Facebook and Instagram with their own keys, kept in their Yeez folder. Call `get_social_keys_link` and run `python3 <the social skill's folder>/scripts/yeez_post.py --fetch-keys "<link>" --work yeez-work`; it saves `yeez-work/yeez-keys.json` and lists the accounts in it (never print the file itself). If it can't reach the internet, tell them: "Turn on network access for your AI app (Claude: Settings → Capabilities → allow network access). The setup video shows where." Then try again with a new link. They can also download the file from the Facebook connect page and drop it into the folder. Tell them once: this file can post to their Pages, so keep it private, and they can cut it off any time by removing their Meta app in Facebook's Business settings.
 5. For any Page that isn't verified, recommend Meta Verified once: verified Pages get trusted and shown more. Yeez's cards never draw a fake badge.
-6. If they want comment-to-DM, follow the **dm** skill.
+6. **Reels.** Reels run over the buyer's own footage and music. Ask them to make one Google Drive folder, shared as "Anyone with the link can view", with:
+   - one subfolder per mood (calm, drive, home, nature, or names of their own), holding their own vertical or horizontal clips, a few seconds to a minute each
+   - a folder named `music` with their own tracks (music they have the rights to use)
+
+   Save the link to every account with `save_social_settings` (`footage_folder`). Check it with `python3 <the social skill's folder>/scripts/yeez_footage.py --folder "<link>" --list`, and read back the moods and track count. No folder yet: reels are skipped until they add one, and the rest runs as normal.
+7. If they want comment-to-DM, follow the **dm** skill.
 
 ## 7. Newsletter and offers
 
@@ -103,6 +108,6 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
-- Every day the run makes news image cards, text image cards, gradient posts and stories for each Page. Facebook posts are scheduled; Instagram posts and stories go out during the run; comment-to-DM starts in test mode until they turn it on.
+- Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled; Instagram posts and stories go out during the run; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
 - Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.

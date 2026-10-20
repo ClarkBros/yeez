@@ -30,7 +30,7 @@ codex mcp login yeez
 | `/yeez:articles` | Writes, checks and schedules today's articles and galleries (sourced slideshows) | Available |
 | `/yeez:scheduled` | What's queued to publish, with edit links | Available |
 | `/yeez:help` | What Yeez can do and where your setup stands | Available |
-| `/yeez:social` | Writes, renders and posts news image cards, text image cards, gradient posts and stories for Facebook and Instagram, learning from each account's winners | Available |
+| `/yeez:social` | Writes, renders and posts news image cards, text image cards, gradient posts, stories and reels (over your own footage and music) for Facebook and Instagram, learning from each account's winners | Available |
 | `/yeez:dm` | Comment-to-DM: a keyword comment gets a private message with your link | Available |
 | `/yeez:newsletter` | Builds the issue from the day's best story; creates the beehiiv draft or a copy-ready page | Available |
 | `/yeez:offers` | Offers, tracked links and the earnings report | Available |
