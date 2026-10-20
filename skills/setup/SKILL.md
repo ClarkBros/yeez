@@ -67,8 +67,10 @@ Read back the publish times it returns in one line, so they see the day's schedu
 If the `channels` section lists Facebook Pages or Instagram accounts:
 1. Call `connect_meta` and give them the link. The page walks them through creating their own Meta app (about 15 minutes, no Facebook review), then connecting their Pages and Instagram.
 2. When they're done, call `list_social_accounts` to confirm.
-3. Ask how many posts a day each account should get, and call `save_social_settings` for each.
-4. If they want comment-to-DM, follow the **dm** skill.
+3. Ask how many posts a day each account should get, and call `save_social_settings` for each. Pages posting 8 or more a day get the full mix (news image cards, text image cards, gradient posts and stories); fewer get the starter mix.
+4. **Check that their AI app can reach yeez.ai.** The image cards are made by a small script inside their AI app and then uploaded, which needs network access. Run `python3 -c "import urllib.request; print(urllib.request.urlopen('https://yeez.ai/').status)"`. If it prints 200, say so in one line. If it fails, tell them: "Turn on network access for your AI app (Claude: Settings → Capabilities → allow network access, or add yeez.ai to the allowed domains). The setup video shows where." Re-check when they say it's done.
+5. For any Page that isn't verified, recommend Meta Verified once: verified Pages get trusted and shown more. Yeez's cards never draw a fake badge.
+6. If they want comment-to-DM, follow the **dm** skill.
 
 ## 7. Newsletter and offers
 
@@ -100,6 +102,6 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
-- Facebook posts are scheduled and Instagram posts go out during the daily run; comment-to-DM starts in test mode until they turn it on.
+- Every day the run makes news image cards, text image cards, gradient posts and stories for each Page. Facebook posts are scheduled; Instagram posts and stories go out during the run; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
 - Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.
