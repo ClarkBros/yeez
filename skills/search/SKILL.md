@@ -28,11 +28,11 @@ Follow the **articles** skill's verification and voice rules, plus:
 - Search fields as in [../articles/seo.md](../articles/seo.md); all four are required here.
 - Featured image 1200px+ (`find_images`).
 
-Check with `check_article` (`search: true`), then call `schedule_article` with `search: true`. It's saved in WordPress as **Pending** and does not publish.
+Check with `check_article` (`search: true`), then call `schedule_article` with `search: true`. It's saved on the site as waiting (WordPress: **Pending**; other platforms: a draft) and does not publish.
 
 ## 3. Approval
 
-Tell the buyer, per site: the title, the question it answers, and the WordPress edit link. They read it, change anything they want, and approve it on their yeez.ai dashboard (one button), in WordPress (Pending → Schedule), or by telling you in chat, in which case call `approve_search_article`. Never approve on their behalf. `list_search_articles` shows what's waiting.
+Tell the buyer, per site: the title, the question it answers, and the edit link. They read it, change anything they want, and approve it on their yeez.ai dashboard (one button), by telling you in chat, or on WordPress from Posts → Pending, in which case call `approve_search_article`. Never approve on their behalf. `list_search_articles` shows what's waiting.
 
 ## 4. How search is doing (on request, and in the Monday review)
 

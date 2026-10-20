@@ -1,10 +1,24 @@
 {
   "name": "yeez",
-  "version": "0.9.0",
-  "description": "Yeez by Clark Bros Media. The system behind a 40M-view-a-month publishing network, as a plugin: ranked headlines, sourced articles, scheduled publishing, social, newsletter and a weekly review. Requires a Yeez license from yeez.ai.",
-  "author": { "name": "Clark Bros Media", "url": "https://clarkbrosmedia.com/yeez/" },
+  "version": "1.0.0",
+  "description": "Yeez by Clark Bros Media. The system behind a 40M-view-a-month publishing network, as a plugin: ranked headlines, sourced articles, scheduled publishing, social, newsletter and a weekly review. Works in Claude, Codex, ChatGPT, Cursor, Grok, Kimi, Hermes and OpenClaw, and publishes to WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer and Blogger. Requires a Yeez license from yeez.ai.",
+  "author": {
+    "name": "Clark Bros Media",
+    "url": "https://clarkbrosmedia.com/yeez/"
+  },
   "homepage": "https://clarkbrosmedia.com/yeez/",
   "repository": "https://github.com/ClarkBros/yeez",
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": ["publishing", "wordpress", "content", "newsletter", "social", "syndication"]
+  "keywords": [
+    "content",
+    "ghost",
+    "newsletter",
+    "publishing",
+    "shopify",
+    "social",
+    "syndication",
+    "webflow",
+    "wix",
+    "wordpress"
+  ]
 }

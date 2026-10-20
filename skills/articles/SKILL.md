@@ -1,6 +1,6 @@
 ---
 name: articles
-description: Writes, checks and schedules an article (or a numbered gallery) for each of today's picked headlines on the buyer's WordPress sites. Use when the user types /yeez:articles, asks Yeez to write today's articles, or as the second half of /yeez:run.
+description: Writes, checks and schedules an article (or a numbered gallery) for each of today's picked headlines on the buyer's sites. Use when the user types /yeez:articles, asks Yeez to write today's articles, or as the second half of /yeez:run.
 ---
 
 # Yeez articles
@@ -47,4 +47,4 @@ For each connected site, call `get_headlines` and write one article per picked h
 
 ## Report
 
-Per site, give one short line per article: the headline, the local publish time, and the edit link. Then list anything held, with the reason. Remind the user they can review or change anything before it publishes, with `/yeez:scheduled` or in WordPress.
+Per site, give one short line per article: the headline, the local publish time, and the edit link. Then list anything held, with the reason. Remind the user they can review or change anything before it publishes, with `/yeez:scheduled` or in their site's editor.

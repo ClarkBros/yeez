@@ -1,8 +1,8 @@
 # Yeez by Clark Bros Media
 
-The system behind a 40M-view-a-month publishing network, as a plugin for Claude and ChatGPT / Codex.
+The system behind a 40M-view-a-month publishing network, as a plugin for your AI app: Claude, Claude Code, Codex, ChatGPT, Cursor, Grok, Kimi, Hermes and OpenClaw. It publishes to WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer and Blogger.
 
-**You need a Yeez license.** Get one at https://clarkbrosmedia.com/yeez/ — your account and install steps live at https://yeez.ai/account.
+**You need a Yeez license.** Get one at https://clarkbrosmedia.com/yeez/ — your account page, https://yeez.ai/account, has the exact install steps for your app.
 
 ## Install
 
@@ -14,17 +14,29 @@ The system behind a 40M-view-a-month publishing network, as a plugin for Claude 
 /plugin install yeez@clarkbros
 ```
 
-**ChatGPT / Codex:**
+**Codex:**
 ```
 codex plugin marketplace add ClarkBros/yeez
 codex mcp login yeez
 ```
 
+**Cursor, Kimi Code, Hermes, OpenClaw and other agents that read skill folders:**
+```
+curl -fsSL https://yeez.ai/install.sh | sh            # ~/.agents/skills
+curl -fsSL https://yeez.ai/install.sh | sh -s hermes  # ~/.hermes/skills
+curl -fsSL https://yeez.ai/install.sh | sh -s openclaw
+```
+then connect the app to `https://yeez.ai/api/mcp` (your account page shows the config, with a sign-in key if the app asks for one).
+
+**Any agent:** tell it *"Install Yeez by following https://yeez.ai/install.md"*.
+
+**ChatGPT and grok.com:** add `https://yeez.ai/api/mcp` as a custom app/connector. Everything runs there except Facebook and Instagram posting, which needs one of the computer apps above.
+
 ## Commands
 
 | Command | What it does | Status |
 |---|---|---|
-| `/yeez:setup` | The setup interview, connecting WordPress, and turning on the daily run | Available |
+| `/yeez:setup` | The setup interview, connecting your sites, and turning on the daily run | Available |
 | `/yeez:run` | Today's headlines and articles for every site, end to end | Available |
 | `/yeez:headlines` | Finds today's stories and ranks the headlines | Available |
 | `/yeez:articles` | Writes, checks and schedules today's articles and galleries (sourced slideshows) | Available |

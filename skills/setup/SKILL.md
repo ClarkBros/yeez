@@ -1,6 +1,6 @@
 ---
 name: setup
-description: First-time Yeez setup. Runs the setup interview, saves the answers to the buyer's Yeez account, and connects their WordPress sites. Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", or when Yeez has no saved setup yet.
+description: First-time Yeez setup. Runs the setup interview, saves the answers to the buyer's Yeez account, and connects their sites (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger). Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", or when Yeez has no saved setup yet.
 ---
 
 # Yeez setup
@@ -12,16 +12,14 @@ You are setting up Yeez for a publisher. Be warm, brief and plain-spoken. Ask on
 Call the Yeez tool `whoami`.
 
 - **It works and `ok` is true:** greet them by email and say their license is active.
-- **The tool isn't available, or asks to sign in:** Yeez isn't connected yet. Tell them how, then stop until they say it's done:
-  - Claude: Customize → Connectors → Yeez → Connect, then sign in with the email they bought Yeez with.
-  - Claude Code: run `/mcp`, pick yeez, and sign in.
-  - ChatGPT / Codex: run `codex mcp login yeez`.
-  - No account yet: they create it from the link after paying, or at https://yeez.ai/account.
+- **The tool isn't available, or asks to sign in:** Yeez isn't connected yet. Their account page, https://yeez.ai/account, has the exact steps for their app (Claude, Claude Code, Codex, ChatGPT, Cursor, Grok, Kimi, Hermes or OpenClaw). Point them there, then stop until they say it's done. Apps that ask for a key use a sign-in key they make on that page; never ask them to paste it into the chat. No account yet: they create it from the link after paying, or at https://yeez.ai/account.
 - **`ok` is false:** read them the `error` and point them to https://yeez.ai/account or alex@clarkbrosmedia.com.
 
 ## 2. Resume where they left off
 
 Call `setup_status`. Skip any section already in `sections_saved` unless they want to change it. If everything is saved and every site is connected, jump to step 5.
+
+**Which AI app is this?** If you know (you're Claude, Codex, Cursor, Grok, Kimi, Hermes, OpenClaw, ChatGPT…), call `app_guide` with its id and keep the answer: it says whether this app can post to Facebook and Instagram, and how the daily run is scheduled here (step 9). If it says `social: false`, tell the buyer once, early: everything but Facebook/Instagram posting runs here; for social posting they also install Yeez in a computer app (the account page lists them).
 
 ## 3. The interview
 
@@ -36,19 +34,23 @@ For each section:
 
 If they want to stop, tell them their answers are saved and that `/yeez:setup` picks up where they left off.
 
-## 4. Connect each WordPress site
+## 4. Connect each site
 
-For every site from the `sites` section:
+Ask what each site from the `sites` section is built with, if they didn't say: WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. Not sure? Ask what they log in to when they edit the site. (Squarespace, Substack, Medium and Weebly can't be published to from outside. Tell them plainly: Yeez's articles need to live on a site built with one of the platforms above, for example a news section on a subdomain like news.theirsite.com; then connect that.)
 
-1. Call `connect_wordpress` with the site address.
-2. Give them the `link`. Tell them: open it, sign in to WordPress if asked, then click "Yes, I approve this connection." Their login never passes through this chat.
-3. When they say it's done, call `list_sites` and confirm the site shows `connected`.
-4. If it shows `failed`, read them the error. Common fixes:
-   - Use an Editor or Administrator WordPress user.
-   - A security plugin or firewall may be blocking outside requests; they can allow yeez.ai.
-   - The same link opens a paste-in form if their site doesn't offer one-click approval.
+For every site:
 
-**Never ask for passwords in the chat.** If the user pastes a password, don't repeat it. Tell them to delete that application password in WordPress and use the link instead.
+1. Call `connect_site` with the site address and its `platform`.
+2. Give them the `link` and read them `what_they_need` (and `needs_first`, if any) in plain words:
+   - **WordPress:** open the link, sign in to WordPress if asked, then click "Yes, I approve this connection."
+   - **Other platforms:** they make a key in their platform (the page shows where) and paste it into the page, never into this chat.
+3. Tell them any `differences` once (for example, Webflow and Framer publish when the daily run happens, because they can't schedule ahead).
+4. When they say it's done, call `list_sites` and confirm the site shows `connected`.
+5. If it shows `failed`, read them the error. Common fixes:
+   - WordPress: use an Editor or Administrator user; a security plugin or firewall may be blocking outside requests (allow yeez.ai); the same link opens a paste-in form if their site doesn't offer one-click approval.
+   - Other platforms: the key is missing a permission the page lists, or they copied the wrong key. Make a new one and paste again.
+
+**Never ask for passwords or keys in the chat.** If the user pastes one, don't repeat it. Tell them to delete it in their platform, make a new one, and use the link instead.
 
 ## 5. Save each site's publishing settings
 
@@ -80,12 +82,12 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
 
 ## 6b. Search setup (for each site)
 
-1. **Install the Yeez WordPress plugin.** It lets Yeez set each article's search title and description in their SEO plugin, marks articles as news articles for Google, keeps a Google News sitemap and tells Bing about new posts. Give them the download link `https://yeez.ai/downloads/yeez-wp.zip` and the steps: WordPress → Plugins → Add New → Upload Plugin → choose the file → Install Now → Activate.
+1. **WordPress sites: install the Yeez WordPress plugin.** (Other platforms skip this; their own search settings are used.) It lets Yeez set each article's search title and description in their SEO plugin, marks articles as news articles for Google, keeps a Google News sitemap and tells Bing about new posts. Give them the download link `https://yeez.ai/downloads/yeez-wp.zip` and the steps: WordPress → Plugins → Add New → Upload Plugin → choose the file → Install Now → Activate.
 2. Call `site_seo_status` and go through its `fixes` one at a time:
-   - **Trust pages** Google News looks for (about, contact, editorial policy, corrections): write each from what the buyer tells you (who runs the site, how to reach them, how articles are sourced, checked and published with AI assistance and their review, how corrections are handled) and publish with `publish_site_page`. Never invent people, credentials or addresses.
-   - **Author bios**: each real writer adds 2–3 sentences in WordPress → Users → Profile → Biographical Info. Never invent writers.
+   - **Trust pages** Google News looks for (about, contact, editorial policy, corrections): write each from what the buyer tells you (who runs the site, how to reach them, how articles are sourced, checked and published with AI assistance and their review, how corrections are handled) and publish with `publish_site_page`. If the platform can't make pages from outside (Wix, Webflow, Framer), it gives you back the text: hand it to the buyer to paste into a new page. Never invent people, credentials or addresses.
+   - **Author bios**: each real writer adds 2–3 sentences to their author profile in the site's editor (WordPress: Users → Profile → Biographical Info). Never invent writers.
    - **Search Console**: they open their site in search.google.com/search-console (add it as a Domain property if it isn't there), then Settings → Users and permissions → Add user → the email `site_seo_status` gives → Restricted. Check with `search_console_status`.
-3. **Search lane:** tell them Yeez writes up to 5 articles a week built for Google, and they approve each before it goes live (dashboard, WordPress or chat). Save a different weekly number with `save_site_settings` (`search_per_week`) if they want one; 0 turns it off.
+3. **Search lane:** tell them Yeez writes up to 5 articles a week built for Google, and they approve each before it goes live (yeez.ai dashboard or chat; on WordPress also from Posts → Pending). Save a different weekly number with `save_site_settings` (`search_per_week`) if they want one; 0 turns it off.
 
 ## 7. Newsletter and offers
 
@@ -104,11 +106,11 @@ Explain in one line that the 90-day guarantee compares what their sites earn in 
 
 ## 9. Turn on the daily run
 
-Tell them Yeez runs once a day as a scheduled task, then help them create it:
+Yeez runs once a day. Use what `app_guide` said for this app (`daily_how`):
 - **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
-- **Claude Code or ChatGPT / Codex:** walk them through adding a daily scheduled task or automation with the prompt `/yeez:run`.
+- **Other apps:** walk them through the app's own scheduler from `daily_how` (Codex automations, Cursor Automations, ChatGPT or Grok scheduled tasks, Hermes or OpenClaw cron, Kimi Claw cron), with the prompt "Run Yeez" (or `/yeez:run` where slash commands work). If `daily` is `computer-on`, tell them the run only happens while their computer is on and the app is open. If it's `manual`, they start it each morning by saying "Run Yeez".
 
-Mention they can run it any time by typing `/yeez:run`, and see what's queued with `/yeez:scheduled`.
+Mention they can run it any time, and see what's queued with the **scheduled** skill.
 
 ## 10. Finish
 
@@ -116,7 +118,7 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
-- Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in WordPress.
+- Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in their site's editor.
 - Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled; Instagram posts and stories go out during the run; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
 - Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.

@@ -11,12 +11,13 @@ Edit this file to change the interview. Each `##` heading is one section, and th
 ## Your sites `sites`
 Ask these for each site, then ask whether there's another site.
 - What's the site's address?
+- What's it built with? (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. If they're not sure, what do they log in to when they edit it?)
 - What's it about, in a sentence?
 - Who reads it? (Age, where they live, what they care about.)
 - What are its main categories?
 - Roughly how many articles a day does it publish now, and how many would you like Yeez to publish?
 - What time should the first article of the day go out?
-- Which author names should Yeez publish under? (They must already exist as users in WordPress.)
+- Which author names should Yeez publish under? (They must already exist as authors on the site.)
 - Which category should articles go in when nothing more specific fits?
 - What are the big shared subjects your whole audience depends on? (For example, the agencies, programs or institutions everyone in your niche follows.)
 - Which household-name brands or organizations does your audience recognize on sight?

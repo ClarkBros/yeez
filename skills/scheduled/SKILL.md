@@ -9,4 +9,4 @@ Call `list_scheduled` for each connected site (`list_sites`), or for the site th
 
 Show a short list per site: the local publish time, the title, and the edit link. If there's nothing scheduled, say so.
 
-Tell the user they can open any edit link to change or unschedule a post in WordPress, and that anything they don't touch publishes on schedule.
+Tell the user they can open any edit link to change or unschedule a post in their site's editor, and that anything they don't touch publishes on schedule.

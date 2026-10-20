@@ -27,4 +27,4 @@ A gallery is a numbered swipe-through: "12 Cars That …". These are the Clark B
 - Same voice and facts rules as articles: sourced, current, third person, no hype.
 
 ## Schedule
-Call `schedule_gallery` with `title`, `intro`, `items` (subject, kicker, p1_html, p2_html, source_url, image_url, image_credit, image_alt), `cover`, the `headline_id` and an `excerpt`. It re-checks everything, uploads every photo, builds the post as real WordPress blocks with a credit under each photo, sets the cover as the featured image and schedules it in the next slot. If it lists problems, fix them and call it again.
+Call `schedule_gallery` with `title`, `intro`, `items` (subject, kicker, p1_html, p2_html, source_url, image_url, image_credit, image_alt), `cover`, the `headline_id` and an `excerpt`. It re-checks everything, uploads every photo, builds the post (real blocks on WordPress, clean HTML elsewhere) with a credit under each photo, sets the cover as the featured image and schedules it in the next slot. If it lists problems, fix them and call it again.
