@@ -20,5 +20,7 @@
     "webflow",
     "wix",
     "wordpress"
-  ]
+  ],
+  "privacyPolicyUrl": "https://clarkbrosmedia.com/privacy-statement/",
+  "icon": ".claude-plugin/icon.png"
 }
