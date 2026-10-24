@@ -82,7 +82,7 @@ For each site:
    - **about** and **audience:** one or two plain sentences each, from the site and its winners.
    - **universal_entities:** the institutions, programs or agencies the whole audience depends on, ranked by how often they appear in winners.
    - **major_brands:** household names the audience recognizes on sight, from the titles.
-   - **categories, default_category, authors:** from the site.
+   - **categories, default_category, authors:** from the site. Authors are only the names that byline the site's published posts (the `author` of its recent posts), never every user account, and never the account Yeez connected with unless that person already bylines posts. Note which categories each author covers.
    - **voice_notes:** how the best articles are built and written, in a few short lines.
    - **voice_samples:** the best 30–50 articles by views (title, URL, views). Prefer ones published on this site, and keep several from each top vein.
    - **winning_patterns / losing_patterns:** headline shapes that win and lose here (what they open with, numbers, named entities, length, framing), each with its evidence ("9 of the top 20").
