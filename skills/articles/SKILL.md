@@ -18,7 +18,7 @@ For each connected site, call `get_headlines` and write one article per picked h
 
    If the story fails, call `hold_headline` with the reason and move on.
 2. **Gather sources.** Use at least five, mostly primary or official, from at least two different sites, and at most one mainstream news site.
-3. **Write in the buyer's voice** (from `get_site_brief`). Write like a reporter talking to a reader:
+3. **Write in the buyer's voice** (from `get_site_brief`). Before the first article of the run, read two or three of `settings.profile.voice_samples` in full, from the same vein as today's stories where possible, and follow `voice_notes`: their length, how they open, how they're broken up, how they source. Write like a reporter talking to a reader:
    - Open with a short intro paragraph of two to four sentences.
    - Then three to five `<h2>` sections named for this story.
    - Keep paragraphs short.

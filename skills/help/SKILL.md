@@ -9,8 +9,9 @@ description: Explains what Yeez does, which commands are available, and where th
 2. In a few short lines, tell them:
    - **What Yeez is:** the system behind a 40M-view-a-month publishing network. It ranks headlines, drafts sourced articles, schedules them on their site, queues social posts, builds their newsletter, and learns from their numbers every week.
    - **What's available now:**
-     - `/yeez:setup`: the interview, connecting their sites (any supported platform), and turning on the daily run
+     - `/yeez:setup`: connecting their sites (any supported platform), learning from their numbers, and turning on the daily run
      - `/yeez:run`: today's headlines and articles, end to end
+     - `/yeez:learn`: pull your numbers (NewsBreak, MSN, Yahoo, analytics) and see what gets views on each site
      - `/yeez:headlines`: find and rank today's stories
      - `/yeez:articles`: write, check and schedule
      - `/yeez:scheduled`: review what's queued

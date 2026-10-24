@@ -11,6 +11,14 @@ Run this for each connected site (call `list_sites`), or only the site the user 
 
 Call `get_site_brief` for the site. It gives the site's settings, the buyer's saved voice, audience and goals, every headline from the last 14 days, and today's picks so far. If `still_to_write` already covers the day, say so and stop for that site.
 
+`settings.profile` is what the **learn** skill found in this site's real numbers. Plan the day from it before searching:
+- **marching_orders:** `ride` (breakouts to spin fresh sequels of today), `refresh` (proven evergreen veins due again), `highest_value` (veins worth the most views per article), `avoid` (veins below the site average and dead patterns). Honor these first.
+- **veins:** give more of the day's slots to veins with the highest views per article and a rising or flat trend. Keep only a few slots for veins below the site average, and only with a fresh angle.
+- **winning_patterns / losing_patterns:** the headline shapes that win and flop on this site. Write to the winners; never repeat a losing pattern.
+- **voice_samples:** the site's best headlines by views. Match their shape, not their words.
+
+If there's no profile yet, or its marching orders are more than 7 days old, say so at the top of the run summary and suggest `/yeez:learn`.
+
 ## 2. Pull wide from primary sources
 
 Search the web for real, current stories in this site's niche. Gather at least 1.5 times as many stories as the site publishes per day. Prefer primary sources:

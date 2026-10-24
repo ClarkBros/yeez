@@ -1,6 +1,6 @@
 ---
 name: setup
-description: First-time Yeez setup. Runs the setup interview, saves the answers to the buyer's Yeez account, and connects their sites (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger). Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", or when Yeez has no saved setup yet.
+description: First-time Yeez setup. Connects the buyer's sites, gets the basics from their yeez.ai form, learns from their sites and real numbers (with the learn skill), and connects (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger). Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", or when Yeez has no saved setup yet.
 ---
 
 # Yeez setup
@@ -21,22 +21,23 @@ Call `setup_status`. Skip any section already in `sections_saved` unless they wa
 
 **Which AI app is this?** If you know (you're Claude, Codex, Cursor, Grok, Kimi, Hermes, OpenClaw, ChatGPT…), call `app_guide` with its id and keep the answer: it says whether this app can post to Facebook and Instagram, and how the daily run is scheduled here (step 9). If it says `social: false`, tell the buyer once, early: everything but Facebook/Instagram posting runs here; for social posting they also install Yeez in a computer app (the account page lists them).
 
-## 3. The interview
+## 3. Order
 
-Read [interview.md](interview.md) in this folder. It lists the sections in order, each with an id and its questions.
+Setup runs in the same order as the buyer's Get started page (https://yeez.ai/start): connect sites → the basics → their numbers → learn and confirm → Facebook and Instagram → search → newsletter and offers → earn-back baseline → daily run. Do step 4 (sites) first, then come back to the basics.
 
-For each section:
+## 3b. The basics
 
-1. Say in one line what the section is for.
-2. Ask its questions one at a time. Accept short answers. If they don't know something, note "unknown" and move on.
-3. When the section is done, call `save_profile` with `section` set to the section id and `answers` set to their answers as plain key/value data. Lists can be arrays.
-4. Confirm in one short line that it's saved.
+Call `get_profile`. The basics come from a short form on https://yeez.ai/start#basics, all buttons and dropdowns: business name, how the sites make money (each choice is saved with what that income rewards), articles a day now and wanted per site, which syndication partners they're approved on or applying to, Facebook and Instagram, newsletter platform, goals, and optional house style and offers. Their timezone comes from their browser.
 
-If they want to stop, tell them their answers are saved and that `/yeez:setup` picks up where they left off.
+- **`business`, `sites`, `channels` and `goals` are saved:** use them. Don't re-ask any of it.
+- **Not saved yet:** send them to https://yeez.ai/start#basics: "Takes about two minutes, all clicks." Wait for "done", then `get_profile` again.
+- **They'd rather answer here:** ask the questions in [interview.md](interview.md), offering the choices listed there as options to pick from, and save each section with `save_profile`.
+
+Never ask what Yeez can work out itself: what a site is about, who reads it, its categories, authors, big subjects, brands, best articles, voice or what's working. The **learn** skill finds those in step 5b and the buyer confirms them.
 
 ## 4. Connect each site
 
-Ask what each site from the `sites` section is built with, if they didn't say: WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. Not sure? Ask what they log in to when they edit the site. (Squarespace, Substack, Medium and Weebly can't be published to from outside. Tell them plainly: Yeez's articles need to live on a site built with one of the platforms above, for example a news section on a subdomain like news.theirsite.com; then connect that.)
+Ask which sites they want Yeez to publish to, and what each is built with: WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. Not sure? Ask what they log in to when they edit the site. (Squarespace, Substack, Medium and Weebly can't be published to from outside. Tell them plainly: Yeez's articles need to live on a site built with one of the platforms above, for example a news section on a subdomain like news.theirsite.com; then connect that.)
 
 For every site:
 
@@ -54,16 +55,21 @@ For every site:
 
 ## 5. Save each site's publishing settings
 
-For every connected site, call `save_site_settings` with what they told you in the `sites` section:
-- `per_day`: articles a day
-- `galleries_per_day`: how many of those are galleries (numbered sourced slideshows, e.g. "12 Cars That …"); ask if they want any, 0 is fine
-- `timezone`: from the `business` section
-- `start`: first publish time, HH:MM
-- `default_category` and `authors`
-- `universal_entities`: the big shared subjects
-- `major_brands`: the household names
+For every connected site, call `save_site_settings` with:
+- `per_day`: `articles_per_day_wanted` for that site from the basics
+- `timezone`: from `business.timezone` in the basics
+- `galleries_per_day`: ask once whether they want any numbered sourced slideshows (e.g. "12 Cars That …"); 0 is fine
+- `start`: leave the default for now; step 5b sets it from the site's best publish hours
 
 Read back the publish times it returns in one line, so they see the day's schedule.
+
+## 5a. Their numbers
+
+Yeez learns from every article's real views. Follow the **learn** skill's steps 1–3 (setup mode) for every platform the basics list as approved: NewsBreak is pulled straight from their dashboard through the browser ([../learn/browser.md](../learn/browser.md) has how to turn the browser on in each app); MSN, Yahoo, SmartNews and analytics come as exports. If their sites aren't on any platform yet, skip to 5b.
+
+## 5b. Learn and confirm
+
+Follow the **learn** skill's steps 4–6 (setup mode) for each site: read the site, work out what wins, and show the buyer one "Here's what we found" message per site to confirm or fix. It saves categories, authors, default category, big subjects, brands, voice and the best articles with `save_site_profile`. Then call `save_site_settings` again with `start` set from the best publish hours.
 
 ## 6. Connect Facebook and Instagram (if they use them)
 

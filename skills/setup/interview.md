@@ -1,41 +1,31 @@
-# Yeez setup interview
+# Yeez basics (chat version)
 
-Edit this file to change the interview. Each `##` heading is one section, and the id in backticks is the `section` name saved to the buyer's account. Questions are asked in order.
+Most buyers fill these in on https://yeez.ai/start#basics, all clicks. Use this only when they'd rather answer in chat. Offer the choices as options to pick from; more than one can apply where it says so. Save each section with `save_profile` using the section id in backticks and the keys shown.
+
+Never ask what Yeez works out itself (what a site is about, readers, categories, authors, subjects, brands, best articles, voice, what's working). The learn skill finds those and the buyer confirms them.
 
 ## Your business `business`
-- What's the name of your business or brand?
-- What timezone do you work in?
-- Who approves content before it goes out? (Name and email. "No one" is fine.)
-- How do your sites make money today? (Ads, syndication revenue, affiliates, your own products, sponsorships.)
+- `name`: What's your business or brand name?
+- `makes_money_from`: How do your sites make money? Pick all that apply: NewsBreak Creator Program · MSN · Yahoo · SmartNews · Ads on my site (which network: Google AdSense, Mediavine, Raptive, Ezoic, other) · Facebook monetization · Affiliate programs · My own products · Sponsorships · Newsletter. Save each as `{ source, network?, what_it_rewards }`, where `what_it_rewards` is one line: NewsBreak, MSN, Yahoo and SmartNews pay on views inside their apps (volume and feed-friendly headlines matter most); site ads pay per pageview on the site (search, Discover and pages per visit matter most); Facebook pays for native posts that keep people on Facebook; affiliates and products earn on clicks to offers from readers who are deciding; sponsorships need steady growth in a clear niche; newsletters earn on signups and opens.
+- `timezone`: don't ask. Use their computer's timezone.
 
 ## Your sites `sites`
-Ask these for each site, then ask whether there's another site.
-- What's the site's address?
-- What's it built with? (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. If they're not sure, what do they log in to when they edit it?)
-- What's it about, in a sentence?
-- Who reads it? (Age, where they live, what they care about.)
-- What are its main categories?
-- Roughly how many articles a day does it publish now, and how many would you like Yeez to publish?
-- What time should the first article of the day go out?
-- Which author names should Yeez publish under? (They must already exist as authors on the site.)
-- Which category should articles go in when nothing more specific fits?
-- What are the big shared subjects your whole audience depends on? (For example, the agencies, programs or institutions everyone in your niche follows.)
-- Which household-name brands or organizations does your audience recognize on sight?
-
-## Your voice `voice`
-- Share links to 3 to 5 of your best articles, ones that sound exactly like you.
-- Any words, phrases or topics Yeez should never use?
-- Anything about tone we should know? (For example: plain and direct, no hype, third person.)
+For each connected site, as a list of `{ url, articles_per_day_now, articles_per_day_wanted }`:
+- How many articles a day does it publish now? (Not sure is fine.)
+- How many a day do you want with Yeez? Options: 3 · 5 · 10 · 15 · 20 · 30 · 40 · 50 · 75 · 100
 
 ## Where you publish `channels`
-- Which syndication partners are you on or applying to? (NewsBreak, MSN, Google News, Flipboard, others.)
-- Which Facebook Pages and Instagram accounts should Yeez post to?
-- Do you have an email newsletter? Which platform? (beehiiv, Kit, Mailchimp, other.)
-
-## Offers `offers`
-- Any affiliate offers or products you want placed in articles, posts or the newsletter? (Name and link for each.)
-- Any you never want promoted?
+- `syndication`: For each of NewsBreak · MSN · Yahoo · SmartNews · Google News · Flipboard · Apple News: approved, applying, or not on it? Save the ones that aren't "not on it" as `{ platform, status }`.
+- `facebook_pages`, `instagram`: Do you post to Facebook Pages? To Instagram?
+- `newsletter_platform`: Which newsletter platform? None yet · beehiiv · Kit · Mailchimp · Substack · Ghost · Other
 
 ## Goals `goals`
-- What would make Yeez a win for you in the first 90 days?
-- What's the one thing taking the most of your time right now?
+- `goals`: What would make Yeez a win? Pick all that apply: More views · More revenue · Lower writing costs · Publish more without hiring · Grow Facebook · Grow my newsletter
+- `notes`: Anything else about your goals? (optional)
+
+## House style `voice` (optional)
+- `never_use`: Any words, phrases or topics Yeez should never use?
+- `style_rules`: Style rules your editors follow (AP style, how you source, house rules)?
+
+## Offers `offers` (optional)
+- `listed`: Any offers to place in articles and posts? Name and link for each.

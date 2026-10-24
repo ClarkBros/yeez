@@ -18,8 +18,8 @@ If this runs unattended, skip this step and put "Add your before-Yeez baseline w
 
 ## 1. Get this week's numbers in
 
-Ask (skip when unattended):
-- **Views:** a paste, CSV or screenshot of per-article views from NewsBreak, MSN, Google Analytics or WordPress stats. Read titles and view counts from it and call `record_article_views` with `period_end` set to the last day it covers. Use one `platform` per source.
+Follow the **learn** skill in weekly mode first: it pulls NewsBreak and every other platform it can reach, and refreshes each site's veins, patterns and marching orders. Only if a platform can't be pulled or uploaded, ask (skip when unattended):
+- **Views:** a paste, CSV or screenshot of per-article views. Read titles and view counts from it and call `record_platform_stats` for the site and platform.
 - **Earnings:** what each source paid this week. Call `record_earnings` once per source (see the **offers** skill).
 
 Never invent numbers. If they have none, carry on with what Yeez already tracks (clicks, social engagement, DMs).
