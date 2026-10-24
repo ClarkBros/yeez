@@ -5,6 +5,8 @@ description: Sets up and manages comment-to-DM on Facebook and Instagram. When s
 
 # Yeez comment-to-DM
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 ## How it works
 
 The buyer picks a keyword per offer, for example GUIDE. When someone comments just that keyword on their Page or Instagram, Yeez sends them a private message with a button to the link, then replies under the comment. A comment fires only when it's the keyword alone or with a word or two, so normal conversation never triggers it. Each comment gets one message, ever.

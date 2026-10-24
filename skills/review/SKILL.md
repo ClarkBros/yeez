@@ -5,6 +5,8 @@ description: The Yeez weekly review. Collects the week's numbers, finds what won
 
 # Yeez weekly review
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 Plain words, short lines. The buyer should finish knowing what worked, what changed for next week, and where they stand on the 90-day earn-back.
 
 ## 0. Baseline (once)
@@ -19,7 +21,7 @@ If this runs unattended, skip this step and put "Add your before-Yeez baseline w
 ## 1. Get this week's numbers in
 
 Follow the **learn** skill in weekly mode first: it pulls NewsBreak and every other platform it can reach, and refreshes each site's veins, patterns and marching orders. Only if a platform can't be pulled or uploaded, ask (skip when unattended):
-- **Views:** a paste, CSV or screenshot of per-article views. Read titles and view counts from it and call `record_platform_stats` for the site and platform.
+- **Views:** a CSV export or screenshot of per-article views. Save it as a CSV with title and views columns and fold it in with the learn skill's `yeez_data.py ingest`.
 - **Earnings:** what each source paid this week. Call `record_earnings` once per source (see the **offers** skill).
 
 Never invent numbers. If they have none, carry on with what Yeez already tracks (clicks, social engagement, DMs).

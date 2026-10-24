@@ -24,10 +24,10 @@ Turn on the **Browser Use** plugin in Grok Build, then ask Grok to open NewsBrea
 
 ## Apps without a browser (ChatGPT in the browser, grok.com)
 
-Use the one-click **Yeez · NewsBreak** bookmark button on https://yeez.ai/data: drag it to your bookmarks bar, open your NewsBreak dashboard while logged in, click it. Upload MSN, Yahoo and other exports on the same page.
+These can't pull numbers or keep a Yeez folder. Run `/yeez:learn` from the Claude desktop app or the ChatGPT desktop app (Codex) once a week; the profile it saves is what every run uses, in any app.
 
 ## If something goes wrong
 
 - **"Not logged in to NewsBreak":** open https://mp.newsbreak.com/home/content/post in the browser your AI app uses (not a different one), log in, and try again.
 - **The pull runs but saves 0:** you're logged in to a NewsBreak account with no articles, or a different account than the site. Switch accounts and run it again.
-- **The app says it can't run JavaScript:** use the bookmark button on https://yeez.ai/data instead.
+- **The app says it can't run JavaScript:** switch to Claude in Chrome (Claude) or the Codex Chrome extension (ChatGPT desktop), which can.

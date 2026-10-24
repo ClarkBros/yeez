@@ -5,6 +5,8 @@ description: Shows the posts Yeez has scheduled on the buyer's sites, with publi
 
 # Yeez scheduled posts
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 Call `list_scheduled` for each connected site (`list_sites`), or for the site the user names.
 
 Show a short list per site: the local publish time, the title, and the edit link. If there's nothing scheduled, say so.

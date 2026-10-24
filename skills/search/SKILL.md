@@ -5,6 +5,8 @@ description: The Yeez search lane. Plans and writes this week's articles built f
 
 # Yeez search lane
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 Most Yeez articles follow the news for feeds (NewsBreak, MSN, Facebook). The search lane is different: a few articles a week, each answering one question people actually search, built deeper, and **approved by the buyer before they go live**. That's Google's own rule for AI-assisted content (manual review before publishing), and the network's own experience: volume serves the feeds, a selected slice serves search.
 
 ## 1. Ideas

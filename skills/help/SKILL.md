@@ -5,6 +5,8 @@ description: Explains what Yeez does, which commands are available, and where th
 
 # Yeez help
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 1. Call the Yeez tool `setup_status`. If it isn't available, say Yeez isn't connected yet and point them to `/yeez:setup`.
 2. In a few short lines, tell them:
    - **What Yeez is:** the system behind a 40M-view-a-month publishing network. It ranks headlines, drafts sourced articles, schedules them on their site, queues social posts, builds their newsletter, and learns from their numbers every week.

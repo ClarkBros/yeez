@@ -36,18 +36,21 @@ then connect the app to `https://yeez.ai/api/mcp` (your account page shows the c
 
 | Command | What it does | Status |
 |---|---|---|
-| `/yeez:setup` | The setup interview, connecting your sites, and turning on the daily run | Available |
-| `/yeez:run` | Today's headlines and articles for every site, end to end | Available |
+| `/yeez:setup` | Connects your sites, learns them from your own numbers, and turns on the scheduled tasks | Available |
+| `/yeez:learn` | Pulls your NewsBreak, MSN, Yahoo and other numbers into your own Yeez folder and works out what gets views on each site | Available |
+| `/yeez:run` | The whole chain in one go: learn, headlines, articles, search, social, newsletter (and the Monday review) | Available |
 | `/yeez:headlines` | Finds today's stories and ranks the headlines | Available |
 | `/yeez:articles` | Writes, checks and schedules today's articles and galleries (sourced slideshows) | Available |
 | `/yeez:scheduled` | What's queued to publish, with edit links | Available |
 | `/yeez:help` | What Yeez can do and where your setup stands | Available |
-| `/yeez:social` | Writes, renders and posts news image cards, text image cards, gradient posts, stories and reels (over your own footage and music) for Facebook and Instagram, learning from each account's winners | Available |
+| `/yeez:social` | (`learn`, `write`, `build`, `post`, `now`) Writes, renders and posts news image cards, text image cards, gradient posts, stories and reels (over your own footage and music) for Facebook and Instagram, learning from each account's winners | Available |
 | `/yeez:dm` | Comment-to-DM: a keyword comment gets a private message with your link | Available |
 | `/yeez:newsletter` | Builds the issue from the day's best story; creates the beehiiv draft or a copy-ready page | Available |
 | `/yeez:offers` | Offers, tracked links and the earnings report | Available |
 | `/yeez:search` | Search lane: up to 5 articles a week built for Google, approved by you before they go live, plus Search Console results | Available |
 | `/yeez:review` | The weekly review: winners, losers, next week's headline rules, and the 90-day earn-back tracker | Available |
+
+Yeez's rules, the platform rules (NewsBreak, MSN, Yahoo, SmartNews, Google, Facebook and more) and how the scheduled tasks fit together are in `skills/core/`.
 
 Your dashboard: https://yeez.ai/dashboard
 

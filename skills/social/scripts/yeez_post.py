@@ -7,7 +7,11 @@ three-step reel upload, the same 15-minute lead rule. The keys come from the buy
 (yeez-work/yeez-keys.json); nothing is uploaded to yeez.ai.
 
     python3 yeez_post.py --fetch-keys "<one-time link from get_social_keys_link>" [--work yeez-work]
-    python3 yeez_post.py --date 2026-10-21 [--page CODE] [--work yeez-work] [--dry-run]
+    python3 yeez_post.py --date 2026-10-21 [--page CODE] [--work yeez-work] [--due-within 30] [--dry-run]
+
+Stories, and everything on Instagram, can't be scheduled, so they're posted only once their time is less than
+--due-within minutes away (default 30); until then they stay "built" and the next run posts them. Run it again
+during the day (the "social now" task) to post them on time. Facebook feed posts are always scheduled at once.
 
 Queue: yeez-work/queue/<date>/<CODE>.json (built by yeez_build.py). Each page file names its "account"
 (the id or name in the keys file). Items with status "built" are posted:
@@ -287,6 +291,7 @@ def main():
     ap.add_argument("--date", default=None)
     ap.add_argument("--page", default=None)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--due-within", type=int, default=30)
     a = ap.parse_args()
     if a.fetch_keys:
         return fetch_keys(a.fetch_keys, a.work)
@@ -298,7 +303,7 @@ def main():
     files = sorted(f for f in os.listdir(ddir) if f.endswith(".json") and not f.startswith("_"))
     if a.page:
         files = [f for f in files if os.path.splitext(f)[0].upper() == a.page.upper()]
-    posted, failed = [], 0
+    posted, failed, waiting = [], 0, 0
     for f in files:
         qfile = os.path.join(ddir, f)
         q = json.load(open(qfile, encoding="utf-8"))
@@ -313,6 +318,17 @@ def main():
         for item in sorted(q.get("items", []), key=lambda i: i.get("time") or ""):
             if item.get("status") != "built":
                 continue
+            if (acc["platform"] != "fb" or item.get("type") == "story") and item.get("time"):
+                try:
+                    due = dt.datetime.fromisoformat(item["time"])
+                    if due.tzinfo is None:
+                        due = due.replace(tzinfo=tz)
+                    if due > dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=a.due_within):
+                        waiting += 1
+                        print(f"  ..  {item['id']:16} {item.get('type'):11} waits for {item['time']} (can't be scheduled ahead)")
+                        continue
+                except ValueError:
+                    pass
             try:
                 r = fb_post(qfile, item, acc, tz) if acc["platform"] == "fb" else ig_post(qfile, item, acc, accounts)
                 item["status"], item["fb_id"], item["error"] = r["status"], r["post_id"], None
@@ -332,7 +348,9 @@ def main():
     out = os.path.join(ddir, "_to_record.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(posted, fh, indent=1)
-    print(f"\nposted {len(posted)} · failed {failed}. Now call record_social_posts with the list in {out}")
+    print(f"\nposted {len(posted)} · failed {failed} · waiting {waiting}. Now call record_social_posts with the list in {out}")
+    if waiting:
+        print(f"{waiting} stories/Instagram items wait for their time: run this again during the day (the social now task).")
     sys.exit(1 if failed else 0)
 
 

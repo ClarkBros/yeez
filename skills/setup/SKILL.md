@@ -5,6 +5,8 @@ description: First-time Yeez setup. Connects the buyer's sites, gets the basics 
 
 # Yeez setup
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 You are setting up Yeez for a publisher. Be warm, brief and plain-spoken. Ask one question at a time. Never use jargon the user didn't use first.
 
 ## 1. Check the connection
@@ -37,7 +39,7 @@ Never ask what Yeez can work out itself: what a site is about, who reads it, its
 
 ## 4. Connect each site
 
-Ask which sites they want Yeez to publish to, and what each is built with: WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger. Not sure? Ask what they log in to when they edit the site. (Squarespace, Substack, Medium and Weebly can't be published to from outside. Tell them plainly: Yeez's articles need to live on a site built with one of the platforms above, for example a news section on a subdomain like news.theirsite.com; then connect that.)
+The basics list the sites Yeez publishes to. Work out what each is built with yourself before asking: WordPress answers at `https://<site>/wp-json/`, Ghost at `/ghost/api/`, Shopify at `/products.json`; Wix, Webflow, HubSpot, Joomla, Framer and Blogger name themselves in the page source. Ask only if you can't tell (what do they log in to when they edit the site?). (Squarespace, Substack, Medium and Weebly can't be published to from outside. Tell them plainly: Yeez's articles need to live on a site built with one of the platforms above, for example a news section on a subdomain like news.theirsite.com; then connect that.)
 
 For every site:
 
@@ -58,7 +60,9 @@ For every site:
 For every connected site, call `save_site_settings` with:
 - `per_day`: `articles_per_day_wanted` for that site from the basics
 - `timezone`: from `business.timezone` in the basics
-- `galleries_per_day`: ask once whether they want any numbered sourced slideshows (e.g. "12 Cars That …"); 0 is fine
+- `platforms`: the platforms this site is approved on, from `channels.syndication` in the basics
+- `newsbreak_feed` (WordPress sites on NewsBreak only): open `https://<site>/feed/newsbreak`. If it answers with an RSS feed, the site uses the NewsBreak Feed for WordPress plugin: set `true`, so every post Yeez schedules carries the plugin's "send to NewsBreak" flag. If it's a 404, set `false` (NewsBreak reads the normal feed).
+- `galleries_per_day`: don't ask. 0 unless the site is on MSN and already publishes numbered galleries (titles like "12 Cars That …" among its posts); then keep its current share. Never on NewsBreak-only sites. In 5b's confirm message, mention once that galleries pay on MSN if the site is on MSN and has none.
 - `start`: leave the default for now; step 5b sets it from the site's best publish hours
 
 Read back the publish times it returns in one line, so they see the day's schedule.
@@ -76,7 +80,7 @@ Follow the **learn** skill's steps 4–6 (setup mode) for each site: read the si
 If the `channels` section lists Facebook Pages or Instagram accounts:
 1. Call `connect_meta` and give them the link. The page walks them through creating their own Meta app (about 15 minutes, no Facebook review), then connecting their Pages and Instagram.
 2. When they're done, call `list_social_accounts` to confirm.
-3. Ask how many posts a day each account should get, and call `save_social_settings` for each. Pages posting 8 or more a day get the full mix (news image cards, text image cards, gradient posts and stories); fewer get the starter mix.
+3. Don't ask how many posts a day: for each account, call `get_social_brief` and match what it already posts per day (from `recent_posts`), at least 3, then call `save_social_settings`. Pages posting 8 or more a day get the full mix (news image cards, text image cards, gradient posts and stories); fewer get the starter mix. A new Page (under 100 followers and fewer than 15 posts) gets `warmup_until` a week out instead ([../core/platforms/facebook.md](../core/platforms/facebook.md)); tell the buyer in one line why it starts slow.
 4. **Save their keys file and check their AI app can post.** Their AI app posts straight to Facebook and Instagram with their own keys, kept in their Yeez folder. Call `get_social_keys_link` and run `python3 <the social skill's folder>/scripts/yeez_post.py --fetch-keys "<link>" --work yeez-work`; it saves `yeez-work/yeez-keys.json` and lists the accounts in it (never print the file itself). If it can't reach the internet, tell them: "Turn on network access for your AI app (Claude: Settings → Capabilities → allow network access). The setup video shows where." Then try again with a new link. They can also download the file from the Facebook connect page and drop it into the folder. Tell them once: this file can post to their Pages, so keep it private, and they can cut it off any time by removing their Meta app in Facebook's Business settings.
 5. For any Page that isn't verified, recommend Meta Verified once: verified Pages get trusted and shown more. Yeez's cards never draw a fake badge.
 6. **Reels.** Reels run over the buyer's own footage and music. Ask them to make one Google Drive folder, shared as "Anyone with the link can view", with:
@@ -110,13 +114,18 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
 
 Explain in one line that the 90-day guarantee compares what their sites earn in the 90 days after they start with the 90 days before. Ask what each income source paid in the 90 days before today, from their own dashboards (a number per source, or a screenshot). Call `save_baseline`. If they don't have the numbers handy, tell them they can add them later with `/yeez:review baseline`; the tracker needs them to measure anything.
 
-## 9. Turn on the daily run
+## 9. Turn on the scheduled tasks
 
-Yeez runs once a day. Use what `app_guide` said for this app (`daily_how`):
-- **Claude:** offer to create a scheduled task that runs `/yeez:run` every day at a time they choose, in the evening before the first publish time. Create it if they agree.
-- **Other apps:** walk them through the app's own scheduler from `daily_how` (Codex automations, Cursor Automations, ChatGPT or Grok scheduled tasks, Hermes or OpenClaw cron, Kimi Claw cron), with the prompt "Run Yeez" (or `/yeez:run` where slash commands work). If `daily` is `computer-on`, tell them the run only happens while their computer is on and the app is open. If it's `manual`, they start it each morning by saying "Run Yeez".
+Yeez runs as a chain of scheduled tasks, each with one job, with enough time between them for each to finish. [../core/tasks.md](../core/tasks.md) has every task, its prompt, what it needs and the timing rules. Don't ask the buyer to design this; work it out and set it up.
 
-Mention they can run it any time, and see what's queued with the **scheduled** skill.
+1. **Work out the times** from tasks.md's timing rules, using the total articles a day across all sites, the number of Pages, whether there are stories or Instagram accounts, the newsletter's send days, and the earliest first publish time across the sites (start the chain the evening before). Use the buyer's timezone.
+2. **Create the tasks**, using what `app_guide` said for this app (`daily_how`):
+   - **Apps that can hold several scheduled tasks** (Claude's scheduled tasks, Claude Code, Codex automations, Cursor Automations, Hermes or OpenClaw cron): create one task per row of tasks.md, named `Yeez 1 · Learn`, `Yeez 2 · Headlines`, `Yeez 3 · Articles`, `Yeez 3b · Search`, `Yeez 4a · Social learn` and so on, each with exactly its prompt from tasks.md (`/yeez:learn daily`, `/yeez:headlines`, `/yeez:articles`, `/yeez:search`, `/yeez:social learn`, `/yeez:social write`, `/yeez:social build`, `/yeez:social post`, `/yeez:social now`, `/yeez:newsletter`, `/yeez:review`). Where slash commands don't work, use the words instead ("Run Yeez learn in daily mode", "Run Yeez headlines"). Skip social tasks with no Pages connected and the newsletter task with no newsletter. The newsletter task runs only on the days before send days; the review task only on Mondays; social now hourly at :10 through the posting window.
+   - **Apps that can hold only one** (ChatGPT or Grok scheduled tasks, Kimi Claw cron): one daily task with `/yeez:run` (or "Run Yeez"), which does the whole chain in order.
+   - If `daily` is `computer-on`, tell them the tasks only run while their computer is on and the app is open. If it's `manual`, they start it each evening by saying "Run Yeez".
+3. **Show the schedule** in a short list (task, time, what it does in a few words). Mention they can run everything now with `/yeez:run`, and see what's queued with `/yeez:scheduled`.
+
+Never create duplicates: if Yeez tasks already exist (a re-run of setup), update their times instead of adding new ones.
 
 ## 10. Finish
 
@@ -125,6 +134,6 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - They can change any answer by running `/yeez:setup` again.
 - Their account page is https://yeez.ai/account.
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in their site's editor.
-- Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled; Instagram posts and stories go out during the run; comment-to-DM starts in test mode until they turn it on.
+- Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled ahead; Instagram posts and stories go out at their times through the social now task; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
 - Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.

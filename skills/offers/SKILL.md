@@ -5,6 +5,8 @@ description: Manages the buyer's offers (affiliate offers, their own products, s
 
 # Yeez offers and earnings
 
+Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
 ## Add or change an offer
 
 Ask for these, then call `save_offer`:
