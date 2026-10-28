@@ -32,7 +32,7 @@ If the site's settings have `galleries_per_day` above 0, that many of the day's 
    - People stories: tell it as the story of the person, warmly, in the order it happened, with what the outlet reported them saying (attributed and linked). Never invent a quote, a feeling or a detail.
    - No research narration, no stock filler, no hype, no tables, no `<h1>`, and no source list at the end.
 
-   The body must state every specific the headline promises: each number, each named source, each item in a counted list. The title must equal the picked headline.
+   The body must state every specific the headline promises: each number, each named source, each item in a counted list. If the headline holds something back (a cliffhanger), answer it in the first two paragraphs. The title must equal the picked headline.
 4. **Check it.** Call `check_article` with the title, the HTML and the source URLs.
    - **fix:** rewrite what the findings name, then check again, up to three times.
    - **hold:** call `hold_headline` with the reason, then write the `replacement` it returns.

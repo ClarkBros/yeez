@@ -1,11 +1,11 @@
 # The Yeez tasks
 
-Yeez runs as a chain of scheduled tasks in the buyer's AI app, one after another each evening, each with a clear job. Every task first checks that what it needs is ready. If it isn't, it does the missing step itself (or holds and says so), so a slow or skipped task never breaks the next one.
+Yeez runs as scheduled tasks in the buyer's AI app, each with a clear job: Learn in the early afternoon while the buyer is usually at the computer, then the writing chain one task after another in the evening. Every task first checks that what it needs is ready. If it isn't, it does the missing step itself (or holds and says so), so a slow or skipped task never breaks the next one.
 
 | Order | Task (prompt) | Goal | Needs | Produces |
 |---|---|---|---|---|
-| 1 | **Learn** (`/yeez:learn daily`) | Pull the latest numbers and know what's winning right now | The computer on, the app open, and NewsBreak and the other dashboards logged in in the app's browser; the Yeez folder | Fresh numbers in the folder; today's marching orders in each site profile |
-| 2 | **Headlines** (`/yeez:headlines`) | Pick tomorrow's stories and headlines most likely to get views | Today's marching orders (if missing or older than a day: run Learn's daily mode first) | Ranked, sourced headlines saved per site, up to each site's daily count |
+| 1 | **Learn** (`/yeez:learn daily`), around 2 PM | Pull the latest numbers, grade the tests, know what's winning right now | The computer on, the app open, NewsBreak and the other dashboards logged in in the app's browser (the buyer is usually there to log in if asked); the Yeez folder | Fresh numbers in the folder; graded tests; today's marching orders in each site profile |
+| 2 | **Headlines** (`/yeez:headlines`) | Pick tomorrow's stories and headlines most likely to get views, with about a quarter of the day as tests | Today's marching orders (if missing or older than a day: run Learn's daily mode first) | Ranked, sourced headlines saved per site, up to each site's daily count |
 | 3 | **Articles** (`/yeez:articles`) | Turn every picked headline into a verified, sourced, scheduled article | Today's picked headlines (if none: run Headlines first) | Scheduled posts on each site at its publish times; held stories with reasons |
 | 3b | **Search** (`/yeez:search`) | One article built to rank on Google, waiting for the buyer's approval | Search Console connected; search articles left this week | One search article pending approval |
 | 4a | **Social learn** (`/yeez:social learn`) | Know what's getting shares and reach on each Page | Connected Pages | Learn notes per Page in the Yeez folder |
@@ -20,21 +20,21 @@ Yeez runs as a chain of scheduled tasks in the buyer's AI app, one after another
 
 ## Timing
 
-Set up in setup's last step. Start the chain in the evening before the first publish time, and leave a gap after each task so it can finish before the next one starts:
+Set up in setup's last step. **Learn runs at 2:00 PM** in the buyer's timezone (it pulls the dashboards in the browser, so it runs when the buyer is usually at the computer and can log in if asked). Start the evening chain at least 3 hours before bedtime and before the first publish time, and leave a gap after each task so it can finish before the next one starts:
 
-- **Learn:** 20 minutes.
+- **Learn:** at 2:00 PM, 30 minutes per site with NewsBreak (pulls, tests and marching orders).
 - **Headlines:** 10 minutes plus 1 minute per article across all sites.
 - **Articles:** 3 minutes per article across all sites, plus 20 minutes. Above 40 articles a night, add a second Articles task (same prompt) after the first one's window: it picks up every picked headline the first didn't finish, so nothing is written twice.
 - **Search:** 20 minutes, right after Articles. Skip it when no site has Search Console connected.
 - **Social:** learn 5 minutes per Page plus 5; write 5 minutes per Page plus 10; build 4 minutes per Page plus 2 per reel; post 3 minutes per Page plus 5. Under 3 Pages, one `/yeez:social` task (all four steps) is fine: give it 15 minutes per Page plus 15.
 - **Newsletter:** 20 minutes, only on the day before each send day.
-- **Weekly review:** Monday, starting an hour before Learn, so the week's rules are updated before the night's headlines.
+- **Weekly review:** Monday, right after Learn (2:45 PM, or later with several sites), so the week's rules are updated before the night's headlines.
 
-Example, one site at 30 articles a day and 3 Pages, first publish at 6:00 AM: Learn 7:00 PM → Headlines 7:20 PM → Articles 8:00 PM → Search 9:50 PM → Social learn 10:10 PM → write 10:30 PM → build 10:55 PM → post 11:15 PM → Newsletter 11:30 PM (send days only).
+Example, one site at 30 articles a day and 3 Pages, first publish at 6:00 AM: Learn 2:00 PM. Evening: Headlines 7:00 PM → Articles 8:00 PM → Search 9:50 PM → Social learn 10:10 PM → write 10:30 PM → build 10:55 PM → post 11:15 PM → Newsletter 11:30 PM (send days only).
 
 Facebook posts are scheduled for tomorrow, so the social tasks can also run in the morning if the evening is crowded.
 
-**Learn runs first every evening and needs the computer:** it opens NewsBreak and the other dashboards in the AI app's browser, so the buyer's computer must be on, the app open, and the buyer logged in to each dashboard in that browser. Tell the buyer this when the tasks are set up.
+**Learn needs the computer:** it opens NewsBreak and the other dashboards in the AI app's browser, so the buyer's computer must be on, the app open, and the buyer logged in to each dashboard in that browser. That's why it runs at 2 PM, not overnight. Tell the buyer this when the tasks are set up.
 
 Each app schedules differently (Claude scheduled tasks, Codex automations, Cursor Automations, cron); `app_guide` says how, and whether tasks run only while the computer is on and the app is open.
 

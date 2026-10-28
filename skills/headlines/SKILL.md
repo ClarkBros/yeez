@@ -59,7 +59,7 @@ Always:
 - third person
 - a vivid verb
 - the specific detail that makes it this story (the person, the place, the figure or the date)
-- the outcome stated, never withheld ("then she realized why" is clickbait; say what she found)
+- a hook that makes people want the story: an outcome, a stake, or a cliffhanger the article pays off in its first two paragraphs
 
 For money and rule stories, favor ones where something readers already have or rely on changes on a stated date, named after the institution or household brand the story is about.
 
@@ -74,6 +74,16 @@ Vary length, opening word and structure across the day. Never use any of these:
 Intensity is good: long, emotional and as strong as the true facts allow. Never water a true story down.
 
 Every number, name and claim in a headline must come from a fact you recorded. If it can't be sourced, take it out.
+
+## 5b. Run the test lane
+
+About a quarter of every day is tests (`test_lane.slots_per_day` in the brief). A test is a real, verified story run to find out what gets more views here, never a made-up one. Each test changes one thing against what the site already proves, so the result means something:
+- a headline shape the site hasn't run (a cliffhanger, a question, a quote lead, a list count, person-first vs place-first, shorter or longer)
+- an angle or vein from `competitor_examples` or the marching orders' `ride` list
+- a story type the site hasn't tried
+- an untested publish slot or topic
+
+Mark each test candidate with `test: {hypothesis, kind}` in `score_headlines` (kind is a short label like "cliffhanger" or "new vein: HOA", so learn can grade them together). Tests compete for the test slots among themselves, so a new shape isn't crowded out by proven ones. Keep running a kind until learn grades it (3+ runs), and don't repeat a kind learn marked as a loser.
 
 ## 6. Rank with Yeez
 

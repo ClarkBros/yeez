@@ -16,7 +16,7 @@ Prompts: `/yeez:learn` (setup mode when a site has no confirmed profile yet, oth
 Modes:
 - **Setup (full):** first time for a site. Pull everything, all time. Read the site. Present what you found and have the buyer confirm it.
 - **Weekly (Monday review):** pull again, refresh veins, patterns and marching orders. Don't re-ask the buyer what they already confirmed.
-- **Daily (the first task every evening, and the start of /yeez:run):** pull NewsBreak and every other platform the site is approved on (steps 2–3), then refresh the marching orders from `yeez_data.py report`. Never ask anything. This needs the buyer's computer on, their AI app open, and them logged in to each dashboard in the browser the app uses. If a dashboard isn't logged in, skip it and put this at the very top of the summary, every night until it's fixed: "Yeez couldn't pull your <platform> numbers tonight because you're not logged in to <dashboard> in <the browser>. Log in there once and leave it logged in; tomorrow's run picks it up." Then carry on with the numbers you have.
+- **Daily (the 2 PM Learn task, and the start of /yeez:run):** pull NewsBreak and every other platform the site is approved on (steps 2–3), grade the tests (step 5b), then refresh the marching orders from `yeez_data.py report`. This runs while the buyer is usually at the computer: if a dashboard isn't logged in, ask them once in plain words to log in there and reply "done". If nobody answers, skip that dashboard, carry on with the numbers you have, and put this at the very top of the summary: "Yeez couldn't pull your <platform> numbers today because you're not logged in to <dashboard> in <the browser>. Log in there once and leave it logged in."
 
 ## Where the numbers live
 
@@ -78,7 +78,7 @@ For each site:
    - Check the month-by-month trend before recommending a vein: rising, flat or decaying. The latest month is always biased low (less time to collect views); never call that a decline.
    - A vein below the site average costs the site views on every article in it.
    - Articles NewsBreak didn't make live (its `status`) are a distribution problem, not a headline problem: report them, don't learn from them.
-4. **Competitors (setup, weekly, and whenever a top vein can't run anymore or the site's views are falling):** find 4–8 sites publishing the same kind of stories for the same readers (search the niche plus the platforms the site is on). Collect 15–25 of their recent stories that fit this site's veins and have real named sourcing (not forum retellings): title, URL, outlet, the vein, and what makes it work. Save them as `competitor_examples` with `save_site_profile`, and turn their best angles into `marching_orders.ride` items to test, one new angle at a time. When a vein dies or is banned (for example forum-sourced stories), this is how the site finds the reported version of what its readers came for.
+4. **Competitors (setup, weekly, and whenever a top vein can't run anymore or the site's views are falling):** find 4–8 strong competitors: sites publishing the same kind of stories for the same readers that are clearly winning. Only count a site that shows real traction: active every day, on the same platforms as this site (its NewsBreak or MSN profile, its stories showing up there), big follower or engagement numbers, or stories other outlets pick up. Skip content farms, dead sites, forum-retelling sites and anything with no sign of an audience. From them, collect 15–25 recent stories that fit this site's veins and have real named sourcing: title, URL, outlet, the vein, and what makes it work. Save them as `competitor_examples` with `save_site_profile`, and turn their best angles into test-lane ideas (`marching_orders.ride`). When a vein dies or is banned (for example forum-sourced stories), this is how the site finds the reported version of what its readers came for.
 5. Work out the profile:
    - **about** and **audience:** one or two plain sentences each, from the site and its winners.
    - **universal_entities:** the institutions, programs or agencies the whole audience depends on, ranked by how often they appear in winners.
@@ -96,6 +96,15 @@ For each site:
      - `highest_value`: the top veins by VPA with their trend
      - `avoid`: veins below the site average and freshly confirmed dead patterns
 
+## 5b. Grade the tests
+
+Call `list_tests` for the site. Match each test headline to its views in the folder (`yeez_data.py report` lists articles by title; a test needs 3+ days of views before it counts). Group them by `kind` and compare views per article with the site average:
+- **winner:** clearly above the site average across at least 3 runs. Add the shape to `winning_patterns` and the headlines task uses it as a proven shape.
+- **loser:** clearly below after 3+ runs. Add it to `losing_patterns`; stop testing it.
+- **keep testing:** too few runs or too close to call.
+
+Save the grades as `experiments` with `save_site_profile`, and say in one line per kind what was tested and how it did. Then pick the next tests for tonight from the competitor examples, untested veins and shapes, and story types the site hasn't tried, and add them to `marching_orders.ride`.
+
 ## 6. Confirm (setup only)
 
 Show the buyer one short message per site, plain words, no jargon:
@@ -111,7 +120,7 @@ Show the buyer one short message per site, plain words, no jargon:
 
 Let them change anything ("tap the microphone and just talk" works too). Then call `save_site_profile` with everything and `confirmed_by_buyer: true`.
 
-In weekly and daily mode, don't ask: call `save_site_profile` with the refreshed `veins`, `winning_patterns`, `losing_patterns`, `best_hours`, `voice_samples`, `story_mix`, `competitor_examples` and `marching_orders` only. Never overwrite what the buyer confirmed (about, audience, subjects, brands, categories, authors, voice notes). If the data says one of those has changed, suggest it in the summary instead.
+In weekly and daily mode, don't ask: call `save_site_profile` with the refreshed `veins`, `winning_patterns`, `losing_patterns`, `best_hours`, `voice_samples`, `story_mix`, `competitor_examples`, `experiments` and `marching_orders` only. Never overwrite what the buyer confirmed (about, audience, subjects, brands, categories, authors, voice notes). If the data says one of those has changed, suggest it in the summary instead.
 
 ## 7. Report
 
