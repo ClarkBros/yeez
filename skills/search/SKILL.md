@@ -1,6 +1,6 @@
 ---
 name: search
-description: The Yeez search lane. Plans and writes this week's articles built for Google search (5 a week by default), saves them for the buyer's approval, and reports how the buyer's sites do in Google Search, Discover and Google News. Use when the user types /yeez:search, asks about SEO, Google, search traffic or Search Console, or from the daily run when a site has search articles left this week.
+description: The Yeez search lane. For sites where the buyer turned on search articles, plans and writes this week's articles built for Google search, saves them for the buyer's approval, and reports how the buyer's sites do in Google Search, Discover and Google News. Use when the user types /yeez:search, asks about SEO, Google, search traffic or Search Console, or from the daily run when a site has search articles left this week.
 ---
 
 # Yeez search lane
@@ -12,7 +12,7 @@ Most Yeez articles follow the news for feeds (NewsBreak, MSN, Facebook). The sea
 ## 1. Ideas
 
 For each connected site, call `get_search_ideas` (add one or two topics from this week's best stories). It returns:
-- `left_this_week`: how many search articles the site still has this week (`search_per_week`, default 5). If 0, stop for that site.
+- `left_this_week`: how many search articles the site still has this week (`search_per_week`; off unless the buyer turned it on). If 0, stop for that site and don't mention search articles.
 - `search_console.questions` and `refresh_candidates`: what people already search to find the site. An existing page ranking 8–20 for a question is better improved than duplicated: tell the buyer which page to expand instead of writing a new one.
 - `google_suggestions`: what people type into Google about the site's big subjects.
 - `already_written`: never write the same question twice.

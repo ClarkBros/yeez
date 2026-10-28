@@ -1,6 +1,6 @@
 ---
 name: setup
-description: First-time Yeez setup. Connects the buyer's sites, gets the basics from their yeez.ai form, learns from their sites and real numbers (with the learn skill), and connects (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger). Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", or when Yeez has no saved setup yet.
+description: First-time Yeez setup. Connects the buyer's sites, gets the basics from their yeez.ai form, learns from their sites and real numbers (with the learn skill), and connects (WordPress, Ghost, Shopify, Wix, Webflow, HubSpot, Joomla, Framer or Blogger). Use when the user installs Yeez, types /yeez:setup, says "set up Yeez" or "continue setup", asks to set up, fix or change their Yeez scheduled tasks, or when Yeez has no saved setup yet.
 ---
 
 # Yeez setup
@@ -8,6 +8,8 @@ description: First-time Yeez setup. Connects the buyer's sites, gets the basics 
 Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
 
 You are setting up Yeez for a publisher. Be warm, brief and plain-spoken. Ask one question at a time. Never use jargon the user didn't use first.
+
+If they only asked about their scheduled tasks ("fix my Yeez tasks", "set up my Yeez scheduled tasks", change a task's time), go straight to step 9 and its section on existing tasks.
 
 ## 1. Check the connection
 
@@ -97,7 +99,7 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
    - **Trust pages** Google News looks for (about, contact, editorial policy, corrections): write each from what the buyer tells you (who runs the site, how to reach them, how articles are sourced, checked and published with AI assistance and their review, how corrections are handled) and publish with `publish_site_page`. If the platform can't make pages from outside (Wix, Webflow, Framer), it gives you back the text: hand it to the buyer to paste into a new page. Never invent people, credentials or addresses.
    - **Author bios**: each real writer adds 2–3 sentences to their author profile in the site's editor (WordPress: Users → Profile → Biographical Info). Never invent writers.
    - **Search Console**: they open their site in search.google.com/search-console (add it as a Domain property if it isn't there), then Settings → Users and permissions → Add user → the email `site_seo_status` gives → Restricted. Check with `search_console_status`.
-3. **Search lane:** tell them Yeez writes up to 5 articles a week built for Google, and they approve each before it goes live (yeez.ai dashboard or chat; on WordPress also from Posts → Pending). Save a different weekly number with `save_site_settings` (`search_per_week`) if they want one; 0 turns it off.
+3. **Search articles (ask, off unless they say yes):** ask once: "Do you also want Yeez to write a few articles a week built to rank on Google? You'd read and approve each one before it goes live." Most feed publishers say no. If yes, save `search_per_week` (5 unless they pick another number) with `save_site_settings` for each site they want it on, and tell them where approvals happen (yeez.ai dashboard or chat; on WordPress also Posts → Pending). If no, leave it off (the default is 0) and don't create a Search task. The setup in steps 1 and 2 still helps every site get found on Google either way.
 
 ## 7. Newsletter and offers
 
@@ -120,12 +122,21 @@ Yeez runs as a chain of scheduled tasks, each with one job, with enough time bet
 
 1. **Work out the times** from tasks.md's timing rules, using the total articles a day across all sites, the number of Pages, whether there are stories or Instagram accounts, the newsletter's send days, and the earliest first publish time across the sites (start the chain the evening before). Use the buyer's timezone.
 2. **Create the tasks**, using what `app_guide` said for this app (`daily_how`):
-   - **Apps that can hold several scheduled tasks** (Claude's scheduled tasks, Claude Code, Codex automations, Cursor Automations, Hermes or OpenClaw cron): create one task per row of tasks.md, named `Yeez 1 · Learn`, `Yeez 2 · Headlines`, `Yeez 3 · Articles`, `Yeez 3b · Search`, `Yeez 4a · Social learn` and so on, each with exactly its prompt from tasks.md (`/yeez:learn daily`, `/yeez:headlines`, `/yeez:articles`, `/yeez:search`, `/yeez:social learn`, `/yeez:social write`, `/yeez:social build`, `/yeez:social post`, `/yeez:social now`, `/yeez:newsletter`, `/yeez:review`). Where slash commands don't work, use the words instead ("Run Yeez learn in daily mode", "Run Yeez headlines"). Skip social tasks with no Pages connected and the newsletter task with no newsletter. The newsletter task runs only on the days before send days; the review task only on Mondays; social now hourly at :10 through the posting window.
+   - **Apps that can hold several scheduled tasks** (Claude's scheduled tasks, Claude Code, Codex automations, Cursor Automations, Hermes or OpenClaw cron): create one task per row of tasks.md that applies to them, named `Yeez 1 · Learn`, `Yeez 2 · Headlines`, `Yeez 3 · Articles`, `Yeez 4a · Social learn` and so on. The instructions of each task are exactly its prompt from tasks.md (`/yeez:learn daily`, `/yeez:headlines`, `/yeez:articles`, `/yeez:search`, `/yeez:social learn`, `/yeez:social write`, `/yeez:social build`, `/yeez:social post`, `/yeez:social now`, `/yeez:newsletter`, `/yeez:review`) and nothing else: no rules, notes or site details. If the buyer has rules of their own, save them per site with `save_site_profile` (`buyer_rules`) instead; every run reads them. Where slash commands don't work, use the words instead ("Run Yeez learn in daily mode", "Run Yeez headlines"). Create the Search task only when they said yes to search articles in step 6b. Skip social tasks with no Pages connected and the newsletter task with no newsletter. One Articles task covers every site. The newsletter task runs only on the days before send days; the review task only on Mondays; social now hourly at :10 through the posting window.
    - **Apps that can hold only one** (ChatGPT or Grok scheduled tasks, Kimi Claw cron): one daily task with `/yeez:run` (or "Run Yeez"), which does the whole chain in order.
    - If `daily` is `computer-on`, tell them the tasks only run while their computer is on and the app is open. If it's `manual`, they start it each evening by saying "Run Yeez".
 3. **Show the schedule** in a short list (task, time, what it does in a few words). Then tell them plainly: the tasks run while their computer is on and the AI app is open. Learn runs at 2 PM and pulls their numbers from NewsBreak and their other dashboards in this app's browser, so they stay logged in there; if a login expires it asks them to log in again. The writing tasks run in the evening. Mention they can run everything now with `/yeez:run`, and see what's queued with `/yeez:scheduled`.
 
-Never create duplicates: if Yeez tasks already exist (a re-run of setup), update their times instead of adding new ones.
+### When Yeez tasks already exist (re-running setup, or "fix my Yeez tasks")
+
+First list the buyer's scheduled tasks. Never create a second copy of a task. Compare what's there with the plan from tasks.md, then fix it:
+
+1. **Times:** change each task's time to the plan's.
+2. **Instructions:** if a task's instructions are anything other than its exact prompt, move any real rule in them to `buyer_rules` for the site it's about (`save_site_profile`), skipping rules Yeez already has (named sources only, no Reddit or forums, no clickbait), then set the instructions to the exact prompt.
+3. **Extra tasks** (a second Articles task, a Search task they didn't ask for, social tasks with no Pages): pause them, then tell the buyer to delete each one (most apps only let the buyer delete; in Claude it's the Delete button on the task's page).
+4. **Missing tasks:** create them.
+
+If the app won't let you change a task, tell the buyer exactly what to change, task by task, using [../help/how-to.md](../help/how-to.md). Then show the fixed schedule.
 
 ## 10. Finish
 

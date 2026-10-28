@@ -1,11 +1,13 @@
 ---
 name: help
-description: Explains what Yeez does, which commands are available, and where the user's setup stands. Use when the user types /yeez:help or asks what Yeez can do.
+description: Explains what Yeez does, which commands are available, and where the user's setup stands, and answers how-to questions (change or delete a scheduled task, change articles a day or publish times, give Yeez a rule, log in for Learn, turn search articles on or off). Use when the user types /yeez:help, asks what Yeez can do, or asks how to do something with Yeez or its scheduled tasks.
 ---
 
 # Yeez help
 
 Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
+
+**How do I…? questions:** answer from [how-to.md](how-to.md) with the steps for their app, and do the part you can do for them. Skip the rest of this page.
 
 1. Call the Yeez tool `setup_status`. If it isn't available, say Yeez isn't connected yet and point them to `/yeez:setup`.
 2. In a few short lines, tell them:
