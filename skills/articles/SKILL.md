@@ -7,7 +7,7 @@ description: Writes, checks and schedules an article (or a numbered gallery) for
 
 Read [../core/rules.md](../core/rules.md) and [../core/platforms/README.md](../core/platforms/README.md) first, then the file in [../core/platforms/](../core/platforms/) for every platform the site publishes to (its `platforms` setting, or `channels.syndication` in the buyer's basics). Those rules bind every article.
 
-**Needs:** today's picked headlines. For each connected site, call `get_headlines`; it returns only headlines still waiting for an article. If it returns none, call it again with `include_done: true`: if that's empty too, no headlines were picked today, so follow the **headlines** skill for that site first (unattended: do it, don't ask); if they're all written or held, this site is done. Write one article per waiting headline, strongest first.
+**Needs:** today's picked headlines. For each connected site, call `get_headlines`; it returns only headlines still waiting for an article. If it returns none, call it again with `include_done: true`: if that's empty too, no headlines were picked today, so follow the **headlines** skill for that site first (unattended: do it, don't ask); if they're all written or held, this site is done. Write one article per waiting headline, strongest first. When you hold one, write the replacement `hold_headline` returns, so the site still gets its full day.
 
 If the site's settings have `galleries_per_day` above 0, that many of the day's picks are galleries instead: follow [gallery.md](gallery.md) for those. **Never galleries on a NewsBreak site** (NewsBreak pays on article page views only): if a NewsBreak site has `galleries_per_day` set, write articles and say so once in the report.
 
@@ -20,8 +20,8 @@ If the site's settings have `galleries_per_day` above 0, that many of the day's 
    - figures are current for the year stated
    - company status is current
 
-   If the story fails, call `hold_headline` with the reason and move on.
-2. **Gather sources.** Use at least five, mostly primary or official, from at least two different sites, and at most one mainstream news site.
+   If the story fails, call `hold_headline` with the reason. It returns a `replacement` headline when there's a reserve: write that one next.
+2. **Gather sources** the way this headline's story type says (`story_type` on the headline, `sourcing` in the brief's `story_types.guide`). Money and rule stories: at least five, mostly primary or official, from at least two sites. People, local, celebrity and sports stories: the named outlet that reported it plus at least one more that confirms it. Never Reddit, forums or anonymous posts. If a site blocks the automated check (the check says so), read it yourself in the browser; that's not an error.
 3. **Write in the buyer's voice** (from `get_site_brief`). Before the first article of the run, read two or three of `settings.profile.voice_samples` in full, from the same vein as today's stories where possible, and follow `voice_notes`: their length, how they open, how they're broken up, how they source. Write like a reporter talking to a reader:
    - Open with a short intro paragraph of two to four sentences.
    - Then three to five `<h2>` sections named for this story.
@@ -29,12 +29,13 @@ If the site's settings have `galleries_per_day` above 0, that many of the day's 
    - Link each fact inline to its source, once per source.
    - Name the person or institution behind the central claim ("said", "according to").
    - Write in the third person, with no "I", "we" or "you".
+   - People stories: tell it as the story of the person, warmly, in the order it happened, with what the outlet reported them saying (attributed and linked). Never invent a quote, a feeling or a detail.
    - No research narration, no stock filler, no hype, no tables, no `<h1>`, and no source list at the end.
 
    The body must state every specific the headline promises: each number, each named source, each item in a counted list. The title must equal the picked headline.
 4. **Check it.** Call `check_article` with the title, the HTML and the source URLs.
    - **fix:** rewrite what the findings name, then check again, up to three times.
-   - **hold:** call `hold_headline` with the reason.
+   - **hold:** call `hold_headline` with the reason, then write the `replacement` it returns.
    - **pass:** continue.
 
    If the headline overstates its own sources, make the smallest sourced correction to the title instead of holding a true story: change only the wrong element (cap vs flat, alleged vs found, the right state, date or year) to the specific the sources support, never to something vaguer, and never tone it down. Note every correction (original → corrected, with the source) for the report. Hold only when the story itself fails; aim for no more than 3 holds per 50.

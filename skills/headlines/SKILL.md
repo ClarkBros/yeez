@@ -23,25 +23,24 @@ Call `get_site_brief` for the site. It gives the site's settings, the buyer's sa
 
 **Needs:** marching orders dated today or yesterday. If they're missing or older, follow the **learn** skill in daily mode first (unattended: do it, don't ask). If there's still no profile (learn has never run in full for this site), say so at the top of the summary and write from the site's recent winners in the brief.
 
-## 2. Pull wide from primary sources
+## 2. Know what kind of stories this site runs
 
-Search the web for real, current stories in this site's niche. Gather at least 1.5 times as many stories as the site publishes per day. Prefer primary sources:
-- agencies, regulators and courts
-- official company notices
-- recall and safety bodies
-- the publishers of studies
+Every story has a **story type** (`story_types` in the brief: `site_default`, `site_mix` and a `guide` per type). The type decides what counts as a good source and what the headline should look like, so a parenting, garden, celebrity or sports site never gets written like a government report.
 
-Competitor and trend feeds tell you which stories exist. Never copy their wording.
+- Split the day's slots by `site_mix` (or all `site_default` if there's no mix yet). Each type's `use_for` says which stories belong to it.
+- Follow each type's `sourcing` when you look for stories and its `headline_style` when you write.
+- Tag every candidate with its `story_type` in `score_headlines`.
 
-Cut low-ceiling topics before you write anything:
-- textbook how-tos
-- single-town items
-- minor-brand news
-- police-blotter items
-- small claims that need readers to take action
-- statistics nobody feels
+## 3. Pull wide
 
-## 3. Settle the facts first
+Search the web for real, current stories in this site's niche, aimed at the veins in the marching orders. Gather at least 1.5 times as many stories as the site publishes per day.
+
+- Look where this site's kind of story is actually reported. Money and rule changes: agencies, regulators, courts, company notices, studies. People stories: local TV and newspaper sites, national outlets that interview the person, court and police records. Celebrities and sports: the outlets that broke it, plus the official announcement.
+- `profile.competitor_examples` lists stories from competing sites that fit this site's veins. Use them as models for the angles and shapes to look for, never as text to copy.
+- Never use Reddit, forums or anonymous posts as a source. A viral post counts only when a named outlet reported it and named or interviewed the person; then cite the outlet.
+- Cut what this site's numbers say doesn't win (the `avoid` list and the veins below the site average). For money and rule stories, also cut textbook how-tos, minor-brand news and statistics nobody feels. For people stories, a single-town story is fine when the person and the stakes are strong.
+
+## 4. Settle the facts first
 
 For each story, read the primary source and record exactly what every number, date and status is: cap or flat amount, estimate or final, cumulative or current, whose figure, which date, alleged or proven. Note the date you confirmed it is current, and the date the event happens.
 
@@ -52,15 +51,17 @@ Drop a story here, before writing anything, when (the shared currency and claim-
 - it says money "is being sent", "approved" or "starts" with no current page from the agency that runs it;
 - the figure is last year's.
 
-## 4. Write the candidates
+## 5. Write the candidates
 
-Write one headline per story:
-- a plain statement in the third person
+Write one headline per story, in the shape of this site's own winners (`voice_samples` and `winning_patterns`) and its story type's `headline_style`. Read three or four of the site's top titles before you start and match how they're built: who they lead with, how long they run, how they carry the emotion and the detail. A people story reads like the site's best people stories, not like an agency notice.
+
+Always:
+- third person
 - a vivid verb
-- the specific figure or date
-- named after the institution or household name the story is actually about
+- the specific detail that makes it this story (the person, the place, the figure or the date)
+- the outcome stated, never withheld ("then she realized why" is clickbait; say what she found)
 
-Favor stories where something readers already have or rely on changes on a stated date.
+For money and rule stories, favor ones where something readers already have or rely on changes on a stated date, named after the institution or household brand the story is about.
 
 Vary length, opening word and structure across the day. Never use any of these:
 - ALL CAPS, emoji or clickbait
@@ -74,7 +75,7 @@ Intensity is good: long, emotional and as strong as the true facts allow. Never 
 
 Every number, name and claim in a headline must come from a fact you recorded. If it can't be sourced, take it out.
 
-## 5. Rank with Yeez
+## 6. Rank with Yeez
 
 Call `score_headlines` with all candidates. For each one, send:
 - its `sources`
@@ -82,12 +83,12 @@ Call `score_headlines` with all candidates. For each one, send:
 - `primary_source_url`, `current_as_of` and `event_date`
 - a one-line `angle`
 
-Yeez scores each headline, kills repeats and anything that breaks the rules, and picks the day's set in ranked order.
+Send each candidate's `story_type` too. Yeez scores each headline by its type, kills repeats and anything that breaks the rules, picks the day's set in ranked order, and keeps the next best as **reserves**. When the articles task holds a pick, the top reserve takes its place, so the day still fills.
 
 If a candidate comes back killed for a reason you can fix with sourced facts (a missing fact or date), fix it and score it once more. Never pad the day with weaker or duplicate stories.
 
 If the result includes a `note` about missing site word lists, tell the user once that `/yeez:setup` can add them.
 
-## 6. Report
+## 7. Report
 
 In a short list per site, show the picked headlines with their scores, and how many were cut and why, in a few words each.

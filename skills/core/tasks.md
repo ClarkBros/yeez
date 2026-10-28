@@ -4,7 +4,7 @@ Yeez runs as a chain of scheduled tasks in the buyer's AI app, one after another
 
 | Order | Task (prompt) | Goal | Needs | Produces |
 |---|---|---|---|---|
-| 1 | **Learn** (`/yeez:learn daily`) | Know what's winning right now | A browser logged in to NewsBreak (optional); the Yeez folder | Fresh numbers in the folder; today's marching orders in each site profile |
+| 1 | **Learn** (`/yeez:learn daily`) | Pull the latest numbers and know what's winning right now | The computer on, the app open, and NewsBreak and the other dashboards logged in in the app's browser; the Yeez folder | Fresh numbers in the folder; today's marching orders in each site profile |
 | 2 | **Headlines** (`/yeez:headlines`) | Pick tomorrow's stories and headlines most likely to get views | Today's marching orders (if missing or older than a day: run Learn's daily mode first) | Ranked, sourced headlines saved per site, up to each site's daily count |
 | 3 | **Articles** (`/yeez:articles`) | Turn every picked headline into a verified, sourced, scheduled article | Today's picked headlines (if none: run Headlines first) | Scheduled posts on each site at its publish times; held stories with reasons |
 | 3b | **Search** (`/yeez:search`) | One article built to rank on Google, waiting for the buyer's approval | Search Console connected; search articles left this week | One search article pending approval |
@@ -33,6 +33,8 @@ Set up in setup's last step. Start the chain in the evening before the first pub
 Example, one site at 30 articles a day and 3 Pages, first publish at 6:00 AM: Learn 7:00 PM → Headlines 7:20 PM → Articles 8:00 PM → Search 9:50 PM → Social learn 10:10 PM → write 10:30 PM → build 10:55 PM → post 11:15 PM → Newsletter 11:30 PM (send days only).
 
 Facebook posts are scheduled for tomorrow, so the social tasks can also run in the morning if the evening is crowded.
+
+**Learn runs first every evening and needs the computer:** it opens NewsBreak and the other dashboards in the AI app's browser, so the buyer's computer must be on, the app open, and the buyer logged in to each dashboard in that browser. Tell the buyer this when the tasks are set up.
 
 Each app schedules differently (Claude scheduled tasks, Codex automations, Cursor Automations, cron); `app_guide` says how, and whether tasks run only while the computer is on and the app is open.
 

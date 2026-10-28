@@ -16,7 +16,7 @@ Prompts: `/yeez:learn` (setup mode when a site has no confirmed profile yet, oth
 Modes:
 - **Setup (full):** first time for a site. Pull everything, all time. Read the site. Present what you found and have the buyer confirm it.
 - **Weekly (Monday review):** pull again, refresh veins, patterns and marching orders. Don't re-ask the buyer what they already confirmed.
-- **Daily (start of /yeez:run):** NewsBreak refresh only, and only if a browser is available and already logged in. Never ask anything. Then refresh the marching orders from `yeez_data.py report`.
+- **Daily (the first task every evening, and the start of /yeez:run):** pull NewsBreak and every other platform the site is approved on (steps 2–3), then refresh the marching orders from `yeez_data.py report`. Never ask anything. This needs the buyer's computer on, their AI app open, and them logged in to each dashboard in the browser the app uses. If a dashboard isn't logged in, skip it and put this at the very top of the summary, every night until it's fixed: "Yeez couldn't pull your <platform> numbers tonight because you're not logged in to <dashboard> in <the browser>. Log in there once and leave it logged in; tomorrow's run picks it up." Then carry on with the numbers you have.
 
 ## Where the numbers live
 
@@ -78,7 +78,8 @@ For each site:
    - Check the month-by-month trend before recommending a vein: rising, flat or decaying. The latest month is always biased low (less time to collect views); never call that a decline.
    - A vein below the site average costs the site views on every article in it.
    - Articles NewsBreak didn't make live (its `status`) are a distribution problem, not a headline problem: report them, don't learn from them.
-4. Work out the profile:
+4. **Competitors (setup, weekly, and whenever a top vein can't run anymore or the site's views are falling):** find 4–8 sites publishing the same kind of stories for the same readers (search the niche plus the platforms the site is on). Collect 15–25 of their recent stories that fit this site's veins and have real named sourcing (not forum retellings): title, URL, outlet, the vein, and what makes it work. Save them as `competitor_examples` with `save_site_profile`, and turn their best angles into `marching_orders.ride` items to test, one new angle at a time. When a vein dies or is banned (for example forum-sourced stories), this is how the site finds the reported version of what its readers came for.
+5. Work out the profile:
    - **about** and **audience:** one or two plain sentences each, from the site and its winners.
    - **universal_entities:** the institutions, programs or agencies the whole audience depends on, ranked by how often they appear in winners.
    - **major_brands:** household names the audience recognizes on sight, from the titles.
@@ -88,6 +89,7 @@ For each site:
    - **winning_patterns / losing_patterns:** headline shapes that win and lose here (what they open with, numbers, named entities, length, framing), each with its evidence ("9 of the top 20").
    - **veins:** name, keywords, VPA, ratio to average, trend.
    - **best_hours:** when this site's articles do best, converted to the site's timezone (the report's hours are UTC).
+   - **default_story_type** and **story_mix:** what kind of stories this site's winners are, from the types in `get_site_brief`'s `story_types.guide` (money and rule news, real people's stories, local news, celebrities and TV, sports, guides). Give each vein a type, then set the mix by each type's share of views (not of articles), e.g. `[{type: "human_story", share: 0.7, veins: [...]}, {type: "service_news", share: 0.3, veins: [...]}]`. A site whose winners were forum retellings is still a `human_story` site: the same stories, reported by named outlets.
    - **marching_orders:**
      - `ride`: veins breaking out in the last 14 days
      - `refresh`: proven evergreen veins with high VPA that haven't run lately
@@ -109,7 +111,7 @@ Show the buyer one short message per site, plain words, no jargon:
 
 Let them change anything ("tap the microphone and just talk" works too). Then call `save_site_profile` with everything and `confirmed_by_buyer: true`.
 
-In weekly and daily mode, don't ask: call `save_site_profile` with the refreshed `veins`, `winning_patterns`, `losing_patterns`, `best_hours`, `voice_samples` and `marching_orders` only. Never overwrite what the buyer confirmed (about, audience, subjects, brands, categories, authors, voice notes). If the data says one of those has changed, suggest it in the summary instead.
+In weekly and daily mode, don't ask: call `save_site_profile` with the refreshed `veins`, `winning_patterns`, `losing_patterns`, `best_hours`, `voice_samples`, `story_mix`, `competitor_examples` and `marching_orders` only. Never overwrite what the buyer confirmed (about, audience, subjects, brands, categories, authors, voice notes). If the data says one of those has changed, suggest it in the summary instead.
 
 ## 7. Report
 
