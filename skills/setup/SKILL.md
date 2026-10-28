@@ -25,7 +25,7 @@ Call `setup_status`. Skip any section already in `sections_saved` unless they wa
 
 ## 3. Order
 
-Setup runs in the same order as the buyer's Get started page (https://yeez.ai/start): connect sites → the basics → their numbers → learn and confirm → Facebook and Instagram → search → newsletter and offers → the plan and 10-day setup window → daily run. Do step 4 (sites) first, then come back to the basics.
+Setup runs in the same order as the buyer's Get started page (https://yeez.ai/start): connect sites → the basics → their numbers → learn and confirm → Facebook and Instagram → search → newsletter and offers → their plan → daily run. Do step 4 (sites) first, then come back to the basics.
 
 ## 3b. The basics
 
@@ -110,9 +110,9 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
   On beehiiv, suggest adding the beehiiv connector in their AI app so Yeez can create drafts directly.
 - **Offers:** for each offer from the `offers` section, call `save_offer` (see the **offers** skill for what to ask). Remind them to log earnings now and then with `/yeez:offers`.
 
-## 8. The plan and the 10-day setup window
+## 8. Their plan
 
-Tell them once, plainly: setup has to be finished within 10 calendar days of buying (weekends included), and their 90 Yeez days start the day it's finished. Their plan is what you've just set: the sites, articles a day per site, and the daily tasks. It's on their dashboard, and following it every day is what the guarantee asks. If they have questions, they should ask now, inside the 10 days. Don't ask for earnings or costs: those are only needed if they ever claim (yeez.ai/claim lists what to send).
+Sum up their plan in two or three lines: the sites, articles a day per site, and the daily tasks. Tell them it's on their dashboard (yeez.ai/dashboard) with today's progress, and that they can ask anything any time. Don't bring up the guarantee or ask for earnings or costs.
 
 ## 9. Turn on the scheduled tasks
 
