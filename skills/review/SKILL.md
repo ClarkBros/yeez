@@ -1,22 +1,17 @@
 ---
 name: review
-description: The Yeez weekly review. Collects the week's numbers, finds what won and what flopped on each site and social account, updates each site's headline rules for next week, logs earnings, and updates the 90-day earn-back tracker. Use when the user types /yeez:review, asks how the week went, wants to log earnings or views, sets their before-Yeez baseline, or as part of the Monday /yeez:run.
+description: The Yeez weekly review. Collects the week's numbers, finds what won and what flopped on each site and social account, updates each site's headline rules for next week, logs earnings, and reports days on plan. Use when the user types /yeez:review, asks how the week went, wants to log earnings or views, or as part of the Monday /yeez:run.
 ---
 
 # Yeez weekly review
 
 Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it never breaks.
 
-Plain words, short lines. The buyer should finish knowing what worked, what changed for next week, and where they stand on the 90-day earn-back.
+Plain words, short lines. The buyer should finish knowing what worked, what changed for next week, and whether they're on plan.
 
-## 0. Baseline (once)
+## 0. The plan
 
-Call `guarantee_status`. If `before_total_90_days` is empty, or the user said "baseline":
-1. Explain in one line: the guarantee compares what their sites earn in the 90 days after starting Yeez with the 90 days before.
-2. Ask what each income source paid in the 90 days before they started, from their own dashboards: ad networks (NewsBreak, MSN, Mediavine, AdSense…), syndication, affiliates, products, newsletter sponsors. One number per source is enough; a screenshot works too.
-3. Call `save_baseline` with one entry per source. Only pass `start_date` if they started on a day other than their first scheduled article.
-
-If this runs unattended, skip this step and put "Add your before-Yeez baseline with /yeez:review baseline" at the top of the summary.
+Call `guarantee_status`. It returns their plan (articles a day per site), today's Learn pull and articles, and plan days so far (`plan_days` of `plan_days_needed`). Earnings and content costs aren't tracked; they're only sent with documents if the buyer ever claims.
 
 ## 1. Get this week's numbers in
 
@@ -58,7 +53,7 @@ Call `save_weekly_review` with `week_ending` (the last day of the period), a sum
 Then tell the buyer, briefly:
 - the two or three things that mattered most this week
 - the rules that changed
-- the earn-back tracker: day X of 90, extra so far vs what they paid, on pace or not (from `guarantee`)
+- their plan: days on plan so far, and anything that kept Learn or the articles from running (from `guarantee`)
 - their dashboard: https://yeez.ai/dashboard
 
-When this runs as a scheduled task with nobody watching, never stop to ask; review what Yeez already has and list at the top what the buyer should add (views, earnings, baseline).
+When this runs as a scheduled task with nobody watching, never stop to ask; review what Yeez already has and list at the top what the buyer should add (views, earnings).

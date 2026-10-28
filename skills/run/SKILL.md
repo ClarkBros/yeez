@@ -17,7 +17,7 @@ Read [../core/rules.md](../core/rules.md) first. This runs the whole chain from 
 5. Finish with one short summary per site and account:
    - articles and posts scheduled, with times
    - anything held, and why
-   - on Mondays, the weekly review highlights and the earn-back tracker
+   - on Mondays, the weekly review highlights and days on plan
    - the review links: the site's `/wp-admin/edit.php?post_status=future` page, and `list_social_queue` for posts
 
 When this runs as a scheduled task with nobody watching, never stop to ask questions. Make the most reasonable choice, hold what can't be verified, and put anything that needs the buyer's attention at the top of the summary.

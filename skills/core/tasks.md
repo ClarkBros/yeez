@@ -14,7 +14,7 @@ Yeez runs as scheduled tasks in the buyer's AI app, each with a clear job: Learn
 | 4d | **Social post** (`/yeez:social post`) | Schedule every post natively on Facebook and Instagram | Built items | Scheduled posts, recorded on the dashboard |
 | Hourly, daytime | **Social now** (`/yeez:social now`) | Post stories and Instagram items at their times (they can't be scheduled ahead) | Today's built queue | Those items posted; only created when the buyer has stories or Instagram |
 | 5 | **Newsletter** (`/yeez:newsletter`, on send days) | The next issue from the best stories | Newsletter settings; the day's articles | A finished issue (beehiiv draft via API, or ready to paste) |
-| Mondays, first | **Weekly review** (`/yeez:review`) | Learn the week, update the rules, update the earn-back tracker | The week's numbers (runs Learn's weekly mode itself) | Updated site profiles, learned headline rules, the weekly review on the dashboard |
+| Mondays, first | **Weekly review** (`/yeez:review`) | Learn the week, update the rules, report days on plan | The week's numbers (runs Learn's weekly mode itself) | Updated site profiles, learned headline rules, the weekly review on the dashboard |
 
 `/yeez:run` runs the whole chain in one session, for apps that can only schedule one task or when the buyer wants to run it all now.
 

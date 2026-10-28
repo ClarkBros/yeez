@@ -25,7 +25,7 @@ Call `setup_status`. Skip any section already in `sections_saved` unless they wa
 
 ## 3. Order
 
-Setup runs in the same order as the buyer's Get started page (https://yeez.ai/start): connect sites → the basics → their numbers → learn and confirm → Facebook and Instagram → search → newsletter and offers → earn-back baseline → daily run. Do step 4 (sites) first, then come back to the basics.
+Setup runs in the same order as the buyer's Get started page (https://yeez.ai/start): connect sites → the basics → their numbers → learn and confirm → Facebook and Instagram → search → newsletter and offers → the plan and 10-day setup window → daily run. Do step 4 (sites) first, then come back to the basics.
 
 ## 3b. The basics
 
@@ -110,9 +110,9 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
   On beehiiv, suggest adding the beehiiv connector in their AI app so Yeez can create drafts directly.
 - **Offers:** for each offer from the `offers` section, call `save_offer` (see the **offers** skill for what to ask). Remind them to log earnings now and then with `/yeez:offers`.
 
-## 8. Earn-back baseline
+## 8. The plan and the 10-day setup window
 
-Explain in one line that the 90-day guarantee compares what their sites earn in the 90 days after they start with the 90 days before. Ask what each income source paid in the 90 days before today, from their own dashboards (a number per source, or a screenshot). Call `save_baseline`. If they don't have the numbers handy, tell them they can add them later with `/yeez:review baseline`; the tracker needs them to measure anything.
+Tell them once, plainly: setup has to be finished within 10 calendar days of buying (weekends included), and their 90 Yeez days start the day it's finished. Their plan is what you've just set: the sites, articles a day per site, and the daily tasks. It's on their dashboard, and following it every day is what the guarantee asks. If they have questions, they should ask now, inside the 10 days. Don't ask for earnings or costs: those are only needed if they ever claim (yeez.ai/claim lists what to send).
 
 ## 9. Turn on the scheduled tasks
 
@@ -136,4 +136,4 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in their site's editor.
 - Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled ahead; Instagram posts and stories go out at their times through the social now task; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
-- Every Monday the run does a weekly review: it finds what won, updates next week's headline rules, and updates the 90-day earn-back tracker. Their dashboard is https://yeez.ai/dashboard.
+- Every Monday the run does a weekly review: it finds what won and updates next week's headline rules. Their dashboard (their plan, today's runs, the week) is https://yeez.ai/dashboard.
