@@ -20,4 +20,4 @@ Deceptive practices, dangerous content, harassing or hateful content, manipulate
 
 ## Search
 - People-first content: original reporting and real usefulness, not pages made to rank. Mass-produced pages that add nothing are "scaled content abuse".
-- Search-lane articles (`/yeez:search`) wait for the buyer's approval before they go live, and stay within the site's weekly search limit.
+- Search-lane articles wait for the buyer's approval before they go live, and run only on sites the search gate allows (Google indexing nearly all the site's new articles and already ranking it), within its weekly number.

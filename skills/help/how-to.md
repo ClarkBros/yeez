@@ -36,7 +36,8 @@ Other apps (Codex automations, Cursor Automations, cron): open the automation or
 
 ## Search articles (Google)
 
-- **Turn search articles on or off:** "Turn on Yeez search articles for parentdiaries.com, 5 a week" or "Turn off Yeez search articles" (`search_per_week`; 0 is off). They're off unless you turn them on. If you turn them on, also add a Search task (`/yeez:search`) right after Articles, or say "Fix my Yeez tasks".
+- **Who gets them:** nobody has to turn them on. Once Search Console is connected, Yeez checks each site every Monday and writes a few search articles a week only on sites Google already trusts (it indexes nearly all the site's new articles and already ranks it for real searches). The Articles task writes them; there's no separate task. To see where a site stands, ask "Does my site get Yeez search articles?" (`get_search_ideas` gives the reasons).
+- **Turn them off anyway:** "Turn off Yeez search articles for parentdiaries.com" (`search_per_week` 0).
 - **Approve one:** on your yeez.ai dashboard, by telling your AI app, or in WordPress under Posts → Pending.
 
 ## Newsletter

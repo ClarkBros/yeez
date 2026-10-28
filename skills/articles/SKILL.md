@@ -57,6 +57,10 @@ If the site's settings have `galleries_per_day` above 0, that many of the day's 
 
 Keep a running list, as you go, of each article's opening sentence pattern and its section headings. Before writing the next one, look at the list: no two articles in a run may share an opening pattern, a repeated sentence or paragraph, or the same section shape, and no headline formula may repeat across the set. Vary them as you write; it's too late once they're scheduled.
 
+## After the night's articles: one search article
+
+When every picked headline is written or held, call `get_search_ideas` for each site. If `left_this_week` is above 0, write one search article for that site with the **search** skill (sections 1 to 3). If it's 0, skip it silently: the site's own Search Console data decides (`search_gate.reasons` says why), and nobody needs to hear about it unless they ask.
+
 ## Report
 
-Per site, give one short line per article: the headline, the local publish time, and the edit link. Then list headline corrections (original → corrected) and anything held, with the reason. NewsBreak sites: say how many posts got the NewsBreak flag (it should be all of them). Remind the user they can review or change anything before it publishes, with `/yeez:scheduled` or in their site's editor.
+Per site, give one short line per article: the headline, the local publish time, and the edit link. Then list headline corrections (original → corrected) and anything held, with the reason. NewsBreak sites: say how many posts got the NewsBreak flag (it should be all of them). If a search article was written, give its title and say it's waiting for their approval. Remind the user they can review or change anything before it publishes, with `/yeez:scheduled` or in their site's editor.
