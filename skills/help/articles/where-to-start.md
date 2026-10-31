@@ -1,0 +1,1 @@
+Start at [Get started](/start). It walks you through installing Yeez, connecting your sites, your basics, your numbers and turning on the scheduled tasks, and ticks each step off as you go. Your dashboard shows your plan and today's runs once it's running.

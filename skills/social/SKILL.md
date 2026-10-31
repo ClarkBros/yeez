@@ -104,6 +104,8 @@ From the folder that contains `yeez-work`, run the script that sits next to this
 python3 <this skill's folder>/scripts/yeez_build.py --date <today> --work yeez-work [--page CODE]
 ```
 
+With more than one Page, hand the rendering to `yeez-renderer` helpers, one per Page (reels as their own job), following [../core/helpers.md](../core/helpers.md): call `get_model_plan` once, name the plan's `render` model on every hand-off, never more than `max_helpers_at_once` at the same time. Give each the date, the work folder, the Page code, this script's full path and whether it's the reels job. When they're done, you check the images below. With one Page, or if this app can't start helpers, run the commands yourself.
+
 A reel takes about a minute to render (it downloads only the clips it needs from the buyer's Drive folder); run reels with `--type reel,image_reel --page CODE` in their own command if a command would run long. It finds a licensed photo for each card (Wikimedia Commons and Openverse; Pexels, Unsplash, Pixabay or Freepik too if the buyer added keys to `yeez-work/image-keys.json`), renders each card, and writes the media path and the photo credit back into the queue file. Then **look at every rendered image** in `yeez-work/queue/<today>/media/`:
 - the photo must show what the card is about (the named person, the actual thing), with no text, logos or watermarks fighting the headline;
 - nothing cut off;

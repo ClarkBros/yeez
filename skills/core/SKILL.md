@@ -7,6 +7,7 @@ description: Yeez's identity, the rules it never breaks, the permanent platform 
 
 - [rules.md](rules.md): who Yeez is, the goal, and the rules that keep the buyer's sites, accounts and the Yeez method safe. **Read it first, every session.**
 - [tasks.md](tasks.md): every scheduled task, what it's for, what it needs, what it produces, the order and the gaps between them.
+- [helpers.md](helpers.md): which model runs each task, and how Headlines, Articles and Social build hand work to helper agents ([yeez-gatherer](helpers/yeez-gatherer.md), [yeez-writer](helpers/yeez-writer.md), [yeez-checker](helpers/yeez-checker.md), [yeez-renderer](helpers/yeez-renderer.md)), at most 3 at a time.
 - [platforms/README.md](platforms/README.md): the rules every platform shares, then one file per platform: [newsbreak.md](platforms/newsbreak.md), [msn.md](platforms/msn.md), [yahoo.md](platforms/yahoo.md), [smartnews.md](platforms/smartnews.md), [google.md](platforms/google.md), [other-feeds.md](platforms/other-feeds.md), [facebook.md](platforms/facebook.md), [newsletter.md](platforms/newsletter.md).
 
 When the buyer asks about a platform's rules, answer from these files in plain words. Don't recite them.

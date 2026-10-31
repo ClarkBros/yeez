@@ -11,6 +11,20 @@ Read [../core/rules.md](../core/rules.md) and [../core/platforms/README.md](../c
 
 If the site's settings have `galleries_per_day` above 0, that many of the day's picks are galleries instead: follow [gallery.md](gallery.md) for those. **Never galleries on a NewsBreak site** (NewsBreak pays on article page views only): if a NewsBreak site has `galleries_per_day` set, write articles and say so once in the report.
 
+## Who does what: you and the helpers
+
+You run this task and decide what gets published. Writers and checkers do the heavy work, each on the model Yeez names, following [../core/helpers.md](../core/helpers.md). Call `get_model_plan` once at the start.
+
+1. **Brief once per site.** Call `get_site_brief`, read two or three of `settings.profile.voice_samples` in full and `voice_notes`, and note the site's categories, authors, tags, `buyer_rules` and the story-type guides. Write a short brief from it for the writers.
+2. **Hand out the headlines.** Start one `yeez-writer` helper per headline (the plan's `write` model named on every hand-off), never more than `max_helpers_at_once` running at the same time, strongest headlines first. Give each: the site and its brief, the headline (id, title, story type, facts, sources), and tonight's opening patterns and section shapes so far.
+3. **When a draft comes back:**
+   - A **hold**: call `hold_headline` with its reason, then hand the `replacement` to the next writer.
+   - A **draft**: start a `yeez-checker` helper on it (the plan's `check` model), within the same cap. If it says **fix**, make the fixes yourself (run `check_article` again) or send it back to a writer once. If it says **hold**, hold it as above.
+   - Then **read it yourself** before it goes out: the title equals the pick (or its noted correction), the body delivers every promise, it sounds like this site, and its opening and sections don't repeat tonight's set. Fix what's off.
+4. **Schedule it yourself** (step 9 below), and add its opening and sections to tonight's list.
+
+The steps below (1 to 8) are the writer's job. If this app can't start helpers, do them yourself for each headline, then step 9.
+
 ## For each headline
 
 1. **Verify it is true today, before writing.** Re-open the primary sources from the headline's facts. Check that:

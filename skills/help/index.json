@@ -1,0 +1,379 @@
+{
+  "note": "The Yeez help center. yeez.ai/help and /yeez:help both read this file and articles/<slug>.md, so an answer changed here changes everywhere. {{model_table}} and {{if_limit}} are filled from Yeez's model plan (get_model_plan).",
+  "topics": [
+    {
+      "id": "start",
+      "name": "Getting started",
+      "blurb": "Where to begin and what setup covers."
+    },
+    {
+      "id": "tasks",
+      "name": "Scheduled tasks",
+      "blurb": "Times, missed runs, approvals, pausing."
+    },
+    {
+      "id": "models",
+      "name": "AI models and usage limits",
+      "blurb": "Which model each task uses, and staying under your plan's limit."
+    },
+    {
+      "id": "sites",
+      "name": "Sites and articles",
+      "blurb": "Articles a day, publish times, rules for a site."
+    },
+    {
+      "id": "learn",
+      "name": "Learn and your numbers",
+      "blurb": "Dashboard logins and pulling your numbers."
+    },
+    {
+      "id": "search",
+      "name": "Google search",
+      "blurb": "Search articles and who gets them."
+    },
+    {
+      "id": "newsletter",
+      "name": "Newsletter",
+      "blurb": "Send days and the Newsletter task."
+    },
+    {
+      "id": "billing",
+      "name": "Billing and the guarantee",
+      "blurb": "Payments, licenses, refunds."
+    }
+  ],
+  "articles": [
+    {
+      "slug": "task-models",
+      "title": "Which AI model should each scheduled task use?",
+      "topic": "models",
+      "keywords": [
+        "model",
+        "opus",
+        "sonnet",
+        "haiku",
+        "pick model",
+        "choose model",
+        "best model",
+        "gpt",
+        "codex"
+      ]
+    },
+    {
+      "slug": "usage-limits",
+      "title": "Hitting your plan's usage limit",
+      "topic": "models",
+      "keywords": [
+        "limit",
+        "usage",
+        "ran out",
+        "rate limit",
+        "plan",
+        "pro",
+        "max",
+        "stopped"
+      ]
+    },
+    {
+      "slug": "helpers",
+      "title": "How Yeez splits work across models",
+      "topic": "models",
+      "keywords": [
+        "helpers",
+        "subagents",
+        "agents",
+        "parallel",
+        "delegate",
+        "how it works"
+      ]
+    },
+    {
+      "slug": "where-to-start",
+      "title": "Where do I start?",
+      "topic": "start",
+      "keywords": [
+        "setup",
+        "begin",
+        "install",
+        "onboarding",
+        "get started"
+      ],
+      "video": "welcome"
+    },
+    {
+      "slug": "see-your-tasks",
+      "title": "See your Yeez tasks",
+      "topic": "tasks",
+      "keywords": [
+        "list tasks",
+        "scheduled",
+        "find tasks"
+      ],
+      "video": "run"
+    },
+    {
+      "slug": "change-task-time",
+      "title": "Change a task's time or days",
+      "topic": "tasks",
+      "keywords": [
+        "time",
+        "schedule",
+        "move task",
+        "reschedule",
+        "days"
+      ]
+    },
+    {
+      "slug": "missed-runs",
+      "title": "A task didn't run",
+      "topic": "tasks",
+      "keywords": [
+        "missed",
+        "skipped",
+        "didn't run",
+        "asleep",
+        "keep awake",
+        "catch up",
+        "history"
+      ]
+    },
+    {
+      "slug": "task-approvals",
+      "title": "Stop a task asking for approval every run",
+      "topic": "tasks",
+      "keywords": [
+        "approval",
+        "permission",
+        "allow",
+        "stuck",
+        "waiting"
+      ]
+    },
+    {
+      "slug": "fix-my-tasks",
+      "title": "Check and fix every task at once",
+      "topic": "tasks",
+      "keywords": [
+        "fix tasks",
+        "wrong times",
+        "duplicate task",
+        "extra task"
+      ]
+    },
+    {
+      "slug": "task-instructions",
+      "title": "What goes in a task's instructions",
+      "topic": "tasks",
+      "keywords": [
+        "instructions",
+        "prompt",
+        "rules in task"
+      ]
+    },
+    {
+      "slug": "delete-or-pause-task",
+      "title": "Pause or delete a task",
+      "topic": "tasks",
+      "keywords": [
+        "pause",
+        "delete",
+        "stop",
+        "turn off"
+      ]
+    },
+    {
+      "slug": "run-task-now",
+      "title": "Run a task now",
+      "topic": "tasks",
+      "keywords": [
+        "run now",
+        "start",
+        "manual",
+        "yeez:run"
+      ]
+    },
+    {
+      "slug": "other-apps-tasks",
+      "title": "Tasks in Codex, Cursor and other apps",
+      "topic": "tasks",
+      "keywords": [
+        "codex",
+        "cursor",
+        "chatgpt",
+        "grok",
+        "automation",
+        "cron"
+      ]
+    },
+    {
+      "slug": "articles-per-day",
+      "title": "Change how many articles a day",
+      "topic": "sites",
+      "keywords": [
+        "articles a day",
+        "per day",
+        "more articles",
+        "fewer articles",
+        "volume"
+      ]
+    },
+    {
+      "slug": "publish-times",
+      "title": "Change publish times",
+      "topic": "sites",
+      "keywords": [
+        "publish time",
+        "when articles go live",
+        "window"
+      ]
+    },
+    {
+      "slug": "see-scheduled",
+      "title": "See and change what's scheduled",
+      "topic": "sites",
+      "keywords": [
+        "scheduled articles",
+        "queue",
+        "edit article",
+        "unschedule"
+      ]
+    },
+    {
+      "slug": "site-rule",
+      "title": "Give Yeez a rule for a site",
+      "topic": "sites",
+      "keywords": [
+        "rule",
+        "never cover",
+        "always",
+        "banned topic"
+      ]
+    },
+    {
+      "slug": "site-mix-voice",
+      "title": "Change a site's story mix or voice",
+      "topic": "sites",
+      "keywords": [
+        "mix",
+        "voice",
+        "tone",
+        "kind of stories"
+      ]
+    },
+    {
+      "slug": "learn-login",
+      "title": "Learn asks me to log in",
+      "topic": "learn",
+      "keywords": [
+        "login",
+        "log in",
+        "newsbreak",
+        "signed out",
+        "dashboard"
+      ],
+      "video": "learn"
+    },
+    {
+      "slug": "pull-numbers-now",
+      "title": "Pull your numbers now",
+      "topic": "learn",
+      "keywords": [
+        "numbers",
+        "views",
+        "stats",
+        "pull data"
+      ],
+      "video": "data"
+    },
+    {
+      "slug": "search-articles",
+      "title": "Search articles: who gets them, turning them off, approving",
+      "topic": "search",
+      "keywords": [
+        "google",
+        "search console",
+        "seo",
+        "search articles",
+        "approve"
+      ],
+      "video": "search"
+    },
+    {
+      "slug": "newsletter-days",
+      "title": "Change newsletter send days",
+      "topic": "newsletter",
+      "keywords": [
+        "newsletter",
+        "send days",
+        "issue"
+      ]
+    },
+    {
+      "slug": "billing",
+      "title": "Billing, refunds and the guarantee",
+      "topic": "billing",
+      "keywords": [
+        "refund",
+        "payment",
+        "invoice",
+        "license",
+        "guarantee"
+      ]
+    }
+  ],
+  "popular": [
+    "task-models",
+    "missed-runs",
+    "usage-limits",
+    "articles-per-day",
+    "learn-login",
+    "site-rule"
+  ],
+  "videos": [
+    {
+      "id": "welcome",
+      "title": "Welcome to Yeez",
+      "src": "/videos/yeez-0-welcome.mp4"
+    },
+    {
+      "id": "sites",
+      "title": "Connect your sites",
+      "src": "/videos/yeez-1-sites.mp4"
+    },
+    {
+      "id": "basics",
+      "title": "Your basics",
+      "src": "/videos/yeez-2-basics.mp4"
+    },
+    {
+      "id": "data",
+      "title": "Your numbers",
+      "src": "/videos/yeez-3-data.mp4"
+    },
+    {
+      "id": "learn",
+      "title": "Learn and confirm",
+      "src": "/videos/yeez-4-learn.mp4"
+    },
+    {
+      "id": "social",
+      "title": "Facebook and Instagram",
+      "src": "/videos/yeez-5-social.mp4"
+    },
+    {
+      "id": "search",
+      "title": "Search setup",
+      "src": "/videos/yeez-7-search.mp4"
+    },
+    {
+      "id": "run",
+      "title": "Turn on the scheduled tasks",
+      "src": "/videos/yeez-9-run.mp4"
+    },
+    {
+      "id": "dashboard",
+      "title": "Your dashboard",
+      "src": "/videos/yeez-8-dashboard.mp4"
+    }
+  ]
+}

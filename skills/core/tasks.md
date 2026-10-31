@@ -36,6 +36,10 @@ Facebook posts are scheduled for tomorrow, so the social tasks can also run in t
 
 Each app schedules differently (Claude scheduled tasks, Codex automations, Cursor Automations, cron); `app_guide` says how, and whether tasks run only while the computer is on and the app is open.
 
+## Each task's model
+
+Each task runs on its own model, set once in the task's settings. `get_model_plan` gives the model for every task in this app (the strongest model for Headlines, Articles, Newsletter, Weekly review and `/yeez:run`; the everyday model for Learn and Social; the lightest for Social now). Inside Headlines, Articles and Social build, Yeez hands the heavy work to helpers on the models it names ([helpers.md](helpers.md)), so a buyer never sets helper models.
+
 ## Task instructions hold only the command
 
 Each scheduled task's instructions are exactly its prompt from the table (`/yeez:headlines`, and so on), nothing else. Yeez updates reach the buyer only through the skills and their yeez.ai account, so anything written into a task would freeze an old version or fight a newer rule. The buyer's own standing rules for a site ("no celebrity gossip", "always link our recipe page") are saved with `save_site_profile` as `buyer_rules`, and every run reads them from `get_site_brief`.

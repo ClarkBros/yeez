@@ -31,9 +31,11 @@ Every story has a **story type** (`story_types` in the brief: `site_default`, `s
 - Follow each type's `sourcing` when you look for stories and its `headline_style` when you write.
 - Tag every candidate with its `story_type` in `score_headlines`.
 
-## 3. Pull wide
+## 3. Pull wide (with gatherer helpers)
 
 Search the web for real, current stories in this site's niche, aimed at the veins in the marching orders. Gather at least 1.5 times as many stories as the site publishes per day.
+
+Split the searching across `yeez-gatherer` helpers, following [../core/helpers.md](../core/helpers.md) (call `get_model_plan` once; the plan's `gather` model named on every hand-off; never more than `max_helpers_at_once` at the same time). One helper per slice: a vein from the marching orders or a story type from the mix, with how many stories to bring back. Give each the site's niche and audience, the story-type guide, the `avoid` list and `buyer_rules`, the competitor examples for that slice, and the stories already found. They return stories with every fact recorded (steps 3 and 4 below are their job). Merge what comes back, drop duplicates, and check the facts on anything that looks off before you write. If this app can't start helpers, do steps 3 and 4 yourself.
 
 - Look where this site's kind of story is actually reported. Money and rule changes: agencies, regulators, courts, company notices, studies. People stories: local TV and newspaper sites, national outlets that interview the person, court and police records. Celebrities and sports: the outlets that broke it, plus the official announcement.
 - `profile.competitor_examples` lists stories from competing sites that fit this site's veins. Use them as models for the angles and shapes to look for, never as text to copy.
