@@ -319,6 +319,36 @@
         "license",
         "guarantee"
       ]
+    },
+    {
+      "slug": "short-day",
+      "title": "A site got no articles, or fewer than its daily count",
+      "topic": "sites",
+      "keywords": [
+        "no articles",
+        "missing articles",
+        "short",
+        "didn't post",
+        "only one site",
+        "fewer articles",
+        "not enough articles",
+        "skipped"
+      ]
+    },
+    {
+      "slug": "off-topic",
+      "title": "The stories drift off-topic",
+      "topic": "sites",
+      "keywords": [
+        "off-topic",
+        "wrong stories",
+        "not gardening",
+        "topic",
+        "niche",
+        "drift",
+        "more of",
+        "fewer of"
+      ]
     }
   ],
   "popular": [

@@ -136,6 +136,22 @@ Yeez already sticks to named, reported sources, never uses Reddit or forums, and
 
 Type `/yeez:learn` for that site, then tell it what to change before you confirm: more of one kind of story, less of another, or how the writing should sound.
 
+### A site got no articles, or fewer than its daily count
+
+A site got no articles, or fewer than its daily count.
+
+- **Fill it now:** tell your AI app `Fill today's Yeez articles for lovelygardenroots.com` (with your site). It picks headlines for the missing slots and writes them. Leave out the site to fill every site.
+- **See why:** open Scheduled, then the Headlines and Articles tasks, and look at **History**. A skipped run means the computer was asleep or the app was closed (see [missed-runs](https://yeez.ai/help/missed-runs)). A run that finished short says why at the top of its report: too few true stories found, or stories held at the fact check.
+- **Nothing to fix in the tasks:** the Articles task works through every site. If the Headlines task didn't run, it picks the headlines itself, and it tops up any site that's short before it finishes.
+
+### The stories drift off-topic
+
+The stories drift away from what your site covers.
+
+Give Yeez a rule for that site: `Yeez rule for lovelygardenroots.com: every story is about gardening; about 8 a day are real family garden stories and 6 are seasonal tips from extension services` (with your site and your mix). It's saved to the site and the next Headlines run follows it.
+
+Yeez already keeps each story inside the site's niche, and fills thin news days with the site's tips and guides rather than leaving them short.
+
 ## Learn and your numbers
 
 ### Learn asks me to log in

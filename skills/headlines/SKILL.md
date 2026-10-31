@@ -40,6 +40,8 @@ Split the searching across `yeez-gatherer` helpers, following [../core/helpers.m
 - Look where this site's kind of story is actually reported. Money and rule changes: agencies, regulators, courts, company notices, studies. People stories: local TV and newspaper sites, national outlets that interview the person, court and police records. Celebrities and sports: the outlets that broke it, plus the official announcement.
 - `profile.competitor_examples` lists stories from competing sites that fit this site's veins. Use them as models for the angles and shapes to look for, never as text to copy.
 - Never use Reddit, forums or anonymous posts as a source. A viral post counts only when a named outlet reported it and named or interviewed the person; then cite the outlet.
+- Stay in the site's niche (`about` and `buyer_rules` in the brief). On a niche site the niche must be the heart of the story: on a garden site the garden, plants or harvest, not just something that happened in a yard; on a parenting site the parent or child. A strong story outside the niche is still cut.
+- If the niche's news runs thin today, don't leave slots empty: fill them from the site's other story types in its mix (seasonal guides and tips from expert sources where the mix has them), then from other outlets. Never fill with weak, off-niche or duplicate stories.
 - Cut what this site's numbers say doesn't win (the `avoid` list and the veins below the site average). For money and rule stories, also cut textbook how-tos, minor-brand news and statistics nobody feels. For people stories, a single-town story is fine when the person and the stakes are strong.
 
 ## 4. Settle the facts first
