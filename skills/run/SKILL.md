@@ -14,7 +14,8 @@ Read [../core/rules.md](../core/rules.md) first. This runs the whole chain from 
 3. If any Facebook Page or Instagram account is connected (`list_social_accounts`), follow the **social** skill (all of learn, write, build and post) for tomorrow's posts. Stories and Instagram items wait for their times; if the buyer has no social now task, say so once in the summary.
 3b. If a site has search articles left this week (`get_search_ideas` → `left_this_week`), follow the **search** skill for one of them, and list anything waiting for the buyer's approval at the top of the summary.
 4. If the newsletter is set up and tomorrow is a send day (from `get_newsletter_brief` settings), follow the **newsletter** skill for tomorrow's issue.
-5. Finish with one short summary per site and account:
+4b. Call `get_day_status`. If any site isn't complete, follow its `next` until `all_complete` is true.
+5. Finish with one short summary per site and account (start with each site's count, e.g. "10 of 10"):
    - articles and posts scheduled, with times
    - anything held, and why
    - on Mondays, the weekly review highlights and days on plan

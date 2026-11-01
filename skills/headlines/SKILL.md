@@ -13,7 +13,7 @@ Run this for each connected site (call `list_sites`), or only the site the user 
 
 ## 1. Load the brief
 
-Call `get_site_brief` for the site. It gives the site's settings, the buyer's saved voice, audience and goals, every headline from the last 14 days, and today's picks so far. If `still_to_write` already covers the day, say so and stop for that site.
+Call `get_site_brief` for the site. It gives the site's settings, the buyer's saved voice, audience and goals, every headline from the last 14 days, and today's picks so far. If its `day` (from `get_day_status`) is complete, or the waiting picks already cover the count, say so and stop for that site.
 
 `settings.profile` is what the **learn** skill found in this site's real numbers. Plan the day from it before searching:
 - **marching_orders:** `ride` (breakouts to spin fresh sequels of today), `refresh` (proven evergreen veins due again), `highest_value` (veins worth the most views per article), `avoid` (veins below the site average and dead patterns). Honor these first.
@@ -99,7 +99,9 @@ Call `score_headlines` with all candidates. For each one, send:
 
 Send each candidate's `story_type` too. Yeez scores each headline by its type, kills repeats and anything that breaks the rules, picks the day's set in ranked order, and keeps the next best as **reserves**. When the articles task holds a pick, the top reserve takes its place, so the day still fills.
 
-If a candidate comes back killed for a reason you can fix with sourced facts (a missing fact or date), fix it and score it once more. Never pad the day with weaker or duplicate stories.
+If a candidate comes back killed for a reason you can fix with sourced facts (a missing fact or date), fix it and score it once more. 
+
+**Fill the count.** The reply's `day.need_new_stories` must be 0, with at least 3 reserves for holds. If it isn't, search again now (wider: other outlets, the site's other story types in its mix, its seasonal guides or tips), score the new candidates, and repeat until it is. A site's day is never left short because the first search came up thin. Fill with true, on-topic stories, never repeats of each other or of recent posts.
 
 If the result includes a `note` about missing site word lists, tell the user once that `/yeez:setup` can add them.
 
