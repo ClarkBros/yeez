@@ -33,7 +33,7 @@ Every story has a **story type** (`story_types` in the brief: `site_default`, `s
 
 ## 3. Pull wide (with gatherer helpers)
 
-Search the web for real, current stories in this site's niche, aimed at the veins in the marching orders. Gather at least 1.5 times as many stories as the site publishes per day.
+Search the web for real, current stories in this site's niche, aimed at the veins in the marching orders. Gather `gathering.bring_back` (twice) as many stories as the day still needs, plus `gathering.min_reserves`, from each story type's `where_to_find` sources. Rank them by `gathering.rank_by`: the most proven stories fill the day. If the brief has `mix_warnings`, follow them when you split the day and give the buyer those numbers once in the report.
 
 Split the searching across `yeez-gatherer` helpers, following [../core/helpers.md](../core/helpers.md) (call `get_model_plan` once; the plan's `gather` model named on every hand-off; never more than `max_helpers_at_once` at the same time). One helper per slice: a vein from the marching orders or a story type from the mix, with how many stories to bring back. Give each the site's niche and audience, the story-type guide, the `avoid` list and `buyer_rules`, the competitor examples for that slice, and the stories already found. They return stories with every fact recorded (steps 3 and 4 below are their job). Merge what comes back, drop duplicates, and check the facts on anything that looks off before you write. If this app can't start helpers, do steps 3 and 4 yourself.
 

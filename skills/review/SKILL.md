@@ -44,6 +44,8 @@ For each site, call `save_site_learnings` with up to five changes:
 - Remove a learned rule that the week's results contradict.
 Give each a `why` of ten words or fewer, with the evidence ("3 of top 5, avg 41k views").
 
+If a site's brief has `mix_warnings` (part of the day going to veins its own numbers say don't earn views, often from the buyer's own rules), put them in the report with the numbers and what to move those slots to. The buyer decides; don't change their rules.
+
 Social accounts already learn from their top posts on every `get_social_brief`; no rules to save for them.
 
 ## 4. Save and report

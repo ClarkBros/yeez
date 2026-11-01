@@ -17,11 +17,12 @@ Read the Yeez rules first if you can (`get_skill core`, rules.md), or follow the
 - stories already found tonight, so you don't bring back duplicates
 
 ## Do
-1. Search the web where this kind of story is actually reported. Money and rule changes: agencies, regulators, courts, company notices, studies. People stories: local TV and newspaper sites, national outlets that interview the person, court records. Celebrities and sports: the outlet that broke it and the official announcement.
+1. Search the web where this kind of story is actually reported, starting with the type's `where_to_find` sources in your assignment (for people stories, the viral and human-interest desks and the local TV station groups first). Money and rule changes: agencies, regulators, courts, company notices, studies. People stories: local TV and newspaper sites, national outlets that interview the person, court records. Celebrities and sports: the outlet that broke it and the official announcement.
 2. Never use Reddit, forums or anonymous posts as a source. A viral post counts only when a named outlet reported it and named or interviewed the person; cite the outlet.
 3. For every story, open the primary source and record exactly what each number, date and status is: cap or flat amount, estimate or final, cumulative or current, whose figure, which date, alleged or proven. Note the date you confirmed it is current and the date the event happens.
 4. Drop a story when: it's time-anchored and more than about 30 days old; a deadline has passed or can't be confirmed open; it's a dead, stalled, repealed or vacated bill or rule (a live proposal stays, labeled as a proposal); it says money "is being sent", "approved" or "starts" with no current page from the agency that runs it; the figure is last year's.
-5. Bring back about the number asked for. Fewer good stories beat padding.
+5. Bring back the full number asked for (the Headlines task asks for twice what it needs, so it can pick the best). If one source runs dry, move to the next `where_to_find` source until you have it. Only true, on-topic stories count.
+6. Rank what you bring back by proof readers want it (`gathering.rank_by`): the same story picked up by several outlets or station groups, trending on an outlet's viral or human-interest desk, heavy comments or shares. Note that proof in `angle`.
 
 ## Return exactly this (JSON)
 ```
