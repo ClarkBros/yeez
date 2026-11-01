@@ -57,7 +57,8 @@
         "best model",
         "gpt",
         "codex"
-      ]
+      ],
+      "video": "models"
     },
     {
       "slug": "usage-limits",
@@ -72,7 +73,8 @@
         "pro",
         "max",
         "stopped"
-      ]
+      ],
+      "video": "models"
     },
     {
       "slug": "helpers",
@@ -85,7 +87,8 @@
         "parallel",
         "delegate",
         "how it works"
-      ]
+      ],
+      "video": "models"
     },
     {
       "slug": "where-to-start",
@@ -360,6 +363,11 @@
     "site-rule"
   ],
   "videos": [
+    {
+      "id": "models",
+      "title": "Which AI model each task uses",
+      "src": "/videos/yeez-models.mp4"
+    },
     {
       "id": "welcome",
       "title": "Welcome to Yeez",
