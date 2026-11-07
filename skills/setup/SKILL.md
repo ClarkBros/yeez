@@ -103,9 +103,9 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
 
 ## 7. Newsletter and offers
 
-- **Newsletter:** if the `channels` section names a newsletter, call `save_newsletter_settings` with:
+- **Newsletter:** each site has its own newsletter (or none). If the `channels` section names a newsletter, ask which site it belongs to (skip the question with one site), and whether any other site has its own. For each, call `save_newsletter_settings` with the `site` and:
   - its name and platform
-  - its signup page (Yeez adds a signup line to articles)
+  - its signup page (Yeez adds this signup line to that site's articles only)
   - send days and send time
   - timezone
 

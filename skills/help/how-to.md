@@ -136,6 +136,24 @@ Yeez already sticks to named, reported sources, never uses Reddit or forums, and
 
 Type `/yeez:learn` for that site, then tell it what to change before you confirm: more of one kind of story, less of another, or how the writing should sound.
 
+### Have Yeez find stories on certain sites
+
+Tell your AI app which sites to look at first, for one of your sites:
+
+`Yeez rule for lovelygardenroots.com: look for stories on bhg.com/gardening and hgtv.com/outdoors/gardens first`
+
+It's saved to that site, and every Headlines run searches those sites first. Yeez writes its own article from each story and credits where it came from. It never copies another site's text.
+
+#### Want lighter or different kinds of stories?
+
+Try them as tests first instead of giving them fixed daily slots:
+
+`Yeez rule for parentdiaries.com: test parenting tips and fun, lighter stories, and keep the kinds that get views`
+
+About a quarter of each day's picks are tests. Learn grades every test against your site's views and gives more room to the kinds that win, so you get more variety without your views dropping.
+
+To change how much of each kind of story a site runs, see [Change a site's story mix or voice](https://yeez.ai/help/site-mix-voice).
+
 ### A site got no articles, or fewer than its daily count
 
 A site got no articles, or fewer than its daily count.
@@ -176,9 +194,23 @@ Nobody has to turn them on. Once Search Console is connected, Yeez checks each s
 
 ## Newsletter
 
+### A newsletter for each site
+
+Each site has its own newsletter. A site's articles show only its own newsletter's signup line, and each newsletter's issues are built from that site's own stories. A site with no newsletter gets no signup line.
+
+Set one up for a site by telling your AI app:
+
+`Set up the newsletter for lovelygardenroots.com`
+
+It asks for the newsletter's name, platform, signup page, send days and send time, and saves it to that site. Do the same for each site that has a newsletter. If two sites share one newsletter, set it up on both.
+
+Change one the same way: `Change the newsletter for parentdiaries.com: the signup page is now …`
+
+The Newsletter task builds the next issue for every site whose newsletter sends the next day. If your send days change, see [Change newsletter send days](https://yeez.ai/help/newsletter-days).
+
 ### Change newsletter send days
 
-Tell your AI app: `My newsletter now sends Tuesday and Friday`. Then say `Fix my Yeez tasks`, so the Newsletter task runs the night before each send day.
+Tell your AI app the site and the new days, for example: `The parentdiaries.com newsletter now sends Tuesday and Friday`. Then say `Fix my Yeez tasks`, so the Newsletter task runs the night before each send day.
 
 ## Billing and the guarantee
 

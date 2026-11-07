@@ -1,20 +1,19 @@
 ---
 name: newsletter
-description: Builds the buyer's newsletter issue from the day's best story, with one fitting offer or paid recommendation, and puts it in their email platform (beehiiv directly) or a copy-ready page. Use when the user types /yeez:newsletter, asks for today's issue, or from /yeez:run on send days.
+description: Builds each site's newsletter issue from that site's best story, with one fitting offer or paid recommendation, and puts it in their email platform (beehiiv directly) or a copy-ready page. Use when the user types /yeez:newsletter, asks for today's issue, or from /yeez:run on send days.
 ---
 
 # Yeez newsletter
 
 Read [../core/rules.md](../core/rules.md) and [../core/platforms/newsletter.md](../core/platforms/newsletter.md) first. **Yeez never sends an issue**: it saves a draft (or schedules it only when the buyer said Yeez may). Runs on the day before each send day.
 
-**Needs:** newsletter settings and the last two days' articles. If no articles were scheduled in the last two days, there's nothing to build: say so and stop.
+**Each site has its own newsletter** (or none). A site's articles carry only its own newsletter's signup line, and its issue is built only from its own articles. Never put one site's newsletter on another site.
 
-1. Call `get_newsletter_brief`. If the newsletter isn't set up, ask for these, then call `save_newsletter_settings`:
-   - its name and platform
-   - its signup page
-   - send days and send time
-   - timezone
-2. **Pick the story.** Choose the top story from `stories`: the highest score that has been or will be published. Skip any story a subject in `recent_subjects` already covered.
+**Needs:** the site's newsletter settings and its last two days' articles. If a site scheduled no articles in the last two days, there's nothing to build for it: say so and move on.
+
+1. Call `list_newsletters`. Do steps 2 to 5 once for **each site whose newsletter sends tomorrow** (its `send_days`, in its timezone), calling `get_newsletter_brief` with that `site`. When the buyer asks for an issue by hand, do it for the site they name (or ask which, when there are several).
+   - **Setting one up** (the buyer asks, or names a newsletter for a site that has none): ask which site it's for, then for its name and platform, its signup page, send days and send time, and timezone, and call `save_newsletter_settings` with the `site`. One newsletter per site; a newsletter shared by several sites is saved on each of them.
+2. **Pick the story.** Choose the top story from that site's `stories`: the highest score that has been or will be published. Skip any story a subject in `recent_subjects` already covered.
 3. **Write the issue.** Keep it short and useful. Readers should finish it in about two minutes.
    - **Subject:** under 70 characters, specific, plain words, no emoji, no all-caps, no money promises, no fake "RE:" or false urgency. Name the exact thing that changes.
    - **Preview text:** one line that adds a second fact rather than repeating the subject.
@@ -25,11 +24,11 @@ Read [../core/rules.md](../core/rules.md) and [../core/platforms/newsletter.md](
    - **One offer at most,** from `offers`, and only when it genuinely fits the story. Use its link exactly as given (it's a tracked link), its `cta`, and a plain sentence from its `blurb`. A `recommendation` offer goes in a short "Also worth reading" line at the end.
    - Sign off with the newsletter's name, not a person's.
    - Format as simple email-safe HTML: paragraphs, one heading, links. No scripts or forms.
-4. **Save it.** Call `save_newsletter_issue`. If it lists problems, fix them and save again.
+4. **Save it.** Call `save_newsletter_issue` with the `site`. If it lists problems, fix them and save again.
 5. **Put it on the platform.** Try these in order:
    - **The beehiiv connector** in this app: create the post there as a draft (or scheduled for the next send day and time, only if the buyer has said Yeez may schedule sends). Then call `save_newsletter_issue` again with the same content, its `issue_id`, and `platform_ref` set to the beehiiv post ID.
    - **beehiiv by API** (Pro or Enterprise plans), when `yeez-work/beehiiv.json` exists: save the HTML to `yeez-work/newsletter/<date>.html` and run `python3 <this skill's folder>/scripts/beehiiv_post.py --title "<subject>" --preview "<preview>" --html yeez-work/newsletter/<date>.html` (add `--schedule <ISO time>` only with the buyer's standing OK). It prints the post ID; save it as `platform_ref` with `save_newsletter_issue` and the `issue_id`. Never print or read out the key file.
    - **Anything else:** give the buyer the `review_link`. It shows the issue and a Copy HTML button for their platform.
    - On beehiiv with neither set up, tell them once: add the beehiiv connector in their AI app, or (Pro and Enterprise) make an API key in beehiiv (Settings → Integrations → API) and save it with the publication ID in `yeez-work/beehiiv.json` as `{"api_key": "…", "publication_id": "pub_…"}`. They do this themselves; never take the key in the chat.
 
-Report the subject, the story, the offer used (if any), and where the issue is (beehiiv link or review link).
+Report, per site: the subject, the story, the offer used (if any), and where the issue is (beehiiv link or review link).

@@ -67,7 +67,7 @@ The steps below (1 to 8) are the writer's job. If this app can't start helpers, 
 
    If the reply has `newsbreak_flag` NOT SET, put it at the top of the report (the article won't reach NewsBreak) and keep going.
 
-   Yeez re-checks the article, places it in the site's next publish slot, adds the image credit, the newsletter signup line (if set up) and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.
+   Yeez re-checks the article, places it in the site's next publish slot, adds the image credit, that site's own newsletter signup line (if the site has one) and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.
 
 ## Across the night's set
 

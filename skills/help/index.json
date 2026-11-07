@@ -19,7 +19,7 @@
     {
       "id": "sites",
       "name": "Sites and articles",
-      "blurb": "Articles a day, publish times, rules for a site."
+      "blurb": "Articles a day, publish times, rules, and where Yeez finds stories."
     },
     {
       "id": "learn",
@@ -34,7 +34,7 @@
     {
       "id": "newsletter",
       "name": "Newsletter",
-      "blurb": "Send days and the Newsletter task."
+      "blurb": "Each site's newsletter, send days and the Newsletter task."
     },
     {
       "id": "billing",
@@ -264,6 +264,23 @@
       ]
     },
     {
+      "slug": "pull-from-sites",
+      "title": "Have Yeez find stories on certain sites",
+      "topic": "sites",
+      "keywords": [
+        "sources",
+        "pull from",
+        "websites",
+        "magazines",
+        "where stories come from",
+        "more variety",
+        "tips",
+        "fun stories",
+        "too newsy",
+        "feeds"
+      ]
+    },
+    {
       "slug": "learn-login",
       "title": "Learn asks me to log in",
       "topic": "learn",
@@ -300,6 +317,22 @@
         "approve"
       ],
       "video": "search"
+    },
+    {
+      "slug": "newsletter-per-site",
+      "title": "A newsletter for each site",
+      "topic": "newsletter",
+      "keywords": [
+        "newsletter",
+        "signup",
+        "sign up line",
+        "wrong newsletter",
+        "second site",
+        "another site",
+        "set up newsletter",
+        "kit",
+        "beehiiv"
+      ]
     },
     {
       "slug": "newsletter-days",
