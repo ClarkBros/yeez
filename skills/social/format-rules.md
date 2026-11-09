@@ -72,3 +72,12 @@ Set `reel_format` on every reel.
 
 ## image_reel — a card held still over music
 `source_item` is the id of one of today's built news image or text image cards, usually the strongest one. The card is held still (no motion, no new text) over the buyer's music for 10 seconds. Caption like a news image's.
+
+## Designed cards (Facebook, Instagram and Pinterest)
+
+The pin designs in `scripts/pin-templates.json` (boxed title, title band, top title, recipe card, roundup collage, numbered roundup grid) also make feed cards: a news_image or text_image with a `design` block is rendered in that design at 1080x1350.
+- Use them where the buyer's own photo sells the post: recipes, roundups, products, how-tos. News about people and events stays a news_image.
+- Photos are the buyer's own (from their article). On-image words: 2–6 words plus an optional 2–4 word kicker; the caption carries the rest.
+- Same rules as every card: accurate, nothing hidden behind text (set `focus` so the subject shows), readable at phone size.
+- The buyer's colours come from `brand` (their site's logo and their existing posts); a change they ask for goes in the design's `brand` or `style` and applies to every card after it.
+

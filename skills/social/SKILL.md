@@ -1,11 +1,11 @@
 ---
 name: social
-description: Writes, renders and posts the day's Facebook and Instagram content for the buyer's connected Pages and accounts (news image cards, text image cards, gradient posts, stories and reels over the buyer's own footage), learning from what worked on each one. Use when the user types /yeez:social, asks for today's social posts, or as part of /yeez:run.
+description: Writes, renders and posts the day's Facebook, Instagram and Pinterest content for the buyer's connected Pages and accounts (news image cards, text image cards, designed recipe and product cards, gradient posts, stories, reels and pins over the buyer's own footage), learning from what worked on each one. Use when the user types /yeez:social, asks for today's social posts, or as part of /yeez:run.
 ---
 
 # Yeez social
 
-The day's posts for every connected Page and Instagram account: written here, rendered and posted by the scripts in this folder straight to Facebook and Instagram with the buyer's own keys file. No images or videos go through yeez.ai. Read [format-rules.md](format-rules.md) before writing anything; it is the house style and it binds every post.
+The day's posts for every connected Page and Instagram account: written here, rendered and posted by the scripts in this folder straight to Facebook and Instagram with the buyer's own keys file. No images or videos go through yeez.ai. Read [format-rules.md](format-rules.md) before writing anything; it is the house style and it binds every post. If the buyer has Pinterest, [pinterest.md](pinterest.md) adds its steps to each mode below (learn P1, write P2–P3, build P4, post P5, now: schedule pins waiting for room).
 
 First read [../core/rules.md](../core/rules.md) and [../core/platforms/facebook.md](../core/platforms/facebook.md). The money-safety, repost-cap and warm-up rules there bind every post.
 
@@ -20,7 +20,8 @@ The work hands off through files in `yeez-work/`, so it runs as one task or as f
 | `/yeez:social build` | step 4 | today's queue files (if none, do write first) | rendered media, items `built` |
 | `/yeez:social post` | step 5 | built items (if none, do build first) | scheduled posts, recorded with `record_social_posts` |
 
-| `/yeez:social now` | step 5 again | today's queue | stories and Instagram items posted at their times |
+| `/yeez:social now` | step 5 again | today's queue | stories and Instagram items posted at their times, waiting pins scheduled |
+| `/yeez:social pinterest` | pinterest.md P1–P5 | a Pinterest business account in the app's browser | pins scheduled on Pinterest |
 
 `/yeez:social` with no mode does learn through post. Every mode only picks up items in the state it needs, so running one twice never posts anything twice.
 
@@ -81,6 +82,7 @@ Work in a folder named `yeez-work` (create it next to where you run commands).
       "source_urls": ["https://..."],
       "caption": "...",
       "overlay": "... (news_image)",
+      "design": {"template": "center_box", "title": "...", "kicker": "...", "photos": ["..."]},
       "text": "... (text_image, gradient, story)",
       "image_brief": {"format": "T", "subject": "person: <Full Name> official portrait", "query": "4-7 concrete words"},
       "reel_format": "R | P (reels)", "reel_mood": "<a footage folder name> (reel R)", "source_item": "<a card's id> (image_reel)",
@@ -92,6 +94,8 @@ Work in a folder named `yeez-work` (create it next to where you run commands).
 ```
 
 Set `audience` to `older` when the buyer's audience is mostly 55+; the photo search then skips young-adult and crypto stock.
+
+`design` (optional, news_image and text_image): renders the card in one of the pin designs instead (format-rules.md → Designed cards), at 1080x1350 for the feed. Use it for recipes, products, roundups and how-tos, where the buyer's own photo is the point; the same article's pin and Facebook card can share a design and photo.
 
 3. Run the final check from [../core/platforms/facebook.md](../core/platforms/facebook.md) on every item (accurate and current, no banned money wording, no attack on a group, no private person, this Page's own version within the cap). Rewrite or drop anything that misses.
 4. Check every item against format-rules.md before rendering: word counts (overlay 20–45, story ≤25, text_image ≤45, gradient ≤130 characters, reel R 6–10 lines and 35–80 words, reel P 20–45 words), the ending, no emoji, every number in `source_urls`. Fix misses; never shrink text to make it fit.

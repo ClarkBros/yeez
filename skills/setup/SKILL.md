@@ -92,6 +92,10 @@ If the `channels` section lists Facebook Pages or Instagram accounts:
    Save the link to every account with `save_social_settings` (`footage_folder`). Check it with `python3 <the social skill's folder>/scripts/yeez_footage.py --folder "<link>" --list`, and read back the moods and track count. No folder yet: reels are skipped until they add one, and the rest runs as normal.
 7. If they want comment-to-DM, follow the **dm** skill.
 
+## 6c. Pinterest (if they use it)
+
+If the `channels` section lists Pinterest, or they say they want it: follow [../social/pinterest.md](../social/pinterest.md) step P0 (business account, `pinterest.json` with their boards, colours and pins a day), then build three sample pins for one of their best articles with three different templates and show them. Ask which look they like and save that order in `templates`; any change they ask for ("bigger title", "use our green") goes in `brand` or `style`. Pinterest then runs inside the social tasks; there's nothing to connect and no keys.
+
 ## 6b. Search setup (for each site)
 
 1. **WordPress sites: install the Yeez WordPress plugin.** (Other platforms skip this; their own search settings are used.) It lets Yeez set each article's search title and description in their SEO plugin, marks articles as news articles for Google, keeps a Google News sitemap and tells Bing about new posts. Give them the download link `https://yeez.ai/downloads/yeez-wp.zip` and the steps: WordPress → Plugins → Add New → Upload Plugin → choose the file → Install Now → Activate.

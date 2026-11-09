@@ -10,6 +10,34 @@ Answer with the steps for the buyer's app, one short list, and do the part you c
 
 Start at [Get started](https://yeez.ai/start). It walks you through installing Yeez, connecting your sites, your basics, your numbers and turning on the scheduled tasks, and ticks each step off as you go. Your dashboard shows your plan and today's runs once it's running.
 
+### Set up Pinterest
+
+Yeez makes your pins and schedules them in your own Pinterest account, through your AI app's browser. There's nothing to connect and no keys.
+
+What you need:
+- A Pinterest **business** account (free). Your AI app checks this and shows you the switch if you're on a personal account; your pins and followers stay.
+- Your AI app's browser signed in to Pinterest (in the Claude app, that's Claude in Chrome).
+
+Then tell your AI app: `Set up Pinterest for Yeez`
+
+It reads your boards, picks your colours from your site and your existing pins, and shows you three sample pins in different designs. Pick the look you like. From then on, the social tasks make new pins from your articles every day, each article getting a fresh design every couple of weeks, and schedule them with Pinterest's own scheduler.
+
+Every week it checks your Pinterest analytics and the top pins for your topics, and makes more of what gets clicks.
+
+### Change how my pins and cards look
+
+Your pins (and recipe or product cards on Facebook and Instagram) use a set of designs: a boxed title over your photo, a title band between two photos, a big title at the top, a recipe card, a four-photo roundup collage and a numbered roundup grid.
+
+To change the look, just tell your AI app what you want, for example:
+
+`Make my pins use our dark green and yellow`
+
+`Use a bigger number on roundup pins`
+
+`Stop using the recipe card design`
+
+It saves the change for your site, rebuilds a sample so you can see it, and every pin after that follows it.
+
 ## Scheduled tasks
 
 ### See your Yeez tasks

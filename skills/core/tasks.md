@@ -10,8 +10,8 @@ Yeez runs as scheduled tasks in the buyer's AI app, each with a clear job: Learn
 | 4a | **Social learn** (`/yeez:social learn`) | Know what's getting shares and reach on each Page | Connected Pages | Learn notes per Page in the Yeez folder |
 | 4b | **Social write** (`/yeez:social write`) | Tomorrow's posts for every Page, within the money-safety and repost rules | Today's learn notes; tomorrow's scheduled articles (for news cards and first-comment links) | A written queue per Page |
 | 4c | **Social build** (`/yeez:social build`) | Render every card and reel, check every image | The written queue | Rendered media |
-| 4d | **Social post** (`/yeez:social post`) | Schedule every post natively on Facebook and Instagram | Built items | Scheduled posts, recorded on the dashboard |
-| Hourly, daytime | **Social now** (`/yeez:social now`) | Post stories and Instagram items at their times (they can't be scheduled ahead) | Today's built queue | Those items posted; only created when the buyer has stories or Instagram |
+| 4d | **Social post** (`/yeez:social post`) | Schedule every post natively on Facebook and Instagram, and every pin with Pinterest's own scheduler in the browser | Built items | Scheduled posts, recorded on the dashboard; scheduled pins logged in the Yeez folder |
+| Hourly, daytime | **Social now** (`/yeez:social now`) | Post stories and Instagram items at their times (they can't be scheduled ahead), and schedule pins that were waiting for room in Pinterest's schedule | Today's built queue | Those items posted; only created when the buyer has stories, Instagram or more pins a day than Pinterest holds at once |
 | 5 | **Newsletter** (`/yeez:newsletter`, on send days) | The next issue from the best stories | Newsletter settings; the day's articles | A finished issue (beehiiv draft via API, or ready to paste) |
 | Mondays, after Learn | **Weekly review** (`/yeez:review`) | Learn the week, update the rules, report days on plan | The week's numbers (runs Learn's weekly mode itself) | Updated site profiles, learned headline rules, the weekly review on the dashboard |
 

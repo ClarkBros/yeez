@@ -1558,6 +1558,16 @@ def build_item(item, idx_story, page_code, brand, media_dir):
     if t in ("gradient", "link"):
         return "built", None, f"{t}: nothing to render", {}
 
+    if item.get("design") and t in ("news_image", "text_image"):
+        # a card in one of the pin designs (pin-templates.json), sized for the feed
+        import pin_build
+        d = dict(item["design"])
+        b = {**({"accent": "#" + brand["c1"].lstrip("#")} if brand and brand.get("c1") else {}), **d.pop("brand", {})}
+        img = pin_build.render(d, b, size=tuple(d.get("size") or (1080, 1350)))
+        out_j = os.path.join(media_dir, f"{iid}.jpg")
+        img.save(out_j, quality=90, optimize=True)
+        return "built", f"media/{iid}.jpg", f"{t} in the {d['template']} design", {}
+
     if t == "image_reel":
         rel_, note, extra = build_image_reel(item, page_code, brand, media_dir, os.path.dirname(media_dir))
         return "built", rel_, note, extra
