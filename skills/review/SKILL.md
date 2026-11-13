@@ -50,13 +50,15 @@ Call `guarantee_status`. It returns their plan (articles a day per site), today'
 Read `yeez-work/goals.json`. Each site needs a goal before the review can tell anyone whether things are on track:
 
 ```json
-{"sites": {"example.com": {"views_per_day": 80000, "platform": "newsbreak", "by": "2027-02-01",
+{"sites": {"example.com": {"views_per_day": 80000, "money_per_month": 3000, "rpm": {"newsbreak": 7.5}, "platform": "newsbreak", "by": "2027-02-01",
   "why": "replace my VA's cost and grow income", "wants": ["more views per post", "get The Tonic Edit going again"],
   "set": "2026-11-16", "history": []}}}
 ```
 
 **No goal yet for a site, and someone is there:** set it with them before going further. Run step 2 first so you know where they stand, then ask in plain words:
-- What do they want each site doing per day in views, and by when? Offer three choices from their own numbers: their best month's daily views, about 1.5x today, and about 2x today.
+- Is their goal views or money? Many buyers really want income, and their money can come from more than one place (the platform's revenue share, site ads, the newsletter and its sponsors, affiliate offers, their own products). Ask which.
+- **A views goal:** what do they want each site doing per day, and by when? Offer three choices from their own numbers: their best month's daily views, about 1.5x today, and about 2x today.
+- **A money goal:** how much a month, and by when? Then work out what one view pays them on each platform (`rpm`: that platform's earnings for a recent full month ÷ its views that month × 1,000, from the dashboard or `earnings_report`), and save it. The script turns the money goal into the views it takes.
 - What is it for (money they want to replace or reach), and what would they most like improved?
 
 Then reality-check it with the goal math (step 2): show how many views per post or extra hits a week it takes and whether the site has ever done that. If it has never been done, say so plainly and suggest a first step goal on the way. Save what they choose.
@@ -96,6 +98,8 @@ Go through all of it, in this order. Write down what you find as you go; the opt
 **a. The scoreboard.** Views per day: last 7 days, the 7 before, the 4 weeks before, the best week ever. Each of the last 6 calendar months: posts, views per post, hits, daily views. Is the site going up, flat or down, and since when? Did anything change around then (volume, a rule, the mix, a platform demotion)? Check the review files and `tests.json` for dated changes.
 
 **b. Path to the goal.** From `goal_math`: today's views per day vs the goal, the gap, views per post needed at today's volume (and whether the site has ever done it), posts per day needed at today's views per post, hits per week now and extra hits needed. Say which path the history supports: more posts, better posts, or more hits. Volume only helps while views per post holds, so check the weekly table: in weeks with more posts, did views per post fall?
+
+**b2. Money per slot (when their goal is money, or money comes from more than one place).** Every slot in the day is a bet. Work out what an average post of each story type is worth: `dollars_per_post` in the veins table (platform pay), plus what that kind of post brings in elsewhere: offer clicks and earnings from `earnings_report`, and newsletter signups if the signup line is tracked. A story type with average views but strong affiliate clicks can be worth more than one with big views and nothing else. Rank story types by total money per post, not views alone, and use that ranking for the options.
 
 **c. Where the hits came from.** Go through `last_4_weeks_every_post`. For every hit (at or above the `hit` band) note its story type, headline shape and source. Then group them: which story types and shapes produce hits, and at what **rate** (hits divided by posts of that kind), not just the count. Do the same for the bottom quarter: which kinds take the most slots and return the least.
 
@@ -144,7 +148,7 @@ From everything in step 4, build **the 3 to 5 changes most likely to raise views
 For each option give, in plain words:
 - **What's happening:** the finding, with its number and how many posts it rests on.
 - **The change:** exactly what would change, in their words (e.g. "Garden site: people stories go from 12 to 16 of the 20 a day; tips go from 6 to 2").
-- **What it could do:** the arithmetic in views per day, from this site's own numbers ("these 4 slots average 0.4x; moved to people stories at 1.9x, that's about +6,000 views a day"). Say clearly that it's an estimate from their history, not a promise.
+- **What it could do:** the arithmetic in views per day (and money per day when they have a money goal), from this site's own numbers ("these 4 slots average 0.4x; moved to people stories at 1.9x, that's about +6,000 views a day"). Say clearly that it's an estimate from their history, not a promise.
 - **The risk**, and how to undo it.
 
 Mark the one you would test first and why. **Only one test runs at a time per site.** If a test is already running and not finished, the options are for after it ends, unless a distribution problem or a broken rule needs fixing now; those aren't tests, they're repairs.
@@ -169,7 +173,7 @@ When this runs as a scheduled task with nobody watching, never stop to ask. Do s
 
 The buyer can reply in that same chat any time, or type /yeez:review.
 - **Questions:** answer from their data, not from memory. Re-run `yeez_data.py review` or read `yeez-work/data/articles.csv` directly for the exact slice they ask about (one story type, one month, one platform, one headline shape). Show the numbers and the posts behind them.
-- **Teaching:** when they ask why something works or how to think about it, explain it simply and point them to the help answer **How do I get more views?** (https://yeez.ai/help/get-more-views).
+- **Teaching:** when they ask why something works or how to think about it, explain it simply and point them to the help answer **How do I use Yeez to get more views and money?** (https://yeez.ai/help/get-more-views).
 - **Their own idea:** check it against the numbers, say honestly what the data says, and if they still want it, it becomes the next test.
 - **Picking an option:** confirm the exact change in one line, then:
   1. Apply it with the Yeez tools: `save_site_profile` (`buyer_rules`, sending the full list; `story_mix`), or `save_site_settings` (articles a day, publish times). Never edit a scheduled task.

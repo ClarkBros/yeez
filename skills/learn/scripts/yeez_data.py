@@ -347,8 +347,15 @@ def review(site, veins_path, weeks, min_age):
         # older posts keep earning: k = today's daily views / what new posts alone would explain
         k = (cur / (ppd * vpp)) if (P.get("daily") and ppd and vpp) else 1.0
         G["older_posts_factor"] = round(k, 2)
-        if goals and goals.get("views_per_day"):
-            g = float(goals["views_per_day"])
+        rpm = float((goals or {}).get("rpm", {}).get(plat) or 0)
+        if rpm:
+            G["rpm"] = rpm; G["money_per_day_now"] = round(cur * rpm / 1000, 2); G["money_per_post_now"] = round(vpp * k * rpm / 1000, 2)
+        gv = (goals or {}).get("views_per_day")
+        if not gv and rpm and (goals or {}).get("money_per_month"):
+            gv = float(goals["money_per_month"]) / 30.4 / rpm * 1000
+            G["goal_from_money"] = {"money_per_month": goals["money_per_month"], "rpm": rpm, "views_per_day_it_takes": round(gv)}
+        if gv:
+            g = float(gv)
             G["goal_views_per_day"] = g; G["gap_per_day"] = round(g - cur); G["goal_vs_now"] = round(g / cur, 2) if cur else None
             need_vpp = (g / (ppd * k)) if ppd else None
             G["views_per_post_needed_at_current_volume"] = round(need_vpp) if need_vpp else None
@@ -399,7 +406,8 @@ def review(site, veins_path, weeks, min_age):
                 hr = [r for r in rec if any(k in r["title"].lower() for k in kws)]
                 lm = defaultdict(list)
                 for r in h: lm[r["d"].strftime("%Y-%m")].append(r["lift"])
-                vr.append({"vein": vn["name"], "posts": len(h), "lift": round(_avg([r["lift"] for r in h]), 2), "hit_rate": round(sum(r["v"] >= hit for r in h) / len(h), 3),
+                vr.append({"vein": vn["name"], "posts": len(h), "lift": round(_avg([r["lift"] for r in h]), 2),
+                           "dollars_per_post": round(_avg([r["v"] for r in h]) * rpm / 1000, 2) if rpm else None, "hit_rate": round(sum(r["v"] >= hit for r in h) / len(h), 3),
                            "share_of_recent_slots": round(len(hr) / max(1, len(rec)), 3), "recent_lift": round(_avg([r["lift"] for r in hr]), 2) if hr else None,
                            "lift_by_month": [{"month": m, "posts": len(v), "lift": round(_avg(v), 2)} for m, v in sorted(lm.items())[-6:]],
                            "best": max(h, key=lambda r: r["v"])["title"]})
