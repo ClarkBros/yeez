@@ -23,8 +23,8 @@
     },
     {
       "id": "learn",
-      "name": "Learn and your numbers",
-      "blurb": "Dashboard logins and pulling your numbers."
+      "name": "Views, Learn and your numbers",
+      "blurb": "Getting more views, your weekly review, dashboard logins and pulling your numbers."
     },
     {
       "id": "search",
@@ -43,6 +43,26 @@
     }
   ],
   "articles": [
+    {
+      "slug": "get-more-views",
+      "title": "How do I get more views?",
+      "topic": "learn",
+      "keywords": [
+        "more views",
+        "views down",
+        "views dropped",
+        "views flat",
+        "grow views",
+        "not seeing results",
+        "no progress",
+        "weekly review",
+        "goal",
+        "test",
+        "steer",
+        "improve",
+        "what should I change"
+      ]
+    },
     {
       "slug": "task-models",
       "title": "Which AI model should each scheduled task use?",
@@ -432,6 +452,7 @@
     }
   ],
   "popular": [
+    "get-more-views",
     "task-models",
     "missed-runs",
     "usage-limits",

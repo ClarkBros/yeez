@@ -165,4 +165,4 @@ Summarize what's saved and which sites are connected, in a short list. Then tell
 - Articles schedule automatically; they can review or change anything before it publishes with `/yeez:scheduled` or in their site's editor.
 - Every day the run makes news image cards, text image cards, gradient posts, stories and reels for each Page. Facebook posts are scheduled ahead; Instagram posts and stories go out at their times through the social now task; comment-to-DM starts in test mode until they turn it on.
 - The newsletter issue is built in the daily run before each send day; offers are placed only where they fit, with tracked links.
-- Every Monday the run does a weekly review: it finds what won and updates next week's headline rules. Their dashboard (their plan, today's runs, the week) is https://yeez.ai/dashboard.
+- Every Monday the run does a weekly review: it lays out their views against their goal, what is moving them, and the changes most likely to raise them. They pick what to try, right there in the chat. Their dashboard (their plan, today's runs, the week) is https://yeez.ai/dashboard.

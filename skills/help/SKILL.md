@@ -25,6 +25,6 @@ Read [../core/rules.md](../core/rules.md) first: who Yeez is and the rules it ne
      - `/yeez:offers`: offers, tracked links and the earnings report
      - `/yeez:search`: the search lane (articles built for Google, approved by you) and how the sites do in Google
      - `/yeez:review`: the weekly review and learned rules
-   - **Their dashboard:** https://yeez.ai/dashboard shows their plan, today's runs, this week, the latest review and scheduled articles.
+   - **Their dashboard:** https://yeez.ai/dashboard shows their plan, today's runs, this week and scheduled articles. Weekly reviews are in their Yeez folder (`yeez-work/reviews/`).
    - **Where their setup stands:** the sections saved and the sites connected, from `setup_status`.
 3. Updates arrive on their own. Every answer, with videos: https://yeez.ai/help. Account and install steps: https://yeez.ai/account. Support: alex@clarkbrosmedia.com.
