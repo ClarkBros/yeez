@@ -26,6 +26,7 @@ The method is the one the Yeez team uses on its own network, and it has turned f
 Everything stays on the buyer's computer, in their Yeez folder. Nothing in this review is saved to yeez.ai.
 - `yeez-work/goals.json`: each site's views goal (see step 1).
 - `yeez-work/tests.json`: every test, running and finished.
+- `yeez-work/data/income.csv`: what each money source paid, month by month (optional, buyer-supplied).
 - `yeez-work/reviews/<date>-<site>.md`: each week's full review.
 - `yeez-work/data/`: the numbers Learn pulls.
 
@@ -58,7 +59,7 @@ Read `yeez-work/goals.json`. Each site needs a goal before the review can tell a
 **No goal yet for a site, and someone is there:** set it with them before going further. Run step 2 first so you know where they stand, then ask in plain words:
 - Is their goal views or money? Many buyers really want income, and their money can come from more than one place (the platform's revenue share, site ads, the newsletter and its sponsors, affiliate offers, their own products). Ask which.
 - **A views goal:** what do they want each site doing per day, and by when? Offer three choices from their own numbers: their best month's daily views, about 1.5x today, and about 2x today.
-- **A money goal:** how much a month, and by when? Then work out what one view pays them on each platform (`rpm`: that platform's earnings for a recent full month ÷ its views that month × 1,000, from the dashboard or `earnings_report`), and save it. The script turns the money goal into the views it takes.
+- **A money goal:** how much a month, and by when? Then work out what one view pays them on each platform. If they've logged income, the script does it from the latest full month (`rpm_from` says which). If not, ask for last month's earnings per platform and log them as income, or save an `rpm` per platform in the goal. The script turns the money goal into the views it takes.
 - What is it for (money they want to replace or reach), and what would they most like improved?
 
 Then reality-check it with the goal math (step 2): show how many views per post or extra hits a week it takes and whether the site has ever done that. If it has never been done, say so plainly and suggest a first step goal on the way. Save what they choose.
@@ -71,7 +72,7 @@ When they change a goal, keep the old one in `history` with the date.
 
 Follow the **learn** skill in weekly mode first: it pulls NewsBreak and every other platform it can reach and refreshes each site's veins, patterns and marching orders. Only if a platform can't be pulled or uploaded, ask (skip when unattended):
 - **Views:** a CSV export or screenshot of per-article views. Save it as a CSV with title and views columns and fold it in with the learn skill's `yeez_data.py ingest`.
-- **Earnings:** what each source paid this week. Call `record_earnings` once per source (see the **offers** skill).
+- **Income (optional, but it sharpens everything):** what each source paid them, by calendar month: the platform's revenue share, site ads, newsletter sponsors and paid recommendations, affiliates, their own products. Ask once a month for the month just finished (skip when unattended). They can paste numbers, a screenshot or an export. Save each with `yeez_data.py income add --site SITE --source SOURCE --month YYYY-MM --amount N` (add `--views N` when the dashboard shows that month's views), or a whole file with `yeez_data.py income import --file FILE`. With income in, the review works out their real RPM per platform month by month and their money per post across every source.
 
 Then, for each site, run the analysis (from the buyer's Yeez work folder, using the learn skill's scripts and the site's veins file):
 
@@ -99,7 +100,7 @@ Go through all of it, in this order. Write down what you find as you go; the opt
 
 **b. Path to the goal.** From `goal_math`: today's views per day vs the goal, the gap, views per post needed at today's volume (and whether the site has ever done it), posts per day needed at today's views per post, hits per week now and extra hits needed. Say which path the history supports: more posts, better posts, or more hits. Volume only helps while views per post holds, so check the weekly table: in weeks with more posts, did views per post fall?
 
-**b2. Money per slot (when their goal is money, or money comes from more than one place).** Every slot in the day is a bet. Work out what an average post of each story type is worth: `dollars_per_post` in the veins table (platform pay), plus what that kind of post brings in elsewhere: offer clicks and earnings from `earnings_report`, and newsletter signups if the signup line is tracked. A story type with average views but strong affiliate clicks can be worth more than one with big views and nothing else. Rank story types by total money per post, not views alone, and use that ranking for the options.
+**b2. Money per slot (when their goal is money, or money comes from more than one place).** Every slot in the day is a bet. Start from `income` in the analysis: total money per month by source, each platform's RPM month by month (a falling RPM is a money problem the views won't show), and `money_per_post_all_sources`. Then work out what an average post of each story type is worth: `dollars_per_post` in the veins table (platform pay), plus what that kind of post brings in elsewhere: offer clicks and earnings from `earnings_report`, and newsletter signups if the signup line is tracked. A story type with average views but strong affiliate clicks can be worth more than one with big views and nothing else. Rank story types by total money per post, not views alone, and use that ranking for the options.
 
 **c. Where the hits came from.** Go through `last_4_weeks_every_post`. For every hit (at or above the `hit` band) note its story type, headline shape and source. Then group them: which story types and shapes produce hits, and at what **rate** (hits divided by posts of that kind), not just the count. Do the same for the bottom quarter: which kinds take the most slots and return the least.
 

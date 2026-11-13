@@ -5,6 +5,8 @@ Yeez data — the buyer's performance numbers, kept in their own Yeez folder (ne
   python3 yeez_data.py ingest FILE [FILE ...] --site example.com --platform newsbreak   # fold exports in
   python3 yeez_data.py report --site example.com [--veins veins.json] [--top 50]       # what's working (JSON)
   python3 yeez_data.py review --site example.com [--veins veins.json] [--weeks 8]      # the weekly views analysis (JSON)
+  python3 yeez_data.py income add --site example.com --source newsbreak --month 2026-10 --amount 812.40 [--views N]   # log income
+  python3 yeez_data.py income import --file earnings.csv [--site example.com]          # source, month, amount (+views) columns
   python3 yeez_data.py status                                                          # what's here, how fresh
 
 Files live in <work>/data/ (default work folder: ./yeez-work, or set YEEZ_WORK):
@@ -26,6 +28,8 @@ DATA = os.path.join(WORK, "data")
 ART = os.path.join(DATA, "articles.csv")
 DAY = os.path.join(DATA, "daily.csv")
 PULLS = os.path.join(DATA, "pulls.csv")
+INC = os.path.join(DATA, "income.csv")
+INC_COLS = ["site", "source", "month", "amount", "views", "note", "updated"]
 ART_COLS = ["site", "platform", "id", "published", "title", "url", "impressions", "views", "status", "updated"]
 DAY_COLS = ["site", "platform", "day", "views", "impressions"]
 csv.field_size_limit(10_000_000)
@@ -220,6 +224,49 @@ def status():
 
 
 # ---------------------------------------------------------------------------
+# income: what each source paid, month by month (platform revenue share, ads, newsletter,
+# sponsors, affiliates, own products). Optional; the review uses it for real RPMs and money per slot.
+# ---------------------------------------------------------------------------
+def income_add(site, source, month, amount, views, note):
+    rows = load(INC, lambda r: (r["site"], r["source"].lower(), r["month"]))
+    site = site_of(site); m = month[:7]
+    if not re.match(r"\d{4}-\d{2}$", m): print(json.dumps({"ok": False, "error": "month must be YYYY-MM"})); return
+    rows[(site, source.lower(), m)] = {"site": site, "source": source, "month": m, "amount": f"{float(re.sub(r'[,$]', '', str(amount))):.2f}",
+                                       "views": num(views) if views else "", "note": note or "", "updated": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
+    write(INC, INC_COLS, sorted(rows.values(), key=lambda r: (r["site"], r["month"], r["source"])))
+    print(json.dumps({"ok": True, "saved": rows[(site, source.lower(), m)]}))
+
+
+def income_import(path, site):
+    head, rows = read_table(path)
+    iS, iM, iA = col(head, r"source", r"platform", r"stream"), col(head, r"month", r"date", r"period"), col(head, r"amount", r"earn", r"revenue", r"paid", r"income")
+    iV, iSite = col(head, r"views", r"pageviews"), col(head, r"^site")
+    if min(iS, iM, iA) < 0: print(json.dumps({"ok": False, "error": "need source, month and amount columns", "columns": head})); return
+    n = 0
+    for c in rows:
+        if len(c) <= max(iS, iM, iA) or not c[iA].strip(): continue
+        income_add((c[iSite] if iSite >= 0 and c[iSite] else site) or "", c[iS], c[iM][:7], c[iA], c[iV] if iV >= 0 and len(c) > iV else "", "imported")
+        n += 1
+    print(json.dumps({"ok": True, "imported": n}))
+
+
+def _income(site, plat_views):
+    rows = [r for r in load(INC, lambda r: (r["site"], r["source"].lower(), r["month"])).values() if r["site"] == site]
+    if not rows: return None
+    by_m = defaultdict(dict)
+    for r in rows: by_m[r["month"]][r["source"]] = float(r["amount"] or 0)
+    months = []
+    for m in sorted(by_m):
+        rpms = {}
+        for src, amt in by_m[m].items():
+            row = next(x for x in rows if x["month"] == m and x["source"] == src)
+            v = num(row["views"]) or plat_views.get((src.lower(), m), 0)
+            if v: rpms[src] = round(amt / v * 1000, 2)
+        months.append({"month": m, "total": round(sum(by_m[m].values()), 2), "by_source": by_m[m], "rpm_by_source": rpms})
+    return {"by_month": months[-12:], "sources": sorted({r["source"] for r in rows})}
+
+
+# ---------------------------------------------------------------------------
 # review: the weekly views analysis. Everything the weekly review reasons from,
 # computed over every article, not a sample. Read-only on the data.
 # ---------------------------------------------------------------------------
@@ -268,6 +315,9 @@ def _med(xs):
     return pct(xs, .5) if xs else 0
 
 
+INCOME = None
+
+
 def review(site, veins_path, weeks, min_age):
     site = site_of(site)
     today = date.today()
@@ -279,6 +329,19 @@ def review(site, veins_path, weeks, min_age):
     tests = [t for t in (json.load(open(TESTS)).get("tests", []) if os.path.exists(TESTS) else []) if site_of(t.get("site", site)) == site]
     veins = json.load(open(veins_path)) if veins_path and os.path.exists(veins_path) else []
     out = {"ok": True, "site": site, "today": today.isoformat(), "min_age_days": min_age, "goal": goals, "platforms": []}
+    pv = defaultdict(int)
+    for r in days:
+        if _d(r["day"]): pv[(r["platform"].lower(), r["day"][:7])] += num(r["views"])
+    global INCOME
+    INCOME = _income(site, pv)
+    if INCOME:
+        posts_m = defaultdict(int)
+        for r in allarts:
+            if _d(r["published"]): posts_m[r["published"][:7]] += 1
+        for mrow in INCOME["by_month"]:
+            n = posts_m.get(mrow["month"], 0)
+            mrow["posts"] = n; mrow["money_per_post_all_sources"] = round(mrow["total"] / n, 2) if n else None
+        out["income"] = INCOME
     for plat in sorted({r["platform"] for r in allarts}):
         arts = [r for r in allarts if r["platform"] == plat]
         for r in arts:
@@ -348,6 +411,10 @@ def review(site, veins_path, weeks, min_age):
         k = (cur / (ppd * vpp)) if (P.get("daily") and ppd and vpp) else 1.0
         G["older_posts_factor"] = round(k, 2)
         rpm = float((goals or {}).get("rpm", {}).get(plat) or 0)
+        if not rpm and INCOME:
+            for mrow in reversed([m_ for m_ in INCOME["by_month"] if m_["month"] < today.strftime("%Y-%m")] or INCOME["by_month"]):
+                hit_r = next((v for k2, v in mrow["rpm_by_source"].items() if k2.lower() == plat), None)
+                if hit_r: rpm = hit_r; G["rpm_from"] = "income log, " + mrow["month"]; break
         if rpm:
             G["rpm"] = rpm; G["money_per_day_now"] = round(cur * rpm / 1000, 2); G["money_per_post_now"] = round(vpp * k * rpm / 1000, 2)
         gv = (goals or {}).get("views_per_day")
@@ -462,9 +529,15 @@ if __name__ == "__main__":
     a = sub.add_parser("ingest"); a.add_argument("files", nargs="+"); a.add_argument("--site", required=True); a.add_argument("--platform", required=True)
     b = sub.add_parser("report"); b.add_argument("--site", required=True); b.add_argument("--veins"); b.add_argument("--top", type=int, default=50)
     c = sub.add_parser("review"); c.add_argument("--site", required=True); c.add_argument("--veins"); c.add_argument("--weeks", type=int, default=8); c.add_argument("--min-age", type=int, default=7)
+    i = sub.add_parser("income"); i.add_argument("action", choices=["add", "import", "show"]); i.add_argument("--site", default=""); i.add_argument("--source"); i.add_argument("--month")
+    i.add_argument("--amount"); i.add_argument("--views"); i.add_argument("--note"); i.add_argument("--file")
     sub.add_parser("status")
     x = ap.parse_args()
     if x.cmd == "ingest": ingest(x.files, x.site, x.platform)
     elif x.cmd == "report": report(x.site, x.veins, x.top)
     elif x.cmd == "review": review(x.site, x.veins, x.weeks, x.min_age)
+    elif x.cmd == "income":
+        if x.action == "add": income_add(x.site, x.source, x.month, x.amount, x.views, x.note)
+        elif x.action == "import": income_import(x.file, x.site)
+        else: print(json.dumps(_income(site_of(x.site), {}) or {"ok": False, "note": "no income logged"}, indent=1))
     else: status()
