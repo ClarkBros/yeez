@@ -63,7 +63,6 @@ For every connected site, call `save_site_settings` with:
 - `per_day`: `articles_per_day_wanted` for that site from the basics
 - `timezone`: from `business.timezone` in the basics
 - `platforms`: the platforms this site is approved on, from `channels.syndication` in the basics
-- `newsbreak_feed` (WordPress sites on NewsBreak only): open `https://<site>/feed/newsbreak`. If it answers with an RSS feed, the site uses the NewsBreak Feed for WordPress plugin: set `true`, so every post Yeez schedules carries the plugin's "send to NewsBreak" flag. If it's a 404, set `false` (NewsBreak reads the normal feed).
 - `galleries_per_day`: don't ask. 0 unless the site is on MSN and already publishes numbered galleries (titles like "12 Cars That …" among its posts); then keep its current share. Never on NewsBreak-only sites. In 5b's confirm message, mention once that galleries pay on MSN if the site is on MSN and has none.
 - `start`: leave the default for now; step 5b sets it from the site's best publish hours
 
@@ -104,6 +103,19 @@ If the `channels` section lists Pinterest, or they say they want it: follow [../
    - **Author bios**: each real writer adds 2–3 sentences to their author profile in the site's editor (WordPress: Users → Profile → Biographical Info). Never invent writers.
    - **Search Console**: they open their site in search.google.com/search-console (add it as a Domain property if it isn't there), then Settings → Users and permissions → Add user → the email `site_seo_status` gives → Restricted. Check with `search_console_status`.
 3. **Search articles:** don't ask. Tell them in one line: once Search Console is connected, Yeez checks each site every Monday and adds a few articles a week built for Google (each waiting for their approval) only on sites Google already trusts, so it never adds to a problem Google already sees. There is no Search task; the Articles task writes them.
+
+## 6d. Feed boxes (WordPress sites)
+
+Feed plugins like SimpleFeed and NewsBreak Feed for WordPress only send a post to a platform when its box is ticked on that post (NewsBreak, MSN Article, MSN Gallery, Yahoo …). Yeez ticks them for the buyer on every post it schedules, but only the ones they choose.
+
+1. Call `feed_boxes_status` for the site. If it finds no feed plugin, say nothing and move on.
+2. Show the buyer the boxes it lists, by label, and ask in one plain question which ones Yeez should tick on every post: "Your site uses SimpleFeed. Which of these do you tick on your posts today?" Suggest the ones that match the platforms in their basics; let them add or drop any.
+3. Call `save_feed_boxes` with the keys they chose. Article boxes go on articles, gallery boxes (MSN Gallery, Yahoo Slideshows, AOL Slideshows) on galleries.
+   - `ready: true`: done. If it says it used Code Snippets, tell them in one line that Yeez added a snippet called "Yeez: let Yeez tick your feed boxes" so it can tick the boxes, and they can leave it alone.
+   - `ready: false`: give them `buyer_step` (installing or updating the Yeez WordPress plugin; if they did 6b already, it's the same file, just say "replace" when WordPress asks), then call `save_feed_boxes` again with the same keys and confirm `ready: true`.
+4. If it lists an `unknown` feed plugin they tick boxes on by hand, tell them Yeez can't tick that one yet and the Yeez team will add it (alex@clarkbrosmedia.com).
+
+They can change the boxes any time: "Yeez, tick MSN Gallery too on example.com" (call `feed_boxes_status`, then `save_feed_boxes` with the full new list).
 
 ## 7. Newsletter and offers
 

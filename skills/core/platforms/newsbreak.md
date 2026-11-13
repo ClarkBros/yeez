@@ -3,8 +3,8 @@
 NewsBreak pays on article page views and distributes by its own feed algorithm. Views are the only score.
 
 ## How articles reach NewsBreak
-- Most WordPress sites send posts through the **NewsBreak Feed for WordPress** plugin. Its feed (`/feed/newsbreak`) includes **only** posts flagged "Send this post to the NewsBreak feed" (post meta `_nbfw_send_to_newsbreak = "1"`). An unflagged post publishes fine on the site and **never reaches NewsBreak**: a total loss for that article, with no error anywhere.
-- `schedule_article` sets the flag on every post for a NewsBreak site and reports `newsbreak_flag`. If it says **NOT SET** on a site that uses the plugin, put it at the top of the run summary every time until fixed. Never work around it (no direct database writes, no browser clicking through every post).
+- Most WordPress sites send posts to NewsBreak through a feed plugin: **NewsBreak Feed for WordPress** (post meta `_nbfw_send_to_newsbreak = "1"`) or **SimpleFeed** (post meta `simplefeed_for_newsbreak = "yes"`). Either way the feed includes **only** posts whose NewsBreak box is ticked. An unticked post publishes fine on the site and **never reaches NewsBreak**: a total loss for that article, with no error anywhere.
+- The buyer chooses which boxes Yeez ticks in setup (`feed_boxes_status`, `save_feed_boxes`); `schedule_article` ticks them on every post and reports `feed_boxes`. If it shows **NOT_TICKED**, put it at the top of the run summary every time until fixed, and run `feed_boxes_status`. Never work around it (no direct database writes, no browser clicking through every post).
 - Galleries don't earn on NewsBreak. NewsBreak sites are **articles only**; never schedule galleries there.
 
 ## What gets warned, throttled or terminated

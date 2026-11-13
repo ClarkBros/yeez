@@ -65,7 +65,7 @@ The steps below (1 to 8) are the writer's job. If this app can't start helpers, 
    - the search fields from step 8
    - the chosen `image_url`, `image_credit` and `image_alt`
 
-   If the reply has `newsbreak_flag` NOT SET, put it at the top of the report (the article won't reach NewsBreak) and keep going.
+   If the reply has `feed_boxes` with `NOT_TICKED` (or `newsbreak_flag` NOT SET), put it at the top of the report (the article won't reach those platforms) and keep going.
 
    Yeez re-checks the article, places it in the site's next publish slot, adds the image credit, that site's own newsletter signup line (if the site has one) and the AI-assistance line, and sets the author and category. If it refuses, follow its findings.
 
