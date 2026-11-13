@@ -7,6 +7,7 @@ Yeez data — the buyer's performance numbers, kept in their own Yeez folder (ne
   python3 yeez_data.py review --site example.com [--veins veins.json] [--weeks 8]      # the weekly views analysis (JSON)
   python3 yeez_data.py income add --site example.com --source newsbreak --month 2026-10 --amount 812.40 [--views N]   # log income
   python3 yeez_data.py income import --file earnings.csv [--site example.com]          # source, month, amount (+views) columns
+  python3 yeez_data.py income articles --file statement.csv --site example.com --source newsbreak [--month 2026-10]   # per-article earnings
   python3 yeez_data.py status                                                          # what's here, how fresh
 
 Files live in <work>/data/ (default work folder: ./yeez-work, or set YEEZ_WORK):
@@ -30,6 +31,8 @@ DAY = os.path.join(DATA, "daily.csv")
 PULLS = os.path.join(DATA, "pulls.csv")
 INC = os.path.join(DATA, "income.csv")
 INC_COLS = ["site", "source", "month", "amount", "views", "note", "updated"]
+EARN = os.path.join(DATA, "earnings_articles.csv")
+EARN_COLS = ["site", "source", "id", "title", "month", "amount", "views", "updated"]
 ART_COLS = ["site", "platform", "id", "published", "title", "url", "impressions", "views", "status", "updated"]
 DAY_COLS = ["site", "platform", "day", "views", "impressions"]
 csv.field_size_limit(10_000_000)
@@ -250,6 +253,33 @@ def income_import(path, site):
     print(json.dumps({"ok": True, "imported": n}))
 
 
+def income_articles(path, site, source, month):
+    """Per-article (or per-headline) earnings from a statement export: title + earnings columns, optional views, date, id."""
+    head, rows = read_table(path)
+    iT = col(head, r"^title$", r"headline", r"title", r"content name")
+    iA = col(head, r"earn", r"revenue", r"rev share", r"payout", r"amount", r"income", r"\$")
+    iV = col(head, r"^page_?views?$", r"^views$", r"views", r"impressions")
+    iD = col(head, r"month", r"date", r"period", r"publish")
+    iI = col(head, r"doc_?id", r"^id$", r"content id", r"article id")
+    if iT < 0 or iA < 0: print(json.dumps({"ok": False, "error": "need title and earnings columns", "columns": head})); return
+    have = load(EARN, lambda r: (r["site"], r["source"].lower(), r["id"], r["month"]))
+    site = site_of(site); n = 0; now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    for c in rows:
+        if len(c) <= max(iT, iA) or not c[iT].strip(): continue
+        try: amt = float(re.sub(r"[,$\s]", "", c[iA]) or 0)
+        except ValueError: continue
+        m = (c[iD][:7] if iD >= 0 and len(c) > iD and re.match(r"\d{4}-\d{2}", c[iD]) else (month or "")[:7])
+        ident = (c[iI] if iI >= 0 and len(c) > iI and c[iI] else c[iT]).strip()[:200]
+        k = (site, source.lower(), ident, m)
+        old = have.get(k)
+        have[k] = {"site": site, "source": source, "id": ident, "title": re.sub(r"\s+", " ", c[iT]).strip()[:300], "month": m,
+                   "amount": f"{amt + (float(old['amount']) if old and old.get('updated') == now else 0):.4f}",
+                   "views": num(c[iV]) if iV >= 0 and len(c) > iV else "", "updated": now}
+        n += 1
+    write(EARN, EARN_COLS, sorted(have.values(), key=lambda r: (r["site"], r["source"], r["month"], r["title"])))
+    print(json.dumps({"ok": True, "rows": n, "file": EARN}))
+
+
 def _income(site, plat_views):
     rows = [r for r in load(INC, lambda r: (r["site"], r["source"].lower(), r["month"])).values() if r["site"] == site]
     if not rows: return None
@@ -461,6 +491,16 @@ def review(site, veins_path, weeks, min_age):
             if m: hrs[int(m.group(1))].append(r)
         P["by_publish_hour"] = [{"hour": h, "posts": len(v), "lift": round(_avg([r["lift"] for r in v]), 2), "hit_rate": round(sum(r["v"] >= hit for r in v) / len(v), 3)}
                                 for h, v in sorted(hrs.items()) if len(v) >= 10]
+        # real earnings per article, where a statement gave them
+        earn = defaultdict(float)
+        for e in load(EARN, lambda r: (r["site"], r["source"].lower(), r["id"], r["month"])).values():
+            if e["site"] == site and e["source"].lower() == plat: earn[e["title"].lower()] += float(e["amount"] or 0)
+        for r in L: r["earned"] = earn.get(r["title"].lower())
+        paid = [r for r in L if r["earned"] is not None]
+        if paid:
+            P["earnings_per_article"] = {"articles_matched": len(paid), "avg_per_article": round(_avg([r["earned"] for r in paid]), 2),
+                                         "top_earners": [{"title": r["title"], "earned": round(r["earned"], 2), "views": r["v"]} for r in sorted(paid, key=lambda r: -r["earned"])[:25]],
+                                         "real_rpm": round(sum(r["earned"] for r in paid) / max(1, sum(r["v"] for r in paid)) * 1000, 2)}
         # veins: value vs slots
         if veins:
             vr = []; seen = set()
@@ -474,7 +514,8 @@ def review(site, veins_path, weeks, min_age):
                 lm = defaultdict(list)
                 for r in h: lm[r["d"].strftime("%Y-%m")].append(r["lift"])
                 vr.append({"vein": vn["name"], "posts": len(h), "lift": round(_avg([r["lift"] for r in h]), 2),
-                           "dollars_per_post": round(_avg([r["v"] for r in h]) * rpm / 1000, 2) if rpm else None, "hit_rate": round(sum(r["v"] >= hit for r in h) / len(h), 3),
+                           "dollars_per_post": round(_avg([r["v"] for r in h]) * rpm / 1000, 2) if rpm else None,
+                           "actual_dollars_per_post": round(_avg([r["earned"] for r in h if r.get("earned") is not None]), 2) if any(r.get("earned") is not None for r in h) else None, "hit_rate": round(sum(r["v"] >= hit for r in h) / len(h), 3),
                            "share_of_recent_slots": round(len(hr) / max(1, len(rec)), 3), "recent_lift": round(_avg([r["lift"] for r in hr]), 2) if hr else None,
                            "lift_by_month": [{"month": m, "posts": len(v), "lift": round(_avg(v), 2)} for m, v in sorted(lm.items())[-6:]],
                            "best": max(h, key=lambda r: r["v"])["title"]})
@@ -529,7 +570,7 @@ if __name__ == "__main__":
     a = sub.add_parser("ingest"); a.add_argument("files", nargs="+"); a.add_argument("--site", required=True); a.add_argument("--platform", required=True)
     b = sub.add_parser("report"); b.add_argument("--site", required=True); b.add_argument("--veins"); b.add_argument("--top", type=int, default=50)
     c = sub.add_parser("review"); c.add_argument("--site", required=True); c.add_argument("--veins"); c.add_argument("--weeks", type=int, default=8); c.add_argument("--min-age", type=int, default=7)
-    i = sub.add_parser("income"); i.add_argument("action", choices=["add", "import", "show"]); i.add_argument("--site", default=""); i.add_argument("--source"); i.add_argument("--month")
+    i = sub.add_parser("income"); i.add_argument("action", choices=["add", "import", "articles", "show"]); i.add_argument("--site", default=""); i.add_argument("--source"); i.add_argument("--month")
     i.add_argument("--amount"); i.add_argument("--views"); i.add_argument("--note"); i.add_argument("--file")
     sub.add_parser("status")
     x = ap.parse_args()
@@ -539,5 +580,6 @@ if __name__ == "__main__":
     elif x.cmd == "income":
         if x.action == "add": income_add(x.site, x.source, x.month, x.amount, x.views, x.note)
         elif x.action == "import": income_import(x.file, x.site)
+        elif x.action == "articles": income_articles(x.file, x.site, x.source, x.month)
         else: print(json.dumps(_income(site_of(x.site), {}) or {"ok": False, "note": "no income logged"}, indent=1))
     else: status()

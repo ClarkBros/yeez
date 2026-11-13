@@ -237,9 +237,13 @@ Type:
 - `/yeez:review set my goals`
 - or: `My goal for parentdiaries.com is $3,000 a month by February. Work out the views and posts it takes.`
 
-For money goals, drop in what each source paid you, month by month. It's optional, but it makes everything sharper: Yeez works out your real RPM on each platform month to month and what each post earns across all your income.
-- `Here's what I made in October: NewsBreak $812, newsletter sponsor $150, Amazon affiliates $64. Log it.`
-- or paste a screenshot or export of your earnings page.
+For money goals, give Yeez your income, in as much detail as you have. The more data, the better the money math. Don't just type totals; drop in the full statements and exports:
+- NewsBreak's monthly PDF statement, MSN's earnings statement, Yahoo or SmartNews reports
+- your ad network's report (by day and by page if it offers one)
+- affiliate exports (clicks, sales and commissions by link or page)
+- newsletter sponsor and paid recommendation payouts, and product sales
+
+Then type: `Here are my October statements. Log everything in them.` Yeez keeps the originals in your Yeez folder and pulls out every number: totals by source, your RPM on each platform month to month and, when a statement lists earnings per article, exactly what each post made. That's what tells you which kinds of stories really pay.
 
 Yeez works out what one view pays you on each platform, turns the goal into views per day and money per post, and tells you straight if your site has never done it before. A good first goal is one your site has already hit, like your best month.
 
