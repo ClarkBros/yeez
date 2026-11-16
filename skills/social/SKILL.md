@@ -86,7 +86,7 @@ Work in a folder named `yeez-work` (create it next to where you run commands).
       "overlay": "... (news_image)",
       "design": {"template": "center_box", "title": "...", "kicker": "...", "photos": ["..."]},
       "text": "... (text_image, gradient, story)",
-      "image_brief": {"format": "T", "subject": "person: <Full Name> official portrait", "query": "4-7 concrete words"},
+      "image_brief": {"format": "T", "subject": "person: <Full Name> official portrait", "must": "1-3 words the photo shows (no person)", "query": "4-7 concrete words", "image_url": "<own-site photo from find_site_images, optional>"},
       "reel_format": "R | P (reels)", "reel_mood": "<a footage folder name> (reel R)", "source_item": "<a card's id> (image_reel)",
       "cta": {"mode": "KEYWORD | LINK | none", "keyword": "WORD", "pill": "the thing we send", "first_comment": "One sentence: https://yeez.ai/r/..."},
       "status": "written"
@@ -119,7 +119,15 @@ A reel takes about a minute to render (it downloads only the clips it needs from
 
 If the script prints **FONT PROBLEMS**, the cards were built with a stand-in font. Put that line first in your report to the buyer, with the fix it names.
 
-For a bad photo, change `image_brief` (a better `subject` or `query`), set the item back to `"status": "written"`, and run the script again with `--rebuild --page CODE`. Two tries, then use the card without a photo or drop the item.
+**PHOTO CHECK.** When the script isn't sure a photo shows the `must` thing, or found none and used the brand background, it says so under PHOTO CHECK and marks the card; the post script holds marked cards. Look at each one:
+- Right: set `"photo_ok": true` on the item.
+- Wrong: run `python3 <this skill's folder>/scripts/yeez_build.py --date <today> --work yeez-work --flag <ITEM> --reason "<what's wrong>"`. That blocks the photo for good and sets the card to be rebuilt. Improve the brief (a sharper `must`, a better `query`, or the buyer's own photo through `find_site_images`), then run the build again. Two tries, then take `image_brief` off the card so it uses the brand background, or drop the item.
+Do the same for any bad photo you spot yourself, marked or not.
+
+**When the buyer says a photo is bad** (now or on a later day), fix that card, not the system:
+1. Run `--flag` on that card with their reason in their words, give it a better brief, rebuild, and post it again. If it was only scheduled on Facebook, the post script swaps it (deletes the scheduled one, schedules the new card). If it's already live, say it can't be swapped automatically and they can delete it on the Page.
+2. A flag blocks that photo and nothing else. Add a standing rule only when the buyer states one ("never use empty shelves for recall posts"): add `--avoid "<the thing they named>" --when "<the topic words>"` to the flag (`--all-pages` only if they say every Page). If they flag the same kind of photo three times without stating a rule, ask once whether to make it one.
+3. Don't go further than what they said: no new rules of your own, no turning photos off, no changes to other Pages or other kinds of cards, no rewriting the rest of the day's briefs. Rules sit in `yeez-work/photo-feedback.json`; the build applies them by itself.
 
 ## 5. Post
 
@@ -139,4 +147,4 @@ If an item failed, read its `error` in the queue file, fix it once (shorten, re-
 
 ## Report
 
-Per account: how many of each type were scheduled or posted, with local times; anything held and why; and that the buyer can review everything with `list_social_queue`, on the Page, or in Meta Business Suite before it goes live.
+Per account: how many of each type were scheduled or posted, with local times; anything held and why (photo checks first: what you looked at and what you changed); that if a photo looks wrong they can just tell you which card and why; and that the buyer can review everything with `list_social_queue`, on the Page, or in Meta Business Suite before it goes live.

@@ -470,6 +470,23 @@
       ]
     },
     {
+      "slug": "bad-photo",
+      "title": "A card has the wrong photo",
+      "topic": "start",
+      "keywords": [
+        "photo",
+        "wrong photo",
+        "bad photo",
+        "image",
+        "picture",
+        "doesn't match",
+        "flag",
+        "replace photo",
+        "own photos",
+        "media library"
+      ]
+    },
+    {
       "slug": "feed-boxes",
       "title": "Can Yeez tick my SimpleFeed / NewsBreak boxes?",
       "topic": "sites",

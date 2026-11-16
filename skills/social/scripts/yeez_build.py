@@ -778,6 +778,71 @@ def relevance(r, qwords):
     return th, gh
 
 
+# ------------------------------------------------------------------ photo match: the thing the card is about
+# A photo must show the brief's `must` thing (e.g. "whipped cream"), found in its title or tags. News words
+# (recall, warning, price ...) say nothing about what's in a picture, so they never count as a match, and the
+# search never loosens to a phrasing without the `must` words. (2026-11-16: a whipped cream recall got an
+# empty-shelf photo and a granola bar.)
+GENERIC = set("recall recalled recalls warning warn alert news update report reports price prices cost costs "
+              "new latest sale deal study rule rules change changes ban banned plan plans program "
+              "announce announced say says said today year week month amid after before over".split())
+PHOTO_CHECKS = {}      # item id -> [reasons the photo needs a look]
+ALL_CHECKS = []        # (page, item, reason) for the run summary
+FEEDBACK_FILE = "photo-feedback.json"
+
+
+def anchor_words(query, must=None):
+    """The words a photo must match: the brief's `must` (news words dropped)."""
+    src = " ".join(must) if isinstance(must, list) else (must or "")
+    return [_norm(w) for w in re.findall(r"[A-Za-z0-9']+", src) if w.lower() not in STOP and _norm(w) not in GENERIC]
+
+
+def has_words(r, words, where="any"):
+    """All words (or a synonym) in the photo's title ('title') or title+tags ('any')."""
+    have = _words(r.get("title")) if where == "title" else _hits(r)
+    return all(({w} | {_norm(x) for x in SYN.get(w, [])}) & have for w in words)
+
+
+def feedback():
+    p = os.path.join(WORK, FEEDBACK_FILE)
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except Exception:
+        d = {}
+    d.setdefault("blocked", []); d.setdefault("rules", [])
+    return d
+
+
+def save_feedback(d):
+    p = os.path.join(WORK, FEEDBACK_FILE)
+    os.makedirs(WORK, exist_ok=True)
+    json.dump(d, open(p + ".tmp", "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    os.replace(p + ".tmp", p)
+
+
+def feedback_rejects(r, qwords, page):
+    """The buyer's flags: a blocked photo is never used again; a rule (only ones the buyer stated) skips photos
+    showing its `avoid` words, only on cards whose query has all its `when` words, only on its page if it names one."""
+    fb = feedback()
+    ids = {str(b.get("id")) for b in fb["blocked"]} | {b.get("url") for b in fb["blocked"]}
+    if str(r.get("id")) in ids or r.get("url") in ids:
+        return "blocked by the buyer"
+    hits = _hits(r) | _words(r.get("title"))
+    for rule in fb["rules"]:
+        if rule.get("page") and page and rule["page"].upper() != page.upper():
+            continue
+        when = [_norm(w) for w in rule.get("when", [])]
+        if when and not set(when) <= set(qwords):
+            continue
+        if any(_norm(w) in hits for w in rule.get("avoid", [])):
+            return f"buyer rule: {rule.get('reason') or 'avoid ' + ', '.join(rule.get('avoid', []))}"
+    return None
+
+
+def check(item_id, reason):
+    PHOTO_CHECKS.setdefault(item_id.split("#")[0], []).append(reason)
+
+
 PEOPLE = {"senior", "elderly", "retiree", "retired", "older", "couple", "grandmother", "grandfather",
           "grandparent", "woman", "man", "people", "aged", "pensioner"}
 MONEY = {"bill", "check", "cheque", "money", "cash", "dollar", "medicare", "security", "pharmacy",
@@ -831,17 +896,26 @@ def usable(r, used, person=False):
     return True
 
 
-def find_photo(query, item_id, want_ratio, max_queries=8, exclude=()):
+def find_photo(query, item_id, want_ratio, max_queries=8, exclude=(), must=None, page=None):
     """Search Openverse with progressively looser queries, pool the usable
     candidates, rank by relevance (title hits > tag hits, synonyms count),
     crop fit and license, then download the best. Returns (photo|None, notes)."""
     notes = []
     used = recently_used(item_id) | set(exclude)
     person = query in _PERSON_QUERIES
-    qwords = [_norm(w) for w in re.findall(r"[A-Za-z0-9']+", query) if w.lower() not in STOP]
+    allq = [_norm(w) for w in re.findall(r"[A-Za-z0-9']+", query) if w.lower() not in STOP]
+    qwords = [w for w in allq if w not in GENERIC] or allq
+    anchor = anchor_words(query, must) if (must and not person) else []
     need = 2 if len(qwords) >= 2 else 1
     pool = {}
-    for n, q in enumerate(query_variants(query)[:max_queries]):
+    variants = query_variants(query)
+    if anchor:  # every phrasing keeps the must-show words; nothing looser than the anchor itself
+        aset = set(anchor)
+        variants = [v for v in variants if aset <= {_norm(w) for w in re.findall(r"[A-Za-z0-9']+", v)}]
+        a = " ".join(anchor)
+        if a.lower() not in {v.lower() for v in variants}:
+            variants.append(a)
+    for n, q in enumerate(variants[:max_queries]):
         for pname, search in provider_searches():
             if pname in ("unsplash", "pexels", "pixabay") and n >= 3:
                 continue        # keyed stock is rate-limited: only the 3 tightest phrasings
@@ -854,8 +928,12 @@ def find_photo(query, item_id, want_ratio, max_queries=8, exclude=()):
             for r in results:
                 if r.get("id") in pool or not usable(r, used, person):
                     continue
+                if anchor and not has_words(r, anchor):
+                    continue
+                if feedback_rejects(r, allq, page):
+                    continue
                 th, gh = relevance(r, qwords)
-                if th + gh < need or th == 0 and gh < need + 1:
+                if th + gh < min(need, len(anchor) or need) or th == 0 and gh < need + 1:
                     continue
                 r["_q"] = q
                 r["_score"] = (score_candidate(r, qwords, want_ratio) - n * 0.15
@@ -864,7 +942,7 @@ def find_photo(query, item_id, want_ratio, max_queries=8, exclude=()):
                 good += 1
             notes.append(f"{pname} '{q}': {len(results)} results, {good} relevant")
         strong = [r for r in pool.values()
-                  if relevance(r, qwords)[0] >= min(3, len(qwords))
+                  if (not anchor or has_words(r, anchor, "title")) and relevance(r, qwords)[0] >= min(3, len(qwords))
                   or (group_match(r, qwords)[1] >= 2 and relevance(r, qwords)[0] >= 1
                       and group_match(r, qwords)[0] == group_match(r, qwords)[1])]
         if strong:
@@ -887,12 +965,56 @@ def find_photo(query, item_id, want_ratio, max_queries=8, exclude=()):
                 _jget(r["download_location"], {"Authorization": "Client-ID " + image_keys().get("unsplash", "")})
             except Exception:
                 pass
+        if not person and not anchor:
+            check(item_id, f"the brief has no `must`, so nothing confirmed the photo shows the right thing ({(r.get('title') or '')[:60]!r}): look at it")
+        elif anchor and not has_words(r, anchor, "title"):
+            check(item_id, f"photo only matches '{' '.join(anchor)}' in its tags, not its title ({(r.get('title') or '')[:60]!r}): look at it")
+        elif len(qwords) > len(anchor) + 1 and relevance(r, qwords)[0] + relevance(r, qwords)[1] <= len(anchor):
+            check(item_id, f"photo matches '{' '.join(anchor)}' but nothing else in the brief ({(r.get('title') or '')[:60]!r}): look at it")
         return {"id": r.get("id"), "url": r.get("url"),
                 "landing_url": r.get("foreign_landing_url") or "",
                 "creator": (r.get("creator") or "Unknown").strip(),
                 "license_label": license_label(r), "title": r.get("title") or "",
                 "source": r.get("source") or "", "query": r["_q"], "image": im}, notes
+    if anchor:
+        notes.append(f"no photo shows '{' '.join(anchor)}'")
     return None, notes
+
+
+def own_photo(brief, item_id):
+    """image_brief.image_url: a photo from the buyer's own site (find_site_images). Used as is, no search."""
+    url = (brief or {}).get("image_url") or ""
+    if not url:
+        return None
+    fb = feedback()
+    if url in {b.get("url") for b in fb["blocked"]}:
+        check(item_id, "the buyer blocked this own-site photo; pick another")
+        return None
+    try:
+        im = ImageOps.exif_transpose(Image.open(io.BytesIO(http_get(url, timeout=40)))).convert("RGB")
+    except Exception as e:
+        check(item_id, f"own photo didn't download ({e}); searched instead")
+        return None
+    if max(im.size) < 700:
+        check(item_id, f"own photo is small ({im.size[0]}x{im.size[1]}); searched instead")
+        return None
+    if max(im.size) > 2600:
+        im.thumbnail((2600, 2600), Image.LANCZOS)
+    host = urllib.parse.urlparse(url).netloc.replace("www.", "")
+    return {"id": url, "url": url, "landing_url": url, "creator": brief.get("image_credit") or host,
+            "license_label": "own photo", "title": brief.get("image_alt") or "", "source": "own", "query": "own library", "image": im}
+
+
+def brief_photo(brief, item_id, want_ratio, page=None, exclude=()):
+    """The card's photo: the buyer's own photo if the brief names one, else the best search match for the brief."""
+    p = own_photo(brief, item_id)
+    if p:
+        return p, ["own photo"], "own library"
+    q = brief_query(brief)
+    if not q:
+        return None, ["no image_brief.query"], ""
+    ph, notes = find_photo(q, item_id, want_ratio, exclude=exclude, must=brief.get("must"), page=page)
+    return ph, notes, q
 
 
 def cover(im, w, h, centering=(0.5, 0.42)):
@@ -1370,8 +1492,7 @@ def build_image_reel(item, page_code, brand, media_dir, date_dir):
                 raise RuntimeError(f"source_item {item['source_item']} has no built image yet (build it first)")
         if not src:
             brief = item.get("image_brief") or {}
-            q = brief_query(brief)
-            photo, notes = (find_photo(q, iid, W_NEWS / 600) if q else (None, []))
+            photo, notes, q = brief_photo(brief, iid, W_NEWS / 600, page_code)
             src = os.path.join(tmp, "card.png")
             size, fits = render_news_t(item, page_code, brand, photo, src)
             if not fits:
@@ -1593,11 +1714,8 @@ def build_item(item, idx_story, page_code, brand, media_dir):
     if t == "news_image":
         fmt = (brief.get("format") or "T").strip().upper()
         fmt = "B" if fmt.startswith("B") else ("A" if fmt.startswith("A") else "T")
-        q = brief_query(brief)
-        photo, notes = (None, ["no image_brief.query"])
-        if q:
-            ratio = {"A": W_NEWS / (H_NEWS * 0.6), "B": W_NEWS / H_NEWS, "T": W_NEWS / 600}[fmt]
-            photo, notes = find_photo(q, iid, ratio)
+        ratio = {"A": W_NEWS / (H_NEWS * 0.6), "B": W_NEWS / H_NEWS, "T": W_NEWS / 600}[fmt]
+        photo, notes, q = brief_photo(brief, iid, ratio, page_code)
         photo2 = None
         q2 = brief_query({"subject": brief.get("subject2") or ""}) if brief.get("subject2") else ""
         if fmt == "T" and q2 and photo:
@@ -1632,6 +1750,8 @@ def build_item(item, idx_story, page_code, brand, media_dir):
                 src += f" + photo2 {photo2['id']} [{photo2['source']}]"
         else:
             src = "NO usable photo -> brand background (" + " | ".join(notes[-3:]) + ")"
+            if q and not brief_query(brief).lower().startswith(("person:", "official:")):
+                check(iid, "no photo matched the brief, so the card has the brand background: try find_site_images or a better `must`/`query`")
         if inset:
             ledger_add(inset, iid + "#inset", page_code, iq)
             extra["inset_credit"] = credit_of(inset)
@@ -1644,10 +1764,7 @@ def build_item(item, idx_story, page_code, brand, media_dir):
         mode = (brief.get("format") or "").strip().lower()
         if mode not in ("brand", "gradient"):
             mode = "brand" if idx_story % 2 == 0 else "gradient"
-        photo, notes = None, []
-        q = brief_query(brief)
-        if q:
-            photo, notes = find_photo(q, iid, (W_STORY - 160) / 600)
+        photo, notes, q = brief_photo(brief, iid, (W_STORY - 160) / 600, page_code) if brief else (None, [], "")
         size, fits = render_story(item, brand, mode, photo, out)
         extra, src = {}, ""
         if photo:
@@ -1695,7 +1812,13 @@ def process_page_file(path, rebuild=False, only_types=None):
             if True:
                 if brand is None and t in ("news_image", "story", "text_image"):
                     raise ValueError(f"page code {page_code} is not in yeez-work/brands.json")
+                for k in ("photo_check", "photo_ok"):
+                    item.pop(k, None)   # a rebuild gets a fresh check
+                PHOTO_CHECKS.pop(item["id"], None)
                 status, media, note, extra = build_item(item, this_story_idx, page_code, brand, media_dir)
+                if PHOTO_CHECKS.get(item["id"]):
+                    extra = {**extra, "photo_check": "; ".join(PHOTO_CHECKS.pop(item["id"]))}
+                    ALL_CHECKS.append((page_code, item["id"], extra["photo_check"]))
                 if status is None:
                     counts["left"] += 1
                     print(f"  --  {item['id']:16} {t:11} {note}")
@@ -1716,6 +1839,74 @@ def process_page_file(path, rebuild=False, only_types=None):
     return page_code, counts
 
 
+def flag_photo(args):
+    """A bad photo, flagged by the buyer or by you after looking. Fixes that one card without overcorrecting:
+    the photo is blocked for good, the card goes back to be rebuilt (a Facebook post that's only scheduled is
+    replaced at the next post run), and a standing rule is added only when --avoid is given."""
+    if not args.date:
+        raise SystemExit("--date is required with --flag")
+    ddir = os.path.join(QUEUE_ROOT, args.date)
+    hit = None
+    for f in sorted(os.listdir(ddir)) if os.path.isdir(ddir) else []:
+        if not f.endswith(".json") or f.startswith("_"):
+            continue
+        if args.page and os.path.splitext(f)[0].upper() != args.page.upper():
+            continue
+        path = os.path.join(ddir, f)
+        data = json.load(open(path, encoding="utf-8"))
+        for it in data.get("items", []):
+            if it.get("id") == args.flag:
+                hit = (path, data, it)
+    if not hit:
+        raise SystemExit(f"no item {args.flag} in {ddir}")
+    path, data, it = hit
+    page = (data.get("page") or os.path.splitext(os.path.basename(path))[0]).upper()
+    fb = feedback()
+    urls = []
+    for k in ("photo_credit", "photo2_credit", "inset_credit"):
+        c = it.get(k) or {}
+        if c.get("url"):
+            urls.append(c["url"])
+    for r in ledger_rows():
+        if r.get("item_id", "").split("#")[0] == it["id"] and r.get("url") and r["url"] not in urls:
+            urls.append(r["url"])
+    known = {b.get("url") for b in fb["blocked"]}
+    ids = {r.get("url"): r.get("openverse_id") for r in ledger_rows()}
+    for u in urls:
+        if u not in known:
+            fb["blocked"].append({"url": u, "id": ids.get(u) or u, "page": page, "item": it["id"], "date": TODAY.isoformat(),
+                                  "reason": args.reason[:300]})
+    fb["blocked"] = fb["blocked"][-2000:]
+    rule = None
+    if args.avoid.strip():
+        rule = {"avoid": [w.strip().lower() for w in args.avoid.split(",") if w.strip()][:8],
+                "when": [w.strip().lower() for w in args.when.split(",") if w.strip()][:6],
+                "page": None if args.all_pages else page, "reason": args.reason[:300], "date": TODAY.isoformat()}
+        fb["rules"] = [x for x in fb["rules"] if not (x.get("avoid") == rule["avoid"] and x.get("when") == rule["when"] and x.get("page") == rule["page"])]
+        fb["rules"].append(rule)
+        fb["rules"] = fb["rules"][-30:]
+    save_feedback(fb)
+    st = it.get("status")
+    msg = []
+    if st == "published":
+        msg.append("This card is already live, so it can't be swapped automatically. Delete it on Facebook or Instagram if you want it gone.")
+    else:
+        if st == "scheduled" and it.get("fb_id"):
+            it["replace_post_id"] = it["fb_id"]
+            msg.append("It's scheduled on Facebook: the next post run deletes that scheduled post and schedules the new card.")
+        it["status"] = "written"
+        for k in ("photo_check", "photo_ok", "error"):
+            it.pop(k, None)
+        it.setdefault("log", []).append(log_line(f"photo flagged: {args.reason[:200]}"))
+        json.dump(data, open(path + ".tmp", "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+        os.replace(path + ".tmp", path)
+        msg.append(f"Rebuild it: yeez_build.py --date {args.date} --page {page} --work {WORK}")
+    print(f"flagged {it['id']} ({page}): {len(urls)} photo(s) blocked for good" + (f"; rule added: skip photos showing {', '.join(rule['avoid'])}"
+          + (f" on cards about {', '.join(rule['when'])}" if rule['when'] else "") + (" on every Page" if not rule['page'] else f" on {page}") if rule else "; no rule added"))
+    for m in msg:
+        print(m)
+
+
 def main():
     global TZ, TODAY
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1724,7 +1915,16 @@ def main():
     ap.add_argument("--work", default=None, help="work folder (default ./yeez-work or $YEEZ_WORK)")
     ap.add_argument("--rebuild", action="store_true", help="also re-render built/failed items")
     ap.add_argument("--type", default=None, help="only these item types, comma-separated")
+    ap.add_argument("--flag", default=None, help="ITEM id whose photo is bad: blocks that photo and sets the card up to be rebuilt")
+    ap.add_argument("--reason", default="", help="with --flag: why it's bad, in the buyer's words")
+    ap.add_argument("--avoid", default="", help="with --flag, ONLY when the buyer states a standing rule: comma-separated words photos must not show")
+    ap.add_argument("--when", default="", help="with --avoid: the rule applies only to cards whose brief has these words (comma-separated)")
+    ap.add_argument("--all-pages", action="store_true", help="with --avoid: the rule covers every Page, not just this card's")
     args = ap.parse_args()
+    if args.flag:
+        if args.work:
+            set_work(args.work)
+        return flag_photo(args)
     if not args.date:
         ap.error("--date is required")
     if args.work:
@@ -1752,6 +1952,10 @@ def main():
                                     {t.strip().lower() for t in args.type.split(",")} if args.type else None)
         for k in total:
             total[k] += c[k]
+    if ALL_CHECKS:  # top of the summary: the post script holds these until a photo is checked
+        print("\nPHOTO CHECK (held from posting until you look at each one; set \"photo_ok\": true or rebuild):")
+        for pg, iid, why in ALL_CHECKS:
+            print(f"  - {pg} {iid}: {why}")
     if fonts.WARNINGS:  # top of the summary so it reaches the buyer
         print("\nFONT PROBLEMS (cards were still built with a stand-in font):")
         for w in fonts.WARNINGS:

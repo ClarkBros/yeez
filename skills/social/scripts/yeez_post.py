@@ -28,7 +28,7 @@ Writes yeez-work/queue/<date>/_to_record.json: this run's posts, to pass to the 
 --dry-run prints every call it would make and changes nothing: no posts, no queue file edits, no _to_record.json.
 Keys are never printed. Python 3 standard library only.
 """
-import argparse
+import argparse, re
 import datetime as dt
 import json
 import mimetypes
@@ -304,7 +304,7 @@ def main():
     files = sorted(f for f in os.listdir(ddir) if f.endswith(".json") and not f.startswith("_"))
     if a.page:
         files = [f for f in files if os.path.splitext(f)[0].upper() == a.page.upper()]
-    posted, failed, waiting = [], 0, 0
+    posted, failed, waiting, held = [], 0, 0, 0
     for f in files:
         qfile = os.path.join(ddir, f)
         q = json.load(open(qfile, encoding="utf-8"))  # in a dry run this copy is never written back
@@ -319,6 +319,10 @@ def main():
         for item in sorted(q.get("items", []), key=lambda i: i.get("time") or ""):
             if item.get("status") != "built":
                 continue
+            if item.get("photo_check") and not item.get("photo_ok"):
+                held += 1
+                print(f"  ..  {item['id']:16} {item.get('type'):11} held for a photo check: {item['photo_check'][:140]}")
+                continue
             if (acc["platform"] != "fb" or item.get("type") == "story") and item.get("time"):
                 try:
                     due = dt.datetime.fromisoformat(item["time"])
@@ -331,7 +335,18 @@ def main():
                 except ValueError:
                     pass
             try:
+                old_id = item.get("replace_post_id")
+                if old_id and acc["platform"] == "fb":
+                    # a flagged card: take down its scheduled post first (gone already is fine)
+                    try:
+                        graph("DELETE", f"/{old_id}", token=acc["token"])
+                    except PubError as e:
+                        if not re.search(r"does not exist|code=100|Unsupported delete", str(e)):
+                            raise PubError(f"couldn't remove the old scheduled post {old_id}: {e}")
                 r = fb_post(qfile, item, acc, tz) if acc["platform"] == "fb" else ig_post(qfile, item, acc, accounts)
+                if old_id:
+                    r["replaces"] = old_id
+                    item.pop("replace_post_id", None)
                 item["status"], item["fb_id"], item["error"] = r["status"], r["post_id"], None
                 rec = {k: v for k, v in {"account": acc["id"], "caption": item.get("caption") or r.get("caption"), **r}.items() if v not in (None, "")}
                 fc = ((item.get("cta") or {}).get("first_comment") or "").strip()
@@ -348,13 +363,15 @@ def main():
                     json.dump(q, fh, indent=2, ensure_ascii=False)
                 os.replace(qfile + ".tmp", qfile)
     if DRY:
-        print(f"\nDRY RUN: nothing was posted and no file was changed. {len(posted)} would post · {failed} would fail · {waiting} would wait.")
+        print(f"\nDRY RUN: nothing was posted and no file was changed. {len(posted)} would post · {failed} would fail · {waiting} would wait · {held} held for a photo check.")
         print("Run it again without --dry-run to post. Don't call record_social_posts for a dry run.")
         sys.exit(1 if failed else 0)
     out = os.path.join(ddir, "_to_record.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(posted, fh, indent=1)
-    print(f"\nposted {len(posted)} · failed {failed} · waiting {waiting}. Now call record_social_posts with the list in {out}")
+    if held:
+        print(f"\nPHOTO CHECK: {held} card(s) held. Look at each image; set \"photo_ok\": true if it's right, or flag it (yeez_build.py --flag) and rebuild. Then run this again.")
+    print(f"\nposted {len(posted)} · failed {failed} · waiting {waiting} · held {held}. Now call record_social_posts with the list in {out}")
     if waiting:
         print(f"{waiting} stories/Instagram items wait for their time: run this again during the day (the social now task).")
     sys.exit(1 if failed else 0)

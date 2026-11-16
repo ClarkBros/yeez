@@ -32,7 +32,8 @@ Never end on a sourced fact, a date, an instruction or "Learn more". The ending 
 - `image_brief`: `format: "T"`.
   - One person: `subject: "person: <Full Name> official portrait"`.
   - Two people: also `subject2: "person: <Full Name> official portrait"` (the photos run side by side).
-  - No person: `query` is 4–7 concrete words for a real moment (the document, the store, a person like the reader). Always keep `query` filled as a fallback.
+  - No person: `must` is the 1–3 words the photo has to show (the product or thing the story is about: `"whipped cream"`, `"social security card"`), and `query` is 4–7 concrete words for a real moment around it (the document, the store, a person like the reader). Every photo must match `must`; news words like recall, warning or price never count. Always keep `query` filled.
+  - The buyer's own photo: when the Page belongs to a WordPress site, first call `find_site_images` with the `must` words. If a result's title or alt text shows that thing, put its `url` in `image_url` (and its alt text in `image_alt`): the card uses it as is. Otherwise leave `image_url` out and the script searches photo libraries.
 - `caption`: 60–110 words. Hook (the stake) → 2–3 short sentences of facts with the number, who decided it and the source named in words → one line on who it hits → the question again (or, on keyword posts, why people miss it + what we send + `Comment WORD.`).
 
 | Weak | Strong |
