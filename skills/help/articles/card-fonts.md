@@ -22,4 +22,4 @@ The cards are still made, with a standard font, and the problem is the first lin
 
 ## Names in other alphabets
 
-Photo credits and text in Japanese, Chinese, Korean, Arabic, Hebrew, Thai or Hindi print in a matching font automatically, so you never get empty boxes.
+Photo credits and other text in Japanese, Chinese or Korean (and accented or Greek and Cyrillic letters) print in a matching font automatically instead of empty boxes.
