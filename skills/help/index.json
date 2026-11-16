@@ -450,6 +450,26 @@
       ]
     },
     {
+      "slug": "card-fonts",
+      "title": "Use my own fonts on cards and pins",
+      "topic": "start",
+      "keywords": [
+        "font",
+        "fonts",
+        "gaegu",
+        "google fonts",
+        "script line",
+        "kicker",
+        "headline font",
+        "own font",
+        "ttf",
+        "otf",
+        "boxes instead of letters",
+        "japanese name",
+        "bold"
+      ]
+    },
+    {
       "slug": "feed-boxes",
       "title": "Can Yeez tick my SimpleFeed / NewsBreak boxes?",
       "topic": "sites",
@@ -481,7 +501,11 @@
         "connect",
         "permissions",
         "app domains",
-        "redirect"
+        "redirect",
+        "try again",
+        "link expired",
+        "connect link expired",
+        "timed out"
       ]
     },
     {

@@ -63,7 +63,9 @@ The first time you see an account, if its name has no "verified" status and the 
 Work in a folder named `yeez-work` (create it next to where you run commands).
 
 1. Write `yeez-work/brands.json`: a list with one entry per account, built from each brief's `brand` plus `logo_url`:
-   `[{"code": "<brand.code>", "name": "<brand.name>", "c1": "...", "c2": "...", "c3": "...", "icon": "...", "logo_url": "<logo_url>"}]`
+   `[{"code": "<brand.code>", "name": "<brand.name>", "c1": "...", "c2": "...", "c3": "...", "icon": "...", "fonts": <brand.fonts, if set>, "logo_url": "<logo_url>"}]`
+
+   **Card fonts.** When the buyer asks for a font on their cards (for example "use Gaegu Bold for the red line above the title"), save it on the account with `save_social_settings` `brand.fonts`: `script_font` is the short script line above the title (the kicker), `title_font` the headline, `small_font` the site label, `display_font` big numbers, `serif_font` serif titles. Write it as `"Family:weight"`, e.g. `"Gaegu:700"`. Any Google Fonts family works (it's fetched once into `yeez-work/fonts/google`). For their own font file, they put the .ttf/.otf in `yeez-work/fonts` and you use its family name. An empty string goes back to the default.
 2. For each account, write `yeez-work/queue/<today>/<CODE>.json`:
 
 ```json
@@ -114,6 +116,8 @@ A reel takes about a minute to render (it downloads only the clips it needs from
 - the photo must show what the card is about (the named person, the actual thing), with no text, logos or watermarks fighting the headline;
 - nothing cut off;
 - for reels, pull one frame (`ffmpeg -ss 4 -i <reel>.mp4 -frames:v 1 frame.png`) and check the lines are readable and the footage fits the story.
+
+If the script prints **FONT PROBLEMS**, the cards were built with a stand-in font. Put that line first in your report to the buyer, with the fix it names.
 
 For a bad photo, change `image_brief` (a better `subject` or `query`), set the item back to `"status": "written"`, and run the script again with `--rebuild --page CODE`. Two tries, then use the card without a photo or drop the item.
 

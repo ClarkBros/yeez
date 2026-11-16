@@ -45,6 +45,9 @@ from datetime import datetime, timedelta, timezone
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import fonts  # noqa: E402  card fonts, the buyer's own fonts, fallback letters (Japanese names etc.)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT_DIR = os.path.join(HERE, "fonts")
 # Everything the run writes lives in the buyer's work folder (default ./yeez-work), set by --work.
@@ -398,9 +401,9 @@ def draw_lines(img, lines, font_name, size, x, y, lh, color, accent=None,
 
 
 def ellipsize(text, fnt, max_w, draw):
-    if draw.textlength(text, font=fnt) <= max_w:
+    if fonts.textlength(draw, text, fnt) <= max_w:
         return text
-    while text and draw.textlength(text + "…", font=fnt) > max_w:
+    while text and fonts.textlength(draw, text + "…", fnt) > max_w:
         text = text[:-1]
     return text.rstrip() + "…"
 
@@ -978,11 +981,13 @@ def brand_tag(img, brand, right_x, center_y, color, icon_color, name_size=32, ic
 
 
 def credit_text(img, text, left_x, center_y, color, size=22, max_w=520):
+    """Photo credit line. Names in scripts Inter lacks (Japanese, Korean, Arabic ...) use a fallback font, not boxes."""
     d = ImageDraw.Draw(img)
     f = font(F_MED, size)
+    f.yeez_path = os.path.join(FONT_DIR, F_MED)
     text = ellipsize(text, f, max_w, d)
     bb = f.getbbox("Hg")
-    d.text((left_x, center_y - (bb[1] + bb[3]) / 2), text, font=f, fill=color)
+    fonts.draw_text(d, (left_x, center_y - (bb[1] + bb[3]) / 2), text, f, color)
 
 
 def photo_credit(photo):
@@ -1151,11 +1156,11 @@ def render_news_t(item, page_code, brand, photo, out, photo2=None):
     if creds:
         cf = font(F_MED, 20)
         cr = ellipsize(" · ".join(creds), cf, W - 60, d)
-        tw = d.textlength(cr, font=cf)
+        tw = fonts.textlength(d, cr, cf)
         chip = Image.new("RGBA", (int(tw + 24), 34), (0, 0, 0, 130))
         img.alpha_composite(chip, (16, H - 50))
         d = ImageDraw.Draw(img)
-        d.text((28, H - 45), cr, font=cf, fill=(240, 240, 240))
+        fonts.draw_text(d, (28, H - 45), cr, cf, (240, 240, 240))
     img.convert("RGB").save(out, optimize=True)
     return size, fits
 
@@ -1194,7 +1199,7 @@ def render_story(item, brand, mode, photo, out):
     hf = font(F_HEAD, 44)
     name = ellipsize(brand["name"], hf, W_STORY - 2 * pad - 110, d)
     bb = hf.getbbox("Hg")
-    d.text((pad + 84 + 26, 120 + 42 - (bb[1] + bb[3]) / 2), name, font=hf, fill=fg if not grad else (255, 255, 255))
+    fonts.draw_text(d, (pad + 84 + 26, 120 + 42 - (bb[1] + bb[3]) / 2), name, hf, fg if not grad else (255, 255, 255))
 
     # CTA pill (KEYWORD only)
     cta = item.get("cta") or {}
@@ -1238,11 +1243,11 @@ def render_story(item, brand, mode, photo, out):
         d = ImageDraw.Draw(img)
         cr = ellipsize(cr, cf, bw - 40, d)
         # credit chip on the photo's bottom-left
-        tw = d.textlength(cr, font=cf)
+        tw = fonts.textlength(d, cr, cf)
         chip = Image.new("RGBA", (int(tw + 28), 40), (0, 0, 0, 140))
         img.alpha_composite(chip, (pad + 20, 290 + bh - 60))
         d = ImageDraw.Draw(img)
-        d.text((pad + 34, 290 + bh - 60 + 8), cr, font=cf, fill=(240, 240, 240))
+        fonts.draw_text(d, (pad + 34, 290 + bh - 60 + 8), cr, cf, (240, 240, 240))
         y_top = 290 + bh + 70
 
     bottom = (pill_top - 70) if pill_top else (H_STORY - 330)
@@ -1562,7 +1567,9 @@ def build_item(item, idx_story, page_code, brand, media_dir):
         # a card in one of the pin designs (pin-templates.json), sized for the feed
         import pin_build
         d = dict(item["design"])
-        b = {**({"accent": "#" + brand["c1"].lstrip("#")} if brand and brand.get("c1") else {}), **d.pop("brand", {})}
+        # the Page's saved card fonts (save_social_settings brand.fonts, copied into brands.json), then this card's own
+        b = {**({"accent": "#" + brand["c1"].lstrip("#")} if brand and brand.get("c1") else {}),
+             **{k: v for k, v in ((brand or {}).get("fonts") or {}).items() if k.endswith("_font") and v}, **d.pop("brand", {})}
         img = pin_build.render(d, b, size=tuple(d.get("size") or (1080, 1350)))
         out_j = os.path.join(media_dir, f"{iid}.jpg")
         img.save(out_j, quality=90, optimize=True)
@@ -1745,6 +1752,10 @@ def main():
                                     {t.strip().lower() for t in args.type.split(",")} if args.type else None)
         for k in total:
             total[k] += c[k]
+    if fonts.WARNINGS:  # top of the summary so it reaches the buyer
+        print("\nFONT PROBLEMS (cards were still built with a stand-in font):")
+        for w in fonts.WARNINGS:
+            print(f"  - {w}")
     print(f"\nbuilt {total['built']} · failed {total['failed']} · left for later {total['left']} · untouched {total['skipped']}")
     sys.exit(1 if total["failed"] else 0)
 
@@ -1752,6 +1763,7 @@ def main():
 def set_work(path):
     global WORK, QUEUE_ROOT, BRANDS_JSON, LOGO_DIR, LEDGER, PHOTO_CACHE, IMAGE_KEYS_JSON
     WORK = os.path.abspath(path)
+    os.environ["YEEZ_WORK"] = WORK  # fonts.py reads yeez-work/fonts from here
     QUEUE_ROOT = os.path.join(WORK, "queue")
     BRANDS_JSON = os.path.join(WORK, "brands.json")
     LOGO_DIR = os.path.join(WORK, "logos")

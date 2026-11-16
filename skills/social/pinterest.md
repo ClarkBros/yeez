@@ -80,6 +80,8 @@ Write `yeez-work/pins/<today>/pins.json`:
 python3 <this skill's folder>/scripts/pin_build.py --pins yeez-work/pins/<today>/pins.json --out yeez-work/pins/<today>
 ```
 
+If it prints **FONT PROBLEMS**, the pins were built with a stand-in font: put that first in the report, with the fix it names. Fonts for pins go in the pins file's `brand` (`title_font`, `script_font`, ...) as `"Family:weight"`; any Google Fonts family or a font file in `yeez-work/fonts` works.
+
 Then **look at every pin** (open each image):
 - the food or subject is clearly visible and not covered by text; if a band or box hides it, change `focus` (0–1 for left-right, top-bottom) or the template's `style` (for example `box_y`) for that pin;
 - the words are readable at phone size, nothing is cut off, the number and title match the article;

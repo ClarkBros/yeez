@@ -16,9 +16,11 @@ Your Meta app is missing a permission Yeez asks for. Adding a use case doesn't a
 1. **App settings → Basic → App Domains:** add `yeez.ai` and save.
 2. **Valid OAuth Redirect URIs** (under Facebook Login for Business → Settings, or the Manage everything on your Page use case → Customize → Settings): paste `https://yeez.ai/connect/meta/callback` exactly, and save.
 
-## "This connection attempt timed out"
+## After fixing your Meta app, how to try again
 
-The attempt was left open too long or opened twice. Click **Try again**. Your saved Meta app is used again, so there's nothing to re-enter.
+- **The error appeared on Facebook's own page** (like "Invalid Scopes"): fix the setting, then reload that Facebook tab. Yeez starts the connection again for you, even if hours have passed (up to 7 days).
+- **The error appeared on a Yeez page:** click **Try again**. It goes straight back to Facebook with your saved app, with no login and no new link needed. **Check my Meta app settings** reopens the setup steps if you need to change the App ID or App Secret.
+- **More than 7 days later:** ask your AI app to "connect Facebook" for a new link.
 
 ## Still not working
 

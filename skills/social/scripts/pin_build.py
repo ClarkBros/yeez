@@ -25,9 +25,10 @@ URLs (downloaded to yeez-work/pins/cache).
 """
 import argparse, hashlib, json, os, re, sys, urllib.request
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import fonts
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FONT_DIRS = [os.path.join(HERE, "fonts"), os.path.join(HERE, "..", "fonts")]
 W, H = 1000, 1500
 
 
@@ -37,30 +38,10 @@ def rgb(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-_fcache = {}
 def font(spec, size):
-    """spec 'Oswald:700' or 'Anton' -> sized FreeType font (variable fonts get their weight)."""
-    name, _, weight = spec.partition(":")
-    key = (name, weight, size)
-    if key in _fcache:
-        return _fcache[key]
-    path = None
-    for d in FONT_DIRS:
-        for cand in (f"{name}.ttf", f"{name}-Regular.ttf"):
-            p = os.path.join(d, cand)
-            if os.path.exists(p):
-                path = p; break
-        if path: break
-    if not path:
-        raise SystemExit(f"font not found: {name}")
-    f = ImageFont.truetype(path, size)
-    if weight:
-        try:
-            f.set_variation_by_axes([int(weight)])
-        except Exception:
-            pass
-    _fcache[key] = f
-    return f
+    """spec 'Oswald:700', 'Gaegu:700' or 'Anton' -> sized font. Looks in yeez-work/fonts, the bundled fonts, then
+    Google Fonts (fonts.py). Static families get the file for the weight; variable fonts get the weight set."""
+    return fonts.get(spec, size)
 
 
 def fetch(src):
@@ -90,7 +71,7 @@ def cased(text, mode):
 
 
 def text_w(draw, s, f):
-    return draw.textlength(s, font=f)
+    return fonts.textlength(draw, s, f)  # counts fallback letters (e.g. Japanese) at their real width
 
 
 def wrap_balanced(draw, text, f, max_w, max_lines):
@@ -132,7 +113,7 @@ def fit(draw, text, spec, max_w, max_h, max_size, min_size, max_lines, lh=1.04):
 def draw_center_lines(draw, lines, f, line_h, cx, y, color):
     for l in lines:
         w = text_w(draw, l, f)
-        draw.text((cx - w / 2, y), l, font=f, fill=color)
+        fonts.draw_text(draw, (cx - w / 2, y), l, f, color)
         y += line_h
     return y
 
@@ -174,7 +155,7 @@ def tag(draw, cx, y, text, f, fill, color, pad=(22, 10)):
     box = [cx - w / 2 - pad[0], y, cx + w / 2 + pad[0], y + asc + desc + pad[1] * 2]
     if fill is not None:
         draw.rectangle(box, fill=fill)
-    draw.text((cx - w / 2, y + pad[1]), text, font=f, fill=color)
+    fonts.draw_text(draw, (cx - w / 2, y + pad[1]), text, f, color)
     return box[3]
 
 
@@ -200,7 +181,7 @@ def t_center_box(pin, x):
     y = by + pad
     if kf:
         kw = text_w(d, pin["kicker"], kf)
-        d.text((W / 2 - kw / 2, y - 6), pin["kicker"], font=kf, fill=x.c("kicker_color"))
+        fonts.draw_text(d, (W / 2 - kw / 2, y - 6), pin["kicker"], kf, x.c("kicker_color"))
         y += kh
     draw_center_lines(d, lines, tf, lh, W / 2, y, x.c("title_color"))
     if x.p.get("tag"):
@@ -233,7 +214,7 @@ def t_split_band(pin, x):
     y = by + (bh - block) // 2
     if kf:
         kw = text_w(d, pin["kicker"], kf)
-        d.text((W / 2 - kw / 2, y - 8), pin["kicker"], font=kf, fill=x.c("kicker_color"))
+        fonts.draw_text(d, (W / 2 - kw / 2, y - 8), pin["kicker"], kf, x.c("kicker_color"))
         y += kh
     y = draw_center_lines(d, lines, tf, lh, W / 2, y, x.c("title_color"))
     lab = spaced(x.b["site_label"])
@@ -241,7 +222,7 @@ def t_split_band(pin, x):
     if x.p.get("rule"):
         d.line([W / 2 - lw / 2 - 70, y + 22, W / 2 - lw / 2 - 18, y + 22], fill=x.c("tag_color"), width=2)
         d.line([W / 2 + lw / 2 + 18, y + 22, W / 2 + lw / 2 + 70, y + 22], fill=x.c("tag_color"), width=2)
-    d.text((W / 2 - lw / 2, y + 8), lab, font=sf, fill=x.c("tag_color"))
+    fonts.draw_text(d, (W / 2 - lw / 2, y + 8), lab, sf, x.c("tag_color"))
     return img
 
 
@@ -262,7 +243,7 @@ def t_top_title(pin, x):
     if pin.get("kicker"):
         kf = font(x.f("kicker_font"), x.p["kicker_size"])
         kw = text_w(d, pin["kicker"], kf)
-        d.text((W / 2 - kw / 2, y), pin["kicker"], font=kf, fill=x.c("kicker_color"))
+        fonts.draw_text(d, (W / 2 - kw / 2, y), pin["kicker"], kf, x.c("kicker_color"))
         y += int(sum(kf.getmetrics()) * 0.92)
     title = cased(pin["title"], x.p["title_case"])
     tf, lines, lh = fit(d, title, x.f("title_font"), W - 110, int(fh * solid) + 60 - y + 40, x.p["title_max"], x.p["title_min"], x.p["title_lines"], lh=0.98)
@@ -298,11 +279,11 @@ def t_roundup_collage(pin, x):
     y = py0 + (phh - block) // 2
     if num:
         bb = d.textbbox((0, 0), num, font=nf)
-        d.text((W / 2 - (bb[2] - bb[0]) / 2 - bb[0], y - bb[1]), num, font=nf, fill=x.c("number_color"))
+        fonts.draw_text(d, (W / 2 - (bb[2] - bb[0]) / 2 - bb[0], y - bb[1]), num, nf, x.c("number_color"))
         y += nh + 10
     y = draw_center_lines(d, lines, tf, lh, W / 2, y, x.c("title_color"))
     lab = spaced(x.b["site_label"]); lw = text_w(d, lab, sf)
-    d.text((W / 2 - lw / 2, y + 8), lab, font=sf, fill=x.c("tag_color"))
+    fonts.draw_text(d, (W / 2 - lw / 2, y + 8), lab, sf, x.c("tag_color"))
     return img
 
 
@@ -320,19 +301,19 @@ def t_roundup_grid(pin, x):
     nw = nb[2] - nb[0]
     left = 54
     if num:
-        d.text((left - nb[0], (hh - (nb[3] - nb[1])) // 2 - nb[1] - 10), num, font=nf, fill=x.c("number_color"))
+        fonts.draw_text(d, (left - nb[0], (hh - (nb[3] - nb[1])) // 2 - nb[1] - 10), num, nf, x.c("number_color"))
     tx = left + nw + (36 if num else 0); tw = W - tx - 50
     y0 = 70
     if pin.get("kicker"):
         kf = font(x.f("kicker_font"), x.p["kicker_size"])
-        d.text((tx, y0 - 10), pin["kicker"], font=kf, fill=x.c("kicker_color"))
+        fonts.draw_text(d, (tx, y0 - 10), pin["kicker"], kf, x.c("kicker_color"))
         y0 += int(sum(kf.getmetrics()) * 0.9)
     title = cased(pin["title"], x.p["title_case"])
     tf, lines, lh = fit(d, title, x.f("title_font"), tw, hh - y0 - 70, x.p["title_max"], x.p["title_min"], x.p["title_lines"] + 1, lh=1.0)
     for l in lines:
-        d.text((tx, y0), l, font=tf, fill=x.c("title_color")); y0 += lh
+        fonts.draw_text(d, (tx, y0), l, tf, x.c("title_color")); y0 += lh
     sf = font(x.f("small_font"), x.p["tag_size"])
-    d.text((tx, y0 + 8), spaced(x.b["site_label"]), font=sf, fill=x.c("tag_color"))
+    fonts.draw_text(d, (tx, y0 + 8), spaced(x.b["site_label"]), sf, x.c("tag_color"))
     # grid
     gy = hh; cw = (W - g * (cols + 1)) // cols; chh = (H - gy - g * (rows + 1)) // rows
     bf = font(x.f("display_font"), x.p["badge_size"])
@@ -344,7 +325,7 @@ def t_roundup_grid(pin, x):
         r = 30
         d.ellipse([cx0 + 14, cy0 + 14, cx0 + 14 + 2 * r, cy0 + 14 + 2 * r], fill=x.c("badge_fill"))
         s = str(i + 1); bb = d.textbbox((0, 0), s, font=bf)
-        d.text((cx0 + 14 + r - (bb[2] - bb[0]) / 2 - bb[0], cy0 + 14 + r - (bb[3] - bb[1]) / 2 - bb[1]), s, font=bf, fill=x.c("badge_color"))
+        fonts.draw_text(d, (cx0 + 14 + r - (bb[2] - bb[0]) / 2 - bb[0], cy0 + 14 + r - (bb[3] - bb[1]) / 2 - bb[1]), s, bf, x.c("badge_color"))
         if i < len(labels) and labels[i]:
             lab = labels[i].upper()
             while text_w(d, lab, lf) > cw - 40 and len(lab) > 4:
@@ -352,7 +333,7 @@ def t_roundup_grid(pin, x):
             lw = text_w(d, lab, lf); asc, desc = lf.getmetrics()
             ly = cy0 + chh - (asc + desc) - 26
             d.rectangle([cx0 + cw / 2 - lw / 2 - 16, ly - 8, cx0 + cw / 2 + lw / 2 + 16, ly + asc + desc + 8], fill=x.c("label_fill"))
-            d.text((cx0 + cw / 2 - lw / 2, ly), lab, font=lf, fill=x.c("label_color"))
+            fonts.draw_text(d, (cx0 + cw / 2 - lw / 2, ly), lab, lf, x.c("label_color"))
     return img
 
 
@@ -383,7 +364,7 @@ def t_recipe_card(pin, x):
     if pin.get("facts"):
         s = "  \u2022  ".join(f.upper() for f in pin["facts"])
         sw = text_w(d, s, ff)
-        d.text((W / 2 - sw / 2, y + 10), s, font=ff, fill=x.c("facts_color"))
+        fonts.draw_text(d, (W / 2 - sw / 2, y + 10), s, ff, x.c("facts_color"))
         y += int(sum(ff.getmetrics())) + 30
     d.line([m + 60, y, W - m - 60, y], fill=x.c("accent_2"), width=3)
     y += 24
@@ -394,9 +375,9 @@ def t_recipe_card(pin, x):
         t = it
         while text_w(d, t, lf) > colw - 40 and len(t) > 4:
             t = t[:-2].rstrip() + "\u2026"
-        d.text((cx0 + 24, yy), t, font=lf, fill=x.c("list_color"))
+        fonts.draw_text(d, (cx0 + 24, yy), t, lf, x.c("list_color"))
     lab = spaced(x.b["site_label"]); lw = text_w(d, lab, sf)
-    d.text((W / 2 - lw / 2, H - m - int(sum(sf.getmetrics())) - 26), lab, font=sf, fill=x.c("tag_color"))
+    fonts.draw_text(d, (W / 2 - lw / 2, H - m - int(sum(sf.getmetrics())) - 26), lab, sf, x.c("tag_color"))
     return img
 
 
@@ -439,6 +420,10 @@ def main():
         pin["media"] = fn
         print("built", fn)
     json.dump(spec, open(a.pins, "w"), indent=1)
+    if fonts.WARNINGS:  # put this first when reporting to the buyer
+        print("\nFONT PROBLEMS (pins were still built with a stand-in font):")
+        for w in fonts.WARNINGS:
+            print(f"  - {w}")
 
 
 if __name__ == "__main__":
