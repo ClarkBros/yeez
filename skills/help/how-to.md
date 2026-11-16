@@ -38,6 +38,38 @@ To change the look, just tell your AI app what you want, for example:
 
 It saves the change for your site, rebuilds a sample so you can see it, and every pin after that follows it.
 
+### Facebook or Instagram won't connect
+
+Yeez posts to Facebook and Instagram through your own Meta app. Almost every failed connection comes from one of three settings in that app. Check all three, then click **Try again** on the error page (or ask your AI app to connect Facebook again).
+
+#### "Invalid Scopes: …"
+
+Your Meta app is missing a permission Yeez asks for. Adding a use case doesn't always add all of its permissions, so open each one and add them yourself:
+
+1. Go to developers.facebook.com → your app → **Use cases**.
+2. Next to each use case, click **Customize**, then **Add** next to every permission below.
+   - **Manage everything on your Page:** pages_show_list, pages_manage_posts, pages_read_engagement, pages_read_user_content, pages_manage_engagement, pages_manage_metadata, business_management
+   - **Engage with customers on Messenger from Meta:** pages_messaging
+   - **Manage messaging and content on Instagram:** instagram_basic, instagram_content_publish, instagram_manage_comments, instagram_manage_messages
+3. The error names the ones that are missing. pages_manage_engagement is the one most often left out.
+
+#### "Can't load URL: The domain of this URL isn't included in the app's domains"
+
+1. **App settings → Basic → App Domains:** add `yeez.ai` and save.
+2. **Valid OAuth Redirect URIs** (under Facebook Login for Business → Settings, or the Manage everything on your Page use case → Customize → Settings): paste `https://yeez.ai/connect/meta/callback` exactly, and save.
+
+#### "This connection attempt timed out"
+
+The attempt was left open too long or opened twice. Click **Try again**. Your saved Meta app is used again, so there's nothing to re-enter.
+
+#### Still not working
+
+- The app must be switched from **Development** to **Live** (top of the app's page). Comment replies only work when it's Live.
+- Facebook may ask for your password or passkey more than once. That's normal.
+- On the selection screen, tick every Page (and its Instagram account) you want Yeez to post to.
+
+When it works, Yeez lists each Page and Instagram account as connected.
+
 ## Scheduled tasks
 
 ### See your Yeez tasks
@@ -144,7 +176,13 @@ No more than 3 helpers run at once, so your plan's usage doesn't burn in one bur
 
 Tell your AI app: `Set parentdiaries.com to 15 articles a day` (with your site). Yeez saves it and the next run follows it.
 
-Raise it in steps, and only while views hold up.
+Raise it in steps, and only while views hold up:
+
+1. Start where you are, or at 10 a day, for about a week.
+2. If views per article hold steady, go to 15.
+3. If views keep climbing, go to 20. Getting there usually takes one to three weeks.
+
+If views per article drop after a step, go back down. More articles only help when each one still gets read. Your weekly review shows views per article, so you can see whether a step paid off.
 
 ### Change publish times
 
@@ -188,6 +226,7 @@ A site got no articles, or fewer than its daily count.
 
 - **Fill it now:** tell your AI app `Fill today's Yeez articles for lovelygardenroots.com` (with your site). It picks headlines for the missing slots and writes them. Leave out the site to fill every site.
 - **See why:** open Scheduled, then the Headlines and Articles tasks, and look at **History**. A skipped run means the computer was asleep or the app was closed (see [missed-runs](https://yeez.ai/help/missed-runs)). A run that finished short says why at the top of its report: too few true stories found, or stories held at the fact check.
+- **Check the count:** every run report starts with each site's count, like "20 of 20". If a story fails a check, Yeez pulls the next one in line until the day is full.
 - **Nothing to fix in the tasks:** the Articles task works through every site. If the Headlines task didn't run, it picks the headlines itself, and it tops up any site that's short before it finishes.
 
 ### The stories drift off-topic
@@ -200,32 +239,33 @@ Before you set how many of each kind of story to run, check your weekly review. 
 
 ### Can Yeez tick my SimpleFeed / NewsBreak boxes?
 
-Yes. If your site uses a feed plugin like SimpleFeed or NewsBreak Feed for WordPress, Yeez ticks its boxes (NewsBreak, MSN Article, MSN Gallery, Yahoo and the rest) on every post it schedules, so you don't tick them by hand.
+Yes, and you don't need to set anything up. If your site uses a feed plugin like SimpleFeed or NewsBreak Feed for WordPress, Yeez ticks its boxes (NewsBreak, MSN Article, MSN Gallery, Yahoo and the rest) on every post it schedules.
 
-You choose which boxes in setup. To change them later, tell your AI app:
+**Which boxes:** Yeez picks the ones you already use. First the boxes you tick by hand on its posts, then the boxes your own recent posts use, then the platforms you're approved on. Article boxes go on articles, and gallery boxes (MSN Gallery, Yahoo Slideshows, AOL Slideshows) go on galleries.
 
-`Yeez, show the feed boxes on example.com`
+**To change them:** tell your AI app `Yeez, show the feed boxes on example.com`, then for example `Yeez, tick NewsBreak and MSN Article on example.com`. Your choice always wins.
 
-then, for example:
+**If a box doesn't stick,** the run summary says so on its first line, with the fix. That post won't reach that platform until it's ticked.
 
-`Yeez, tick NewsBreak and MSN Article on example.com`
+**Check NewsBreak, not the feed:** a feed only lists your newest posts, so older ones drop off it once NewsBreak has picked them up. To see what went out, look at your NewsBreak profile.
 
-Article boxes go on articles and gallery boxes (MSN Gallery, Yahoo Slideshows, AOL Slideshows) on galleries.
+#### The small helper on your site
 
-#### Why Yeez needs a small helper on your site
+WordPress doesn't let outside tools change a feed plugin's boxes on its own. Yeez opens them with the **Yeez WordPress plugin** (or, if your site has the free Code Snippets plugin, a snippet it adds itself called "Yeez: let Yeez tick your feed boxes"; leave it on). If the run summary says the plugin is needed, download https://yeez.ai/downloads/yeez-wp.zip, then WordPress → Plugins → Add New → Upload Plugin → Install Now → Activate. If you already have it, choose "replace" to get the newest version.
 
-WordPress doesn't let outside tools change a feed plugin's boxes on their own. Yeez opens them one of two ways:
+### A source site fails the fact check (ftc.gov and others)
 
-- If your site has the free **Code Snippets** plugin, Yeez adds a snippet called "Yeez: let Yeez tick your feed boxes" by itself. Leave it on.
-- Otherwise, install the **Yeez WordPress plugin**: download https://yeez.ai/downloads/yeez-wp.zip, then WordPress → Plugins → Add New → Upload Plugin → Install Now → Activate. If you already have it, choose "replace" so you get the newest version.
+Some official sites (ftc.gov is one) block automated visits, so Yeez's fact check couldn't open them and held the story.
 
-Posts you scheduled before this was set up keep whatever boxes they had.
+That's fixed. When a source site blocks automated checks, Yeez marks that link "couldn't check" instead of failing the article, as long as the article's other sources check out. The story goes through.
+
+If a run still holds a story, the report says why at the top: the claim it couldn't confirm, or the source that's actually dead. Yeez replaces a held story with the next one in line, so the day stays full.
 
 ## Views, Learn and your numbers
 
 ### How do I use Yeez to get more views and money?
 
-Yeez writes and publishes for you every day, and Learn fine-tunes your headlines as your numbers come in. The bigger moves are yours: what kinds of stories you run, how many a day, how headlines are written, what each post should earn. Yeez does the digging for you. You just ask it the right things in your AI app. This is how the Yeez team works its own sites, step by step, with what to type at each step.
+Yeez is self-managed: it writes and publishes for you every day, and Learn fine-tunes your headlines as your numbers come in. Steering your sites toward more views is in your hands (hands-on steering by the Yeez team is the custom version). The bigger moves are yours: what kinds of stories you run, how many a day, how headlines are written, what each post should earn. Yeez does the digging for you. You just ask it the right things in your AI app. This is how the Yeez team works its own sites, step by step, with what to type at each step.
 
 You can type any of these in the Claude desktop app (or your AI app) where Yeez is installed, any time. The weekly review runs them for you every Monday, but asking yourself is how you get the most out of it.
 
@@ -313,6 +353,39 @@ Learn runs in the early afternoon, when you're usually at the computer, so it ca
 
 Type `/yeez:learn daily` in your AI app.
 
+### Does Yeez track how my articles do every day?
+
+Yes. **Learn** pulls your numbers every day from NewsBreak and every other platform your site is approved on, and updates what's working before the next night's headlines are picked.
+
+- It opens each dashboard in your AI app's browser, so your computer needs to be on, the app open, and you logged in to those dashboards there. If a login expires, Learn asks you to log in and reply `done` (see [Learn asks me to log in](https://yeez.ai/help/learn-login)).
+- Your numbers stay in the Yeez folder on your computer. Nothing is stored on yeez.ai.
+- Every day it grades the test headlines, keeps the kinds that win and drops the ones that don't. The weekly review digs deeper.
+- To pull them right now, type `/yeez:learn daily` (see [Pull your numbers now](https://yeez.ai/help/pull-numbers-now)).
+
+If Learn hasn't pulled in a while, every run summary says so at the top, with what to do.
+
+### Learn failed or says Yeez isn't connected
+
+When Learn (or any Yeez task) says it failed or "isn't connected", your AI app has lost its link to Yeez. Usually it's a short hiccup on the app's side.
+
+1. **Run it again.** Type `/yeez:learn daily` (or the task that failed). Most of the time that's all it takes.
+2. **Still not connected?** In the Claude app, go to **Settings → Connectors**, find **Yeez**, and reconnect it (sign in again if it asks). Then run it again.
+3. **Different message?** If it says a dashboard isn't logged in, see [Learn asks me to log in](https://yeez.ai/help/learn-login). If it didn't run at all, see [A task didn't run](https://yeez.ai/help/missed-runs).
+
+### My views dropped after my stories changed
+
+When a kind of story stops working (a platform changes what it rewards, or a site gets demoted for its sources), the way back is usually the same stories your readers loved, told from real reported news with named people.
+
+Yeez finds that for you. Type, with your site and what you're after:
+
+`/yeez:learn Lovely Garden Roots and find strong competitors publishing reported homeowner and garden stories`
+
+1. Yeez finds 4–8 sites in your niche that are clearly winning on the same platforms.
+2. It collects their best recent stories and works out the angles behind them.
+3. It turns those angles into tests on your site, and Learn grades every test against your views. Winners become regular stories; losers stop.
+
+About a quarter of each day's picks are tests, so you try new angles without risking the rest of the day. Yeez also checks competitors weekly, and whenever a top kind of story stops working.
+
 ## Google search
 
 ### Search articles: who gets them, turning them off, approving
@@ -345,9 +418,30 @@ Tell your AI app the site and the new days, for example: `The parentdiaries.com 
 
 ## Billing and the guarantee
 
-### Billing, refunds and the guarantee
+### Price, refunds and the 90-day guarantee
 
-Payments, licenses, refunds and the 90-day guarantee terms: email [alex@clarkbrosmedia.com](mailto:alex@clarkbrosmedia.com). The guarantee terms are on the Terms page, under Guarantee.
+#### Price
+Each license covers **one site**, so the price is per site. Adding more sites works the same way, with no discount for extra sites (see [Add another site](https://yeez.ai/help/add-a-site)).
+
+#### The 90-day guarantee
+- The 90 days start once your setup is finished.
+- Your earnings are measured against what your sites earned in the 90 days before. Setup asks for those numbers, and the tracker on your dashboard follows the difference.
+- If the extra income doesn't cover what you paid, you're refunded the difference.
+- The full conditions are on the Terms page, under Guarantee.
+
+#### Everything else
+Payments, licenses and refunds: email [alex@clarkbrosmedia.com](mailto:alex@clarkbrosmedia.com).
+
+### Add another site
+
+Each Yeez license covers one site.
+
+1. Buy the new license with **the same email you used the first time**. That's what puts it on your existing Yeez account. A different email makes a separate account, and the site won't show up next to your others.
+2. In your AI app, type: `Connect a new site to Yeez`. It walks you through connecting the site, reads it and pulls its numbers, the same way your first site was set up.
+
+Every site gets its own settings: articles a day, publish times, rules, feed boxes, image style and newsletter. All your sites show on one dashboard.
+
+There's no discount for adding more sites.
 
 ## Anything else
 

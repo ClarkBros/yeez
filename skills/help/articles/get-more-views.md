@@ -1,4 +1,4 @@
-Yeez writes and publishes for you every day, and Learn fine-tunes your headlines as your numbers come in. The bigger moves are yours: what kinds of stories you run, how many a day, how headlines are written, what each post should earn. Yeez does the digging for you. You just ask it the right things in your AI app. This is how the Yeez team works its own sites, step by step, with what to type at each step.
+Yeez is self-managed: it writes and publishes for you every day, and Learn fine-tunes your headlines as your numbers come in. Steering your sites toward more views is in your hands (hands-on steering by the Yeez team is the custom version). The bigger moves are yours: what kinds of stories you run, how many a day, how headlines are written, what each post should earn. Yeez does the digging for you. You just ask it the right things in your AI app. This is how the Yeez team works its own sites, step by step, with what to type at each step.
 
 You can type any of these in the Claude desktop app (or your AI app) where Yeez is installed, any time. The weekly review runs them for you every Monday, but asking yourself is how you get the most out of it.
 

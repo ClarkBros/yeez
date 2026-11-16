@@ -240,11 +240,14 @@
       "title": "Change how many articles a day",
       "topic": "sites",
       "keywords": [
+        "20 a day",
         "articles a day",
-        "per day",
-        "more articles",
         "fewer articles",
-        "volume"
+        "more articles",
+        "per day",
+        "ramp",
+        "volume",
+        "when to increase"
       ]
     },
     {
@@ -373,14 +376,19 @@
     },
     {
       "slug": "billing",
-      "title": "Billing, refunds and the guarantee",
+      "title": "Price, refunds and the 90-day guarantee",
       "topic": "billing",
       "keywords": [
-        "refund",
-        "payment",
+        "cost",
+        "discount",
+        "guarantee",
+        "how much",
         "invoice",
         "license",
-        "guarantee"
+        "payment",
+        "per site",
+        "price",
+        "refund"
       ]
     },
     {
@@ -446,15 +454,101 @@
       "title": "Can Yeez tick my SimpleFeed / NewsBreak boxes?",
       "topic": "sites",
       "keywords": [
-        "simplefeed",
-        "simple feed",
-        "newsbreak box",
-        "tick",
+        "boxes",
         "checkbox",
-        "msn box",
+        "feed",
         "feed plugin",
+        "msn box",
+        "newsbreak box",
+        "not on newsbreak",
+        "not showing on newsbreak",
         "send to newsbreak",
-        "boxes"
+        "simple feed",
+        "simplefeed",
+        "tick"
+      ]
+    },
+    {
+      "slug": "facebook-connect",
+      "title": "Facebook or Instagram won't connect",
+      "topic": "start",
+      "keywords": [
+        "facebook",
+        "instagram",
+        "meta app",
+        "invalid scopes",
+        "can't load url",
+        "connect",
+        "permissions",
+        "app domains",
+        "redirect"
+      ]
+    },
+    {
+      "slug": "add-a-site",
+      "title": "Add another site",
+      "topic": "billing",
+      "keywords": [
+        "another site",
+        "second site",
+        "new site",
+        "add site",
+        "license",
+        "same email"
+      ]
+    },
+    {
+      "slug": "daily-numbers",
+      "title": "Does Yeez track how my articles do every day?",
+      "topic": "learn",
+      "keywords": [
+        "daily",
+        "numbers",
+        "learning",
+        "does it learn",
+        "pull data",
+        "track",
+        "views each day"
+      ]
+    },
+    {
+      "slug": "source-blocked",
+      "title": "A source site fails the fact check (ftc.gov and others)",
+      "topic": "sites",
+      "keywords": [
+        "ftc.gov",
+        "source blocked",
+        "couldn't open",
+        "quality check",
+        "fact check",
+        "held story"
+      ]
+    },
+    {
+      "slug": "reconnect-yeez",
+      "title": "Learn failed or says Yeez isn't connected",
+      "topic": "learn",
+      "keywords": [
+        "not connected",
+        "failed",
+        "learn failed",
+        "connector",
+        "reconnect",
+        "error"
+      ]
+    },
+    {
+      "slug": "find-competitors",
+      "title": "My views dropped after my stories changed",
+      "topic": "learn",
+      "keywords": [
+        "views dropped",
+        "demoted",
+        "demotion",
+        "competitors",
+        "new angles",
+        "what to write",
+        "stories changed"
       ]
     }
   ],
