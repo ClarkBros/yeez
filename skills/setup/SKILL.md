@@ -63,7 +63,7 @@ For every connected site, call `save_site_settings` with:
 - `per_day`: `articles_per_day_wanted` for that site from the basics
 - `timezone`: from `business.timezone` in the basics
 - `platforms`: the platforms this site is approved on, from `channels.syndication` in the basics
-- `galleries_per_day`: don't ask. 0 unless the site is on MSN and already publishes numbered galleries (titles like "12 Cars That …" among its posts); then keep its current share. Never on NewsBreak-only sites. In 5b's confirm message, mention once that galleries pay on MSN if the site is on MSN and has none.
+- `galleries_per_day`: 0 for now. The learn steps in 5b read how the site uses images and galleries and set it with the buyer. Never on NewsBreak-only sites.
 - `start`: leave the default for now; step 5b sets it from the site's best publish hours
 
 Read back the publish times it returns in one line, so they see the day's schedule.

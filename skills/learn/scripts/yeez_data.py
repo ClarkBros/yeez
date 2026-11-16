@@ -564,6 +564,42 @@ def review(site, veins_path, weeks, min_age):
     print(json.dumps(out, indent=1, default=str))
 
 
+# ---------------------------------------------------------------------------
+# formats: galleries (numbered titles, "12 Cars That ...") vs articles, per platform.
+# Views per post, and money per post where income is logged (real RPM per platform).
+# ---------------------------------------------------------------------------
+def formats(site):
+    site = site_of(site)
+    arts = [r for r in load(ART, lambda r: (r["platform"], r["id"])).values() if r["site"] == site]
+    if not arts:
+        print(json.dumps({"ok": False, "site": site, "note": "No numbers for this site yet. Pull or ingest first."})); return
+    for r in arts: r["v"] = num(r["views"])
+    plat_month = defaultdict(int)
+    for r in arts:
+        if r["published"][:7]: plat_month[(r["platform"].lower(), r["published"][:7])] += r["v"]
+    inc = _income(site, plat_month) or {}
+    rpm = {}
+    for m in inc.get("by_month", []):
+        for src, val in m.get("rpm_by_source", {}).items(): rpm[src.lower()] = val  # latest month wins
+    numbered = re.compile(r"^\s*\d{1,3}\s")
+    out = {"ok": True, "site": site, "platforms": []}
+    for p in sorted({r["platform"] for r in arts}):
+        rs = [r for r in arts if r["platform"] == p]
+        row = {"platform": p}
+        for name, grp in (("galleries", [r for r in rs if numbered.match(r["title"] or "")]), ("articles", [r for r in rs if not numbered.match(r["title"] or "")])):
+            v = [r["v"] for r in grp]
+            if not v: row[name] = None; continue
+            vpa = round(sum(v) / len(v))
+            row[name] = {"posts": len(v), "views_per_post": vpa, "median": pct(v, .5), "count_20k": sum(x >= 20000 for x in v),
+                         **({"rpm": rpm[p.lower()], "money_per_post": round(vpa * rpm[p.lower()] / 1000, 2)} if p.lower() in rpm else {}),
+                         "examples": [r["title"] for r in sorted(grp, key=lambda r: -r["v"])[:3]]}
+        out["platforms"].append(row)
+    out["note"] = ("galleries = titles that start with a number (\"12 Cars That ...\"). Some numbered titles are list articles, not slideshows: "
+                   "check against image_style_scan's gallery examples. Platforms pay galleries differently (NewsBreak pays nothing for slideshows; MSN does), "
+                   "so compare per platform, and money only where the buyer logged income for that platform.")
+    print(json.dumps(out, indent=1))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -572,11 +608,13 @@ if __name__ == "__main__":
     c = sub.add_parser("review"); c.add_argument("--site", required=True); c.add_argument("--veins"); c.add_argument("--weeks", type=int, default=8); c.add_argument("--min-age", type=int, default=7)
     i = sub.add_parser("income"); i.add_argument("action", choices=["add", "import", "articles", "show"]); i.add_argument("--site", default=""); i.add_argument("--source"); i.add_argument("--month")
     i.add_argument("--amount"); i.add_argument("--views"); i.add_argument("--note"); i.add_argument("--file")
+    f = sub.add_parser("formats"); f.add_argument("--site", required=True)
     sub.add_parser("status")
     x = ap.parse_args()
     if x.cmd == "ingest": ingest(x.files, x.site, x.platform)
     elif x.cmd == "report": report(x.site, x.veins, x.top)
     elif x.cmd == "review": review(x.site, x.veins, x.weeks, x.min_age)
+    elif x.cmd == "formats": formats(x.site)
     elif x.cmd == "income":
         if x.action == "add": income_add(x.site, x.source, x.month, x.amount, x.views, x.note)
         elif x.action == "import": income_import(x.file, x.site)

@@ -69,6 +69,24 @@ For each site:
 - Read the site itself: its home page, its category pages, and its post list. On WordPress the public `https://<site>/wp-json/wp/v2/posts?per_page=100`, `/wp-json/wp/v2/categories?per_page=100` and `/wp-json/wp/v2/users` give titles, categories and authors fast. Elsewhere, read the sitemap.
 - Read the 10–15 best articles by views (from the report's `top`) in full. That's how you learn the voice: length, structure, how they open, how they source, words they use and avoid.
 
+## 4b. Images and galleries (setup, and any run where `get_site_brief` says `images.style` is null)
+
+WordPress sites only (others: featured image only, skip this). Do it once per site; after that the saved style is used every night.
+
+1. Call `image_style_scan` for the site. It reads the site's own recent posts (Yeez's are skipped) and reports the mix of the three post types: **news** (featured image only), **photos through the article** (image-rich: recipes, guides) and **galleries** (one photo per numbered item, "12 Cars That …"), plus photos per post, whether the theme shows the featured image on post pages, and how many photos the media library holds.
+2. If the site has galleries or numbered posts, or is on MSN, run `yeez_data.py formats --site SITE`: galleries vs articles per platform, views per post and, where income is logged, money per post. Platforms pay galleries differently (MSN pays for them; NewsBreak pays nothing for slideshows), so compare per platform.
+3. Show the buyer one short message and ask with buttons:
+
+> **How your site uses photos (site.com):** most of your posts are … (… news posts with one main photo, … posts with photos through the article, about … per post, … galleries with a photo per item). Your theme does / doesn't show the main photo at the top of a post. Your library has … photos.
+> - **Yeez posts will match that:** [Yes] [Change it]
+> - (only when the library has 500+ photos) **Use your own photos first?** [Mostly mine (75%)] [About half] [A few (25%)] [No, new photos only]
+> - (only when step 2 has gallery numbers or the site is on MSN) **Galleries:** they get … views and $… per post on … vs … for articles. [Keep about … a day] [More] [Fewer] [None]
+
+   If the scan found images loaded from other sites (for example Wikipedia), mention it in one line; it changes nothing unless they ask.
+4. Save: `save_image_style` (`article_style` news or image_rich, `body_images` = photos through the article, `featured_in_body` = true when the theme hides the featured image, `library_share` from their answer, 0 when the library is small) and, if they chose a gallery count, `save_site_settings` with `galleries_per_day`. Never more galleries on a NewsBreak-only site.
+
+In daily and weekly mode with a style already saved, don't ask again.
+
 ## 5. Work it out
 
 1. Run `yeez_data.py report --site SITE`. It gives views per platform, tier bands, the top articles, wasted-reach flops (shown thousands of times, barely read: the clearest headline failures), a sample of the low tail, views per article by publish hour and month, and daily totals.

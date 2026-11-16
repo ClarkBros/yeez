@@ -57,13 +57,19 @@ The steps below (1 to 8) are the writer's job. If this app can't start helpers, 
    If the headline overstates its own sources, make the smallest sourced correction to the title instead of holding a true story: change only the wrong element (cap vs flat, alleged vs found, the right state, date or year) to the specific the sources support, never to something vaguer, and never tone it down. Note every correction (original → corrected, with the source) for the report. Hold only when the story itself fails; aim for no more than 3 holds per 50.
 5. **Link the site's own articles.** Call `get_related_posts` with the story's main subject. Link 2–4 that genuinely fit, with natural anchor text ("the 2027 premium change"), never in the first two paragraphs. Skip it when nothing fits. These don't count as sources.
 6. **Place an offer, only if one fits.** Call `match_offers` with the article text, `place: "article"`, and the headline as `ref`. If there's a match, add one short sentence near the end that links its tracked `link` with its `cta`. Follow its allowed and banned claims, and never promise money. If nothing matches, add nothing.
-7. **Pick an image.** Call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea. It must be at least 1200px wide (Google Discover); pick one that is recognizable at thumbnail size, and never a logo or a picture full of text. Write `image_alt` as a plain description of what the photo shows.
+7. **Pick the photos.** Follow the site's image style (`get_site_brief` → `images.style`; none saved = featured image only):
+   - **Where they come from:** for about `library_share` of the night's photos, first call `find_site_images` (the site's own library: no upload, no new copies) with the story's subject, trying 2–3 wordings. Use a library photo only when it truly shows the subject; never a generic or wrong one just to hit the share. Otherwise call `find_images` with a short description of the story's actual subject (a building, product, place or document), not an abstract idea.
+   - **Featured photo:** at least 1200px wide (Google Discover), recognizable at thumbnail size, never a logo or a picture full of text. Write `image_alt` as a plain description of what it shows.
+   - **news style:** that one photo.
+   - **image_rich style:** also `body_images` photos (the style's number) that each show something the section they sit in talks about, all different from the featured photo and from each other. Yeez spreads them across the section headings.
+   - The top-of-article photo for themes that hide the featured image is added by Yeez itself; don't add it.
 8. **Write the search fields** (see [seo.md](seo.md)): `seo_title`, `meta_description`, `slug`, `focus_keyword`, and up to 3 `tags` from the site's own tag list.
 9. **Schedule it.** Call `schedule_article` with:
    - the `headline_id`, title, HTML and sources
    - the `category` that fits best from the site's own categories, and the `author` from the site's authors whose subjects fit that category best (never by rotation)
    - the search fields from step 8
-   - the chosen `image_url`, `image_credit` and `image_alt`
+   - the featured photo: `image_id` (a library photo) or `image_url` + `image_credit`, and `image_alt`
+   - `body_images` for image-rich sites (each a library `image_id`, or `image_url` + `image_credit`, with `image_alt`)
 
    If the reply has `feed_boxes` with `NOT_TICKED` (or `newsbreak_flag` NOT SET), put it at the top of the report (the article won't reach those platforms) and keep going.
 
