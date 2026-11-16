@@ -1878,11 +1878,11 @@ def flag_photo(args):
                                   "reason": args.reason[:300]})
     fb["blocked"] = fb["blocked"][-2000:]
     rule = None
-    if args.avoid.strip():
-        rule = {"avoid": [w.strip().lower() for w in args.avoid.split(",") if w.strip()][:8],
+    if args.avoid.strip() or args.lesson.strip():
+        rule = {"lesson": args.lesson.strip()[:240], "avoid": [w.strip().lower() for w in args.avoid.split(",") if w.strip()][:8],
                 "when": [w.strip().lower() for w in args.when.split(",") if w.strip()][:6],
                 "page": None if args.all_pages else page, "reason": args.reason[:300], "date": TODAY.isoformat()}
-        fb["rules"] = [x for x in fb["rules"] if not (x.get("avoid") == rule["avoid"] and x.get("when") == rule["when"] and x.get("page") == rule["page"])]
+        fb["rules"] = [x for x in fb["rules"] if not (x.get("avoid") == rule["avoid"] and x.get("when") == rule["when"] and x.get("page") == rule["page"] and x.get("lesson") == rule["lesson"])]
         fb["rules"].append(rule)
         fb["rules"] = fb["rules"][-30:]
     save_feedback(fb)
@@ -1901,8 +1901,8 @@ def flag_photo(args):
         json.dump(data, open(path + ".tmp", "w", encoding="utf-8"), indent=2, ensure_ascii=False)
         os.replace(path + ".tmp", path)
         msg.append(f"Rebuild it: yeez_build.py --date {args.date} --page {page} --work {WORK}")
-    print(f"flagged {it['id']} ({page}): {len(urls)} photo(s) blocked for good" + (f"; rule added: skip photos showing {', '.join(rule['avoid'])}"
-          + (f" on cards about {', '.join(rule['when'])}" if rule['when'] else "") + (" on every Page" if not rule['page'] else f" on {page}") if rule else "; no rule added"))
+    print(f"flagged {it['id']} ({page}): {len(urls)} photo(s) blocked for good" + (f"; lesson saved for {'every Page' if not rule['page'] else page}: {rule['lesson'] or rule['reason']}"
+          + (f" (skips photos showing {', '.join(rule['avoid'])}" + (f" on cards about {', '.join(rule['when'])})" if rule['when'] else ")") if rule['avoid'] else "") if rule else ""))
     for m in msg:
         print(m)
 
@@ -1920,11 +1920,21 @@ def main():
     ap.add_argument("--avoid", default="", help="with --flag, ONLY when the buyer states a standing rule: comma-separated words photos must not show")
     ap.add_argument("--when", default="", help="with --avoid: the rule applies only to cards whose brief has these words (comma-separated)")
     ap.add_argument("--all-pages", action="store_true", help="with --avoid: the rule covers every Page, not just this card's")
+    ap.add_argument("--lesson", default="", help="with --flag: one sentence on what the buyer wants from photos like this from now on")
+    ap.add_argument("--lessons", action="store_true", help="print the photo lessons for --page (read before writing image briefs)")
     args = ap.parse_args()
     if args.flag:
         if args.work:
             set_work(args.work)
         return flag_photo(args)
+    if args.lessons:
+        if args.work:
+            set_work(args.work)
+        for r in feedback()["rules"]:
+            if not r.get("page") or not args.page or r["page"].upper() == args.page.upper():
+                print(f"- {r.get('lesson') or r.get('reason')}" + (f" (cards about: {', '.join(r['when'])})" if r.get("when") else "")
+                      + (f" | photos skipped if they show: {', '.join(r['avoid'])}" if r.get("avoid") else ""))
+        return
     if not args.date:
         ap.error("--date is required")
     if args.work:

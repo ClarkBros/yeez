@@ -124,10 +124,12 @@ If the script prints **FONT PROBLEMS**, the cards were built with a stand-in fon
 - Wrong: run `python3 <this skill's folder>/scripts/yeez_build.py --date <today> --work yeez-work --flag <ITEM> --reason "<what's wrong>"`. That blocks the photo for good and sets the card to be rebuilt. Improve the brief (a sharper `must`, a better `query`, or the buyer's own photo through `find_site_images`), then run the build again. Two tries, then take `image_brief` off the card so it uses the brand background, or drop the item.
 Do the same for any bad photo you spot yourself, marked or not.
 
-**When the buyer says a photo is bad** (now or on a later day), fix that card, not the system:
-1. Run `--flag` on that card with their reason in their words, give it a better brief, rebuild, and post it again. If it was only scheduled on Facebook, the post script swaps it (deletes the scheduled one, schedules the new card). If it's already live, say it can't be swapped automatically and they can delete it on the Page.
-2. A flag blocks that photo and nothing else. Add a standing rule only when the buyer states one ("never use empty shelves for recall posts"): add `--avoid "<the thing they named>" --when "<the topic words>"` to the flag (`--all-pages` only if they say every Page). If they flag the same kind of photo three times without stating a rule, ask once whether to make it one.
-3. Don't go further than what they said: no new rules of your own, no turning photos off, no changes to other Pages or other kinds of cards, no rewriting the rest of the day's briefs. Rules sit in `yeez-work/photo-feedback.json`; the build applies them by itself.
+**When the buyer says a photo is bad** (now or on a later day):
+1. Fix that card: run `--flag <ITEM> --reason "<their words>"`, give it a better brief, rebuild and post it again. If it was only scheduled on Facebook, the post script swaps it (deletes the scheduled one, schedules the new card). If it's already live, say it can't be swapped automatically and they can delete it on the Page.
+2. Learn from it, a little. Work out what they want from photos like that one, and save it on the same flag as one short `--lesson` ("recall cards show the recalled product itself, not store shelves"). Add `--when "<topic words>"` so it applies to that kind of card, and `--avoid "<what they objected to>"` when they named something to keep out. It stays on that Page unless they say every Page (`--all-pages`).
+3. Keep the adjustment small: one lesson per complaint, about that kind of card. Don't turn photos off, don't change other kinds of cards, and don't rewrite the rest of the day's briefs.
+
+Before writing image briefs for a Page, read its lessons (`python3 <this skill's folder>/scripts/yeez_build.py --lessons --page CODE --work yeez-work`) and follow them. They sit in `yeez-work/photo-feedback.json`, and the build also applies their `avoid` words by itself.
 
 ## 5. Post
 

@@ -11,15 +11,7 @@ It will:
 - rebuild that card with a better photo
 - swap it on Facebook if the post is still only scheduled (if it's already live, it tells you, and you can delete it on your Page)
 
-It changes that card only. It doesn't change your other cards or your settings.
-
-## Make it a rule
-
-If you want something to apply from now on, say it as a rule:
-
-`Never use empty store shelves on recall posts.`
-
-That rule covers that kind of card on that Page from then on. If you flag the same kind of photo a few times, your AI app asks once whether you want it as a rule.
+It also takes the point and adjusts a little for that kind of card from then on (for example, recall posts show the product itself). It doesn't change your other cards or your settings.
 
 ## Your own photos
 

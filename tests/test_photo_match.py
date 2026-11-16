@@ -170,10 +170,14 @@ calls.clear()
 r = subprocess.run([sys.executable, POST, "--date", day, "--work", W], capture_output=True, text=True, env=env)
 rec = json.load(open(os.path.join(qd, "_to_record.json")))
 ok(calls and calls[0] == f"DELETE /{old_fb}" and rec and rec[0].get("replaces") == old_fb, f"post run deletes the old scheduled post, then schedules the new card ({calls[:2]})")
-# a rule only when the buyer states it
-r = subprocess.run([sys.executable, BUILD, "--date", day, "--work", W, "--flag", "c1", "--reason", "never empty shelves on recall posts", "--avoid", "shelf", "--when", "recall"], capture_output=True, text=True)
+# the lesson from a flag: one narrow adjustment for that kind of card
+r = subprocess.run([sys.executable, BUILD, "--date", day, "--work", W, "--flag", "c1", "--reason", "empty shelf, not the product",
+                    "--lesson", "recall cards show the recalled product itself, not store shelves", "--avoid", "shelf", "--when", "recall"], capture_output=True, text=True)
 fb = json.load(open(os.path.join(W, "photo-feedback.json")))
-ok(len(fb["rules"]) == 1 and fb["rules"][0]["page"] == "FOODPL" and fb["rules"][0]["avoid"] == ["shelf"], "a stated rule is saved, scoped to this Page and topic")
+ok(len(fb["rules"]) == 1 and fb["rules"][0]["page"] == "FOODPL" and fb["rules"][0]["avoid"] == ["shelf"] and "product itself" in fb["rules"][0]["lesson"], "the lesson is saved, scoped to this Page and topic")
+r = subprocess.run([sys.executable, BUILD, "--work", W, "--lessons", "--page", "FOODPL"], capture_output=True, text=True)
+r2 = subprocess.run([sys.executable, BUILD, "--work", W, "--lessons", "--page", "FOODIG"], capture_output=True, text=True)
+ok("product itself" in r.stdout and not r2.stdout.strip(), "--lessons shows it for this Page only (read before writing briefs)")
 # already live
 data = json.load(open(os.path.join(qd, "FOODPL.json"))); data["items"][1]["status"] = "published"; json.dump(data, open(os.path.join(qd, "FOODPL.json"), "w"))
 r = subprocess.run([sys.executable, BUILD, "--date", day, "--work", W, "--flag", "c2", "--reason", "bad"], capture_output=True, text=True)
