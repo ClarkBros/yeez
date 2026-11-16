@@ -25,6 +25,7 @@ Instagram needs a public image link, so photos for Instagram go up first as an u
 on the linked Page and Instagram takes the image from there.
 
 Writes yeez-work/queue/<date>/_to_record.json: this run's posts, to pass to the record_social_posts tool.
+--dry-run prints every call it would make and changes nothing: no posts, no queue file edits, no _to_record.json.
 Keys are never printed. Python 3 standard library only.
 """
 import argparse
@@ -306,7 +307,7 @@ def main():
     posted, failed, waiting = [], 0, 0
     for f in files:
         qfile = os.path.join(ddir, f)
-        q = json.load(open(qfile, encoding="utf-8"))
+        q = json.load(open(qfile, encoding="utf-8"))  # in a dry run this copy is never written back
         tz = ZoneInfo(q.get("timezone") or "America/Chicago")
         try:
             acc = account_for(accounts, q.get("account") or q.get("page"))
@@ -342,9 +343,14 @@ def main():
                 item["status"], item["error"] = "failed", str(e)
                 failed += 1
                 print(f"  ERR {item['id']:16} {item.get('type'):11} {e}")
-            with open(qfile + ".tmp", "w", encoding="utf-8") as fh:
-                json.dump(q, fh, indent=2, ensure_ascii=False)
-            os.replace(qfile + ".tmp", qfile)
+            if not DRY:  # a dry run changes no files: queue statuses, times and _to_record.json stay as they were
+                with open(qfile + ".tmp", "w", encoding="utf-8") as fh:
+                    json.dump(q, fh, indent=2, ensure_ascii=False)
+                os.replace(qfile + ".tmp", qfile)
+    if DRY:
+        print(f"\nDRY RUN: nothing was posted and no file was changed. {len(posted)} would post · {failed} would fail · {waiting} would wait.")
+        print("Run it again without --dry-run to post. Don't call record_social_posts for a dry run.")
+        sys.exit(1 if failed else 0)
     out = os.path.join(ddir, "_to_record.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(posted, fh, indent=1)

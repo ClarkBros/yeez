@@ -62,7 +62,7 @@ The first time you see an account, if its name has no "verified" status and the 
 
 Work in a folder named `yeez-work` (create it next to where you run commands).
 
-1. Write `yeez-work/brands.json`: a list with one entry per account, built from each brief's `brand` plus `logo_url`:
+1. Write `yeez-work/brands.json`: a list with one entry per account, built from each brief's `brand` plus `logo_url`. Use each brief's `brand.code` exactly as given: yeez.ai keeps every account's code different, and the code names that account's queue file. To change a code, save it with `save_social_settings` (`brand.code`); never edit it only in the files.
    `[{"code": "<brand.code>", "name": "<brand.name>", "c1": "...", "c2": "...", "c3": "...", "icon": "...", "fonts": <brand.fonts, if set>, "logo_url": "<logo_url>"}]`
 
    **Card fonts.** When the buyer asks for a font on their cards (for example "use Gaegu Bold for the red line above the title"), save it on the account with `save_social_settings` `brand.fonts`: `script_font` is the short script line above the title (the kicker), `title_font` the headline, `small_font` the site label, `display_font` big numbers, `serif_font` serif titles. Write it as `"Family:weight"`, e.g. `"Gaegu:700"`. Any Google Fonts family works (it's fetched once into `yeez-work/fonts/google`). For their own font file, they put the .ttf/.otf in `yeez-work/fonts` and you use its family name. An empty string goes back to the default.
@@ -130,6 +130,8 @@ python3 <this skill's folder>/scripts/yeez_post.py --date <today> --work yeez-wo
 It posts every built item straight to the account in its queue file, with the keys file:
 - Facebook news image and text image cards, gradient posts, link posts and reels are **scheduled** at their `time` with Meta's own scheduler (anything due in under 15 minutes moves to 20 minutes out).
 - Stories, and everything on Instagram, are **published** when their time is under 30 minutes away; earlier than that they stay `built` and the script says they're waiting (the social now task posts them). Instagram reels wait for Instagram to finish processing, up to about 4 minutes.
+
+To preview first, add `--dry-run`: it lists what would post and changes nothing (no posts, no file edits), so there's nothing to record afterwards.
 
 Then call `record_social_posts` with the list the script saved in `yeez-work/queue/<today>/_to_record.json`. That puts the posts in the buyer's queue and dashboard, and any LINK post's `first_comment` is added by yeez.ai the moment Facebook says the post is live.
 
